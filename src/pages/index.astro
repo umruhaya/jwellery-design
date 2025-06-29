@@ -145,6 +145,37 @@ console.log('locale:', Astro.preferredLocale)
 	  >
 	</section>
 
+	{/* GDPR LEAD COLLECTION */}
+	<section class="py-16 bg-gray-50 border-t border-b border-gray-200">
+		<div class="max-w-lg mx-auto text-center">
+			<h2 class="font-playfair text-2xl mb-4">Stay in Touch</h2>
+			<p class="mb-6 text-gray-700">
+				Sign up to receive exclusive updates and offers. We respect your privacy and comply with GDPR.
+			</p>
+			<form method="POST" action="#" class="space-y-4">
+				<input
+					type="email"
+					name="email"
+					required
+					placeholder="Your email address"
+					class="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring"
+				/>
+				<div class="flex items-center justify-center space-x-2 text-left">
+					<input type="checkbox" id="gdpr-consent" name="gdpr-consent" required class="accent-emerald-700" />
+					<label for="gdpr-consent" class="text-sm text-gray-600">
+						I agree to receive emails and accept the <a href="/privacy" class="underline">privacy policy</a>.
+					</label>
+				</div>
+				<button
+					type="submit"
+					class="w-full px-4 py-2 bg-emerald-700 text-white rounded hover:bg-emerald-800 transition"
+				>
+					Subscribe
+				</button>
+			</form>
+		</div>
+	</section>
+
 	{/* FOOTER */}
 	<footer class="bg-gray-900 text-gray-100 py-8 mt-16">
 		<div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center px-6">
