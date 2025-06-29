@@ -1,0 +1,1 @@
+cp src/pages/*.astro src/pages/en/
