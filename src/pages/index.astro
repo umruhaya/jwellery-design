@@ -1,6 +1,5 @@
 ---
 import '~/styles/global.css'
-console.log('locale:', Astro.preferredLocale)
 ---
 
 <head>
@@ -24,7 +23,7 @@ console.log('locale:', Astro.preferredLocale)
 			/>
 		</video>
 		{/* Overlay for readability */}
-		<div class="absolute inset-0 bg-emerald-900/40"></div>
+		<!-- <div class="absolute inset-0 bg-emerald-900/40"></div> -->
 
 		{/* Navigation/Header */}
 		<header class="flex justify-between items-center px-10 pt-8 relative z-20">
@@ -33,8 +32,8 @@ console.log('locale:', Astro.preferredLocale)
 				<span class="text-3xl font-playfair text-white tracking-wide">CYO design</span>
 			</a>
 			<nav class="flex items-center space-x-8">
-				<a href="#gallery" class="text-white hover:underline">Gallery</a>
-				<a href="/about" class="text-white hover:underline">About Us</a>
+				<a href="#gallery" class="text-white">Gallery</a>
+				<a href="/about" class="text-white">About Us</a>
 			</nav>
 		</header>
 
@@ -49,23 +48,23 @@ console.log('locale:', Astro.preferredLocale)
 			{/* AI Assistant Widget */}
 			<div class="w-full max-w-md bg-white/90 rounded-xl shadow-lg p-6 mb-8 flex flex-col items-center">
 				<div class="flex items-center mb-3">
-					<div class="w-8 h-8 bg-emerald-700 rounded-full flex items-center text-center justify-center text-white font-bold mr-3"><span>AI</span></div>
+					<div class="w-8 h-8 bg-primary rounded-full flex items-center text-center justify-center text-white font-bold mr-3"><span>AI</span></div>
 					<span class="font-semibold text-gray-800">CYO Atelier Assistant</span>
 				</div>
 				<div class="w-full">
 					<input type="text" placeholder="Describe your dream jewelry..." class="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring" />
-					<button class="mt-3 w-full flex items-center justify-center gap-2 px-4 py-2 bg-emerald-700 text-white rounded hover:bg-emerald-800 transition">
+					<button class="mt-3 w-full flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded">
 						<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 19v-6m0 0V5m0 8l-4-4m4 4l4-4" /></svg>
 						Start Conversation
 					</button>
-					<button class="mt-2 w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition">
+					<button class="mt-2 w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded transition">
 						<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-13v4l3 3-1.5 1.5L10 11V5h1z"/></svg>
 						Voice Input
 					</button>
 				</div>
 			</div>
 			{/* Scroll Down Indicator */}
-			<a href="#gallery" class="animate-bounce mt-4 flex flex-col items-center text-white opacity-80 hover:opacity-100">
+			<a href="#gallery" class="animate-bounce mt-4 flex flex-col items-center text-white opacity-80">
 				<svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" /></svg>
 				<span class="text-xs mt-1">Scroll to Gallery</span>
 			</a>
@@ -73,7 +72,7 @@ console.log('locale:', Astro.preferredLocale)
 	</section>
 
 	{/* GALLERY / INSPIRATIONS */}
-	<section id="gallery" class="w-full flex flex-col md:flex-row h-[80vh] pt-16">
+	<section id="gallery" class="w-full flex flex-col md:flex-row pt-16">
 		<div class="absolute left-0 right-0 -top-10 flex justify-center z-10">
 			<span class="bg-white/90 px-6 py-2 rounded-full shadow font-playfair text-lg tracking-wide border border-gray-200">
 				Gallery / Inspirations
@@ -96,7 +95,7 @@ console.log('locale:', Astro.preferredLocale)
 		  </div>
 		  <div class="md:w-1/2 bg-[#148370] flex items-center justify-center">
 			<img
-			  src="https://www.vancleefarpels.com/content/dam/vancleefarpels/Homepage/homepage/2025/perl%C3%A9e-2025/port%C3%A9-homepage-perl%C3%A9e.jpg.transform.vca-w2560-1x.jpg"
+			  src="/woman-frontpose-1.jpg" 
 			  alt="Model with Perlée"
 			  class="object-cover w-full h-full md:h-auto md:w-auto"
 			/>
@@ -105,23 +104,23 @@ console.log('locale:', Astro.preferredLocale)
 	</section>
 
 	{/* THE GOLDEN BEADS DANCE */}
-	<section class="relative w-full pb-0">
+	<section class="relative w-full mt-4 sm:mt-0">
 		<img
-			src="https://www.vancleefarpels.com/content/dam/vancleefarpels/Homepage/homepage/2024/perl%C3%A9e/VCA_cover_mineure_4000_2000_perlee_watches_FY25_v1.jpg.transform.vca-w2560-1x.jpg"
+			src="/watch-and-stem.jpg"
 			alt=""
 			class="w-full h-auto object-cover"
 			style={{ maxHeight: '80vh' }}
 		/>
-		<div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-			<h2 class="font-playfair text-3xl md:text-4xl mb-6 text-white drop-shadow-lg">
+		<div class="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+			<h2 class="font-playfair text-xl md:text-4xl mb-6 text-white drop-shadow-lg">
 			The golden beads come together in a graceful dance
 			</h2>
-			<p class="text-white text-lg max-w-2xl mb-4 drop-shadow md:px-8 px-4">
+			<p class="text-white text-xs max-w-2xl mb-4 drop-shadow md:px-8 px-4">
 			CYO Design showcases the Perlée collection’s joyful spirit through vibrant movement and refined style.
 			</p>
 			<a
 			href="#"
-			class="uppercase tracking-widest text-gray-100 border-b border-white pb-1 text-sm drop-shadow"
+			class="uppercase tracking-widest text-gray-100 border-b border-white pb-1 text-xs drop-shadow"
 			>
 			Discover the graceful dance
 			</a>
@@ -129,11 +128,11 @@ console.log('locale:', Astro.preferredLocale)
 	</section>
 
 	{/* ENCHANTING GIFTS */}
-	<section class="py-20 max-w-5xl mx-auto text-center">
+	<section class="py-12 max-w-5xl mx-auto text-center">
 	  <h2 class="font-playfair text-4xl mb-8">Enchanting gifts</h2>
 	  <img
 		class="mx-auto mb-6 w-full object-cover max-h-96 rounded"
-		src="https://www.vancleefarpels.com/content/dam/vancleefarpels/Homepage/homepage/2025/perl%C3%A9e-2025/cover-gift-desktop-perlee-2025-test3%20-%20homepage.jpg.transform.vca-w2560-1x.jpg"
+		src="/jwellery-on-branch.jpg"
 		alt="Gifts Jewelry"
 	  />
 	  <p class="text-gray-700 mb-8 max-w-2xl mx-auto">
@@ -146,13 +145,13 @@ console.log('locale:', Astro.preferredLocale)
 	</section>
 
 	{/* GDPR LEAD COLLECTION */}
-	<section class="py-16 bg-gray-50 border-t border-b border-gray-200">
+	<section class="py-16 px-6 bg-gray-50 border-t border-b border-gray-200">
 		<div class="max-w-lg mx-auto text-center">
 			<h2 class="font-playfair text-2xl mb-4">Stay in Touch</h2>
 			<p class="mb-6 text-gray-700">
 				Sign up to receive exclusive updates and offers. We respect your privacy and comply with GDPR.
 			</p>
-			<form method="POST" action="#" class="space-y-4">
+			<form id="subscribe-form" method="POST" action="/api/subscribe" class="space-y-4">
 				<input
 					type="email"
 					name="email"
@@ -168,32 +167,67 @@ console.log('locale:', Astro.preferredLocale)
 				</div>
 				<button
 					type="submit"
-					class="w-full px-4 py-2 bg-emerald-700 text-white rounded hover:bg-emerald-800 transition"
+					class="w-full px-4 py-2 bg-primary text-white rounded transition"
 				>
 					Subscribe
 				</button>
+				<div id="subscribe-feedback" class="text-sm mt-2"></div>
 			</form>
 		</div>
 	</section>
 
 	{/* FOOTER */}
-	<footer class="bg-gray-900 text-gray-100 py-8 mt-16">
+	<footer class="bg-primary-dark text-gray-100 py-8 mt-16">
 		<div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center px-6">
 			<div class="flex items-center space-x-4 mb-4 md:mb-0">
 				<a href="/" class="font-playfair text-xl text-white">CYO Design</a>
-				<span class="text-gray-500">© {new Date().getFullYear()}</span>
+				<span class="text-gray-500 relative top-1">© {new Date().getFullYear()}</span>
 			</div>
 			<div class="flex items-center space-x-6 mb-4 md:mb-0">
-				<a href="/impressum" class="hover:underline text-gray-300">Impressum</a>
-				<a href="/privacy" class="hover:underline text-gray-300">Privacy</a>
-				<a href="/about" class="hover:underline text-gray-300">About Us</a>
+				<a href="/impressum" class="text-gray-300">Impressum</a>
+				<a href="/privacy" class="text-gray-300">Privacy</a>
+				<a href="/about" class="text-gray-300">About Us</a>
 			</div>
 			<div class="flex items-center space-x-4">
 				<a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">
-					<svg class="w-6 h-6 text-gray-300 hover:text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5A4.25 4.25 0 0 0 20.5 16.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zm4.25 3.25a5.25 5.25 0 1 1 0 10.5 5.25 5.25 0 0 1 0-10.5zm0 1.5a3.75 3.75 0 1 0 0 7.5 3.75 3.75 0 0 0 0-7.5zm5.25.75a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+					<svg class="w-6 h-6 text-gray-300" fill="currentColor" viewBox="0 0 24 24"><path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5A4.25 4.25 0 0 0 20.5 16.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zm4.25 3.25a5.25 5.25 0 1 1 0 10.5 5.25 5.25 0 0 1 0-10.5zm0 1.5a3.75 3.75 0 1 0 0 7.5 3.75 3.75 0 0 0 0-7.5zm5.25.75a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
 				</a>
 				{/* Add more social icons as needed */}
 			</div>
 		</div>
 	</footer>
 </body>
+<script type="module">
+document.addEventListener('DOMContentLoaded', () => {
+	const form = document.getElementById('subscribe-form');
+	const feedback = document.getElementById('subscribe-feedback');
+	if (form) {
+		form.addEventListener('submit', async (e) => {
+			e.preventDefault();
+			feedback.textContent = '';
+			const formData = new FormData(form);
+			const email = formData.get('email');
+			const consent = formData.get('gdpr-consent');
+			if (!email || !consent) return;
+			try {
+				const res = await fetch('/api/subscribe', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ email })
+				});
+				if (res.ok) {
+					feedback.textContent = 'Thank you for subscribing!';
+					feedback.className = 'text-green-600 mt-2';
+					form.reset();
+				} else {
+					feedback.textContent = 'There was an error. Please try again.';
+					feedback.className = 'text-red-600 mt-2';
+				}
+			} catch {
+				feedback.textContent = 'There was an error. Please try again.';
+				feedback.className = 'text-red-600 mt-2';
+			}
+		});
+	}
+});
+</script>
