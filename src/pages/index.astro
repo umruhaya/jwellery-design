@@ -18,7 +18,7 @@ import '~/styles/global.css'
 	<section class="relative h-[100vh] flex flex-col overflow-hidden">
 		<video class="absolute inset-0 w-full h-full object-cover" autoplay loop muted playsinline>
 			<source
-				src="https://www.vancleefarpels.com/content/dam/vancleefarpels/Homepage/homepage/2025/perl%C3%A9e-2025/homepage-perl%C3%A9e-2025-desktop-vdef.mp4"
+				src="/hero.mp4"
 				type="video/mp4"
 			/>
 		</video>
@@ -38,11 +38,11 @@ import '~/styles/global.css'
 		</header>
 
 		{/* Hero Content + AI Assistant */}
-		<div class="flex-1 flex flex-col justify-center items-center relative z-20">
-			<h2 class="text-4xl md:text-5xl font-playfair text-white mb-4 text-center drop-shadow-lg">
+		<div class="flex-1 flex flex-col justify-center items-center relative z-20 px-6">
+			<h2 class="text-2xl md:text-5xl font-playfair text-white mb-4 text-center drop-shadow-lg">
 				Bespoke jewelry, crafted for your story
 			</h2>
-			<p class="text-white text-lg mb-8 text-center max-w-xl drop-shadow">
+			<p class="text-white text-sm md:text-lg mb-8 text-center max-w-xl drop-shadow">
 				Experience the CYO Live Atelier: luxury, artistry, and personal guidance—digitally and personally.
 			</p>
 			{/* AI Assistant Widget */}
@@ -64,10 +64,47 @@ import '~/styles/global.css'
 				</div>
 			</div>
 			{/* Scroll Down Indicator */}
-			<a href="#gallery" class="animate-bounce mt-4 flex flex-col items-center text-white opacity-80">
+			<a href="#gallery" class="animate-bounce mt-4 flex flex-col items-center text-white">
 				<svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" /></svg>
-				<span class="text-xs mt-1">Scroll to Gallery</span>
+				<span class="text-sm mt-1">Scroll to Gallery</span>
 			</a>
+		</div>
+	</section>
+
+	{/* GDPR LEAD COLLECTION - moved up */}
+	<section class="py-10 px-6 bg-gray-50 border-t border-b border-gray-200 w-full z-30 relative">
+		<div class="max-w-lg mx-auto text-center">
+			<h2 class="font-playfair text-2xl mb-4">Get in Touch</h2>
+			<p class="mb-6 text-gray-700">
+				After you submit your email, our team will reach out to you to learn about your preferences for jewelry design. We respect your privacy and comply with GDPR.
+			</p>
+			<form id="subscribe-form" method="POST" action="/api/subscribe" class="space-y-4">
+				<input
+					type="email"
+					name="email"
+					required
+					placeholder="Your email address"
+					class="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring"
+				/>
+				<div class="flex items-center justify-center space-x-2 text-left">
+					<input type="checkbox" id="gdpr-consent" name="gdpr-consent" required class="accent-emerald-700" />
+					<label for="gdpr-consent" class="text-sm text-gray-600">
+						I agree to receive emails and accept the <a href="/privacy" class="underline">privacy policy</a>.
+					</label>
+				</div>
+				<button
+					id="subscribe-btn"
+					type="submit"
+					class="w-full px-4 py-2 bg-primary text-white rounded transition flex items-center justify-center gap-2"
+				>
+					<span id="subscribe-btn-text">Sign Up</span>
+					<svg id="subscribe-spinner" class="w-5 h-5 animate-spin hidden" fill="none" viewBox="0 0 24 24">
+						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+						<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+					</svg>
+				</button>
+				<div id="subscribe-feedback" class="text-sm mt-2"></div>
+			</form>
 		</div>
 	</section>
 
@@ -144,38 +181,6 @@ import '~/styles/global.css'
 	  >
 	</section>
 
-	{/* GDPR LEAD COLLECTION */}
-	<section class="py-16 px-6 bg-gray-50 border-t border-b border-gray-200">
-		<div class="max-w-lg mx-auto text-center">
-			<h2 class="font-playfair text-2xl mb-4">Stay in Touch</h2>
-			<p class="mb-6 text-gray-700">
-				Sign up to receive exclusive updates and offers. We respect your privacy and comply with GDPR.
-			</p>
-			<form id="subscribe-form" method="POST" action="/api/subscribe" class="space-y-4">
-				<input
-					type="email"
-					name="email"
-					required
-					placeholder="Your email address"
-					class="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring"
-				/>
-				<div class="flex items-center justify-center space-x-2 text-left">
-					<input type="checkbox" id="gdpr-consent" name="gdpr-consent" required class="accent-emerald-700" />
-					<label for="gdpr-consent" class="text-sm text-gray-600">
-						I agree to receive emails and accept the <a href="/privacy" class="underline">privacy policy</a>.
-					</label>
-				</div>
-				<button
-					type="submit"
-					class="w-full px-4 py-2 bg-primary text-white rounded transition"
-				>
-					Subscribe
-				</button>
-				<div id="subscribe-feedback" class="text-sm mt-2"></div>
-			</form>
-		</div>
-	</section>
-
 	{/* FOOTER */}
 	<footer class="bg-primary-dark text-gray-100 py-8 mt-16">
 		<div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center px-6">
@@ -201,14 +206,27 @@ import '~/styles/global.css'
 document.addEventListener('DOMContentLoaded', () => {
 	const form = document.getElementById('subscribe-form');
 	const feedback = document.getElementById('subscribe-feedback');
+	const btn = document.getElementById('subscribe-btn');
+	const btnText = document.getElementById('subscribe-btn-text');
+	const spinner = document.getElementById('subscribe-spinner');
 	if (form) {
 		form.addEventListener('submit', async (e) => {
 			e.preventDefault();
 			feedback.textContent = '';
+			btn.disabled = true;
+			btn.classList.add('opacity-60', 'cursor-not-allowed');
+			btnText.textContent = 'Submitting...';
+			spinner.classList.remove('hidden');
 			const formData = new FormData(form);
 			const email = formData.get('email');
 			const consent = formData.get('gdpr-consent');
-			if (!email || !consent) return;
+			if (!email || !consent) {
+				btn.disabled = false;
+				btn.classList.remove('opacity-60', 'cursor-not-allowed');
+				btnText.textContent = 'Sign Up';
+				spinner.classList.add('hidden');
+				return;
+			}
 			try {
 				const res = await fetch('/api/subscribe', {
 					method: 'POST',
@@ -216,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					body: JSON.stringify({ email })
 				});
 				if (res.ok) {
-					feedback.textContent = 'Thank you for subscribing!';
+					feedback.textContent = 'Thank you for signing up!';
 					feedback.className = 'text-green-600 mt-2';
 					form.reset();
 				} else {
@@ -227,6 +245,10 @@ document.addEventListener('DOMContentLoaded', () => {
 				feedback.textContent = 'There was an error. Please try again.';
 				feedback.className = 'text-red-600 mt-2';
 			}
+			btn.disabled = false;
+			btn.classList.remove('opacity-60', 'cursor-not-allowed');
+			btnText.textContent = 'Sign Up';
+			spinner.classList.add('hidden');
 		});
 	}
 });

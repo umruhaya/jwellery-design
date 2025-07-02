@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from 'astro/config'
+import { defineConfig, envField } from 'astro/config'
 
 import node from '@astrojs/node'
 import tailwindcss from '@tailwindcss/vite'
@@ -24,6 +24,16 @@ export default defineConfig({
 		defaultLocale: 'en',
 		routing: {
 			prefixDefaultLocale: false,
+		},
+	},
+
+	env: {
+		schema: {
+			OPENAI_API_KEY: envField.string({ access: 'secret', context: 'server' }),
+			EMAIL_HOST: envField.string({ access: 'secret', context: 'server' }),
+			EMAIL_USER: envField.string({ access: 'secret', context: 'server' }),
+			EMAIL_PASSWORD: envField.string({ access: 'secret', context: 'server' }),
+			RECIPIENT_EMAIL: envField.string({ access: 'secret', context: 'server' }),
 		},
 	},
 })
