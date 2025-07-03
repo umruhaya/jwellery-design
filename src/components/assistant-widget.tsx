@@ -2,6 +2,7 @@ import type { ResponseStreamEvent } from 'openai/resources/responses/responses.m
 import { useState } from 'react'
 import EventSource, { type EventSourceOptions } from 'react-native-sse'
 import { type Message, useChatStore } from '~/store/chat'
+import { MarkdownRenderer } from '~/components/markdown-renderer'
 
 const DEFAULT_SSE_OPTIONS: EventSourceOptions = {
 	method: 'POST',
@@ -125,11 +126,13 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 						className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
 					>
 						<div
-							className={`p-2 rounded-lg ${
-								msg.role === 'user' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-800'
-							} ${msg.loading ? 'opacity-50 animate-pulse' : ''}`}
+							className={`p-2 rounded-lg ${msg.loading ? 'animate-pulse' : ''}`}
 						>
-							{msg.type === 'text' ? <div>{msg.content}</div> : null}
+							{msg.type === 'text'
+								? msg.role === 'user'
+									? <div className='p-2 rounded-lg bg-primary text-white'>{msg.content}</div>
+									: <MarkdownRenderer text={msg.content} />
+								: null}
 							{msg.type === 'image'
 								? (
 									<img

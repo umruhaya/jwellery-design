@@ -1,47 +1,54 @@
-# Astro Starter Kit: Minimal
+### Server Setup
 
-```sh
-pnpm create astro@latest -- --template minimal
+Instead of directly running the uvicorn command, we would use `systemd` to manage the server process.
+
+First Create a systemd config file
+
+```bash
+sudo vim /etc/systemd/system/cyodesign.service
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/minimal)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/minimal)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/minimal/devcontainer.json)
+```ini
+[Unit]
+Description=Mental Wellness Uvicorn Daemon
+After=network.target
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+[Service]
+User=umernaeem135acc
+Group=umernaeem135acc
+WorkingDirectory=/home/umernaeem135acc/cyodesign-app
+ExecStart=/home/umernaeem135acc/.local/bin/uvicorn app:app --host 0.0.0.0 --port 8000
+Restart=always
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+[Install]
+WantedBy=multi-user.target
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+After creating this file, follow these steps to reload `systemd` and start the service:
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+```bash
+# Reload systemd to recognize the new service file
+sudo systemctl daemon-reload
 
-Any static assets, like images, can be placed in the `public/` directory.
+# Start the uvicorn service
+sudo systemctl start cyodesign.service
 
-## 🧞 Commands
+# Enable the service to start on boot
+sudo systemctl enable cyodesign.service
+```
 
-All commands are run from the root of the project, from a terminal:
+### Server Restart For Update
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+Whenever you want to refresh the server, (lets say you just ran `git pull` and updated the source code) then run
 
-## 👀 Want to learn more?
+```bash
+sudo systemctl restart cyodesign.service
+```
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+### View Server Logs
+
+T see th logs of the server run
+
+```bash
+journalctl -u cyodesign.service
+```
