@@ -5,7 +5,12 @@ import { z } from 'astro/zod'
 const ChatRequest = z.object({
 	locale: z.string(),
 	messages: z.array(
-		z.object({ role: z.enum(['user', 'assistant']), content: z.string() }),
+		z.object({
+			id: z.string(),
+			type: z.enum(['text', 'image']),
+			role: z.enum(['user', 'assistant']),
+			content: z.string(),
+		}),
 	),
 })
 
@@ -22,8 +27,8 @@ export const POST: APIRoute = async ({ request }) => {
 	const stream = await openai.responses.create({
 		model: 'gpt-4.1',
 		stream: true,
-		input: messages,
-		tools: [{ type: 'image_generation', partial_images: 2, output_format: 'jpeg', output_compression: 50 }],
+		input: messages.map(({ role, content, type }) => ({ role, content })),
+		tools: [{ type: 'image_generation', partial_images: 2, output_format: 'webp', output_compression: 80 }],
 	})
 
 	const encoder = new TextEncoder()

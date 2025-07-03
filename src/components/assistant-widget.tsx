@@ -57,7 +57,7 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 		// prepare SSE options with body
 		const options: EventSourceOptions = {
 			...DEFAULT_SSE_OPTIONS,
-			body: JSON.stringify({ messages: getMessages(), locale }),
+			body: JSON.stringify({ messages: getMessages().filter(m => m.type === 'text'), locale }),
 		}
 
 		const sse = new EventSource('/api/chat', options)
@@ -82,7 +82,11 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 			switch (event.type) {
 				case 'response.output_item.added': {
 					const id = event.sequence_number.toString()
-					addMessage({ id, role: 'assistant', type: 'text', content: '', loading: true })
+					if (event.item.type === 'message') {
+						addMessage({ id: event.item.id, role: 'assistant', type: 'text', content: '', loading: true })
+					} else if (event.item.type === 'image_generation_call') {
+						addMessage({ id: event.item.id, role: 'assistant', type: 'image', content: '', loading: true })
+					}
 					break
 				}
 				case 'response.output_text.delta': {
@@ -91,11 +95,6 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 				}
 				case 'response.output_text.done': {
 					updateLastMessage(msg => ({ ...msg, loading: false }))
-					break
-				}
-				case 'response.image_generation_call.generating': {
-					const id = event.sequence_number.toString()
-					addMessage({ id, role: 'assistant', type: 'image', content: '', loading: true })
 					break
 				}
 				case 'response.image_generation_call.partial_image': {
@@ -154,7 +153,7 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 									<img
 										src={msg.content === ''
 											? 'https://www.svgrepo.com/show/508699/landscape-placeholder.svg'
-											: makeBase64Image('png', msg.content)}
+											: makeBase64Image('webp', msg.content)}
 										alt='assistant'
 										className='max-w-xs rounded'
 									/>
@@ -179,21 +178,39 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 					className='p-2 bg-primary text-white rounded-full disabled:opacity-50 flex items-center justify-center'
 					disabled={loading || input.length === 0}
 				>
-					{loading && (
-						<svg
-							className='animate-spin h-5 w-5 mr-2 text-white'
-							xmlns='http://www.w3.org/2000/svg'
-							fill='none'
-							viewBox='0 0 24 24'
-						>
-							<title>{ui['assistant.sendButton']}</title>
-							<circle className='opacity-25' cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='4'>
-							</circle>
-							<path className='opacity-75' fill='currentColor' d='M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z'>
-							</path>
-						</svg>
-					)}
-					<img src='/icons/message-send.svg' className='relative top-0.5' alt={ui['assistant.sendButton']} />
+					{loading
+						? (
+							<svg
+								className='animate-spin h-5 w-5 mr-2 text-white'
+								xmlns='http://www.w3.org/2000/svg'
+								fill='none'
+								viewBox='0 0 24 24'
+							>
+								<title>{ui['assistant.sendButton']}</title>
+								<circle
+									className='opacity-25'
+									cx='12'
+									cy='12'
+									r='10'
+									stroke='currentColor'
+									strokeWidth='4'
+								>
+								</circle>
+								<path
+									className='opacity-75'
+									fill='currentColor'
+									d='M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z'
+								>
+								</path>
+							</svg>
+						)
+						: (
+							<img
+								src='/icons/message-send.svg'
+								className='relative top-0.5'
+								alt={ui['assistant.sendButton']}
+							/>
+						)}
 				</button>
 			</div>
 		</div>
