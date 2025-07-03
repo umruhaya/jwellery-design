@@ -1,6 +1,8 @@
 import type { APIRoute } from 'astro'
 import { openai } from '~/services/openai'
 import { z } from 'astro/zod'
+import { getLanguageFromLocale } from '~/i18n/ui'
+import { SYSTEM_PROMPT } from '~/lib/assistant-prompt'
 
 const ChatRequest = z.object({
 	locale: z.string(),
@@ -23,11 +25,17 @@ export const POST: APIRoute = async ({ request }) => {
 			headers: { 'Content-Type': 'application/json' },
 		})
 	}
-	const { messages } = parsed.data
+	const { locale, messages } = parsed.data
+
+	const formattedSystemPrompt = SYSTEM_PROMPT.replaceAll('{{ language }}', getLanguageFromLocale(locale))
+
 	const stream = await openai.responses.create({
 		model: 'gpt-4.1',
 		stream: true,
-		input: messages.map(({ role, content, type }) => ({ role, content })),
+		input: [
+			{ role: 'system', content: formattedSystemPrompt },
+			...messages.map(({ role, content, type }) => ({ role, content })),
+		],
 		tools: [{ type: 'image_generation', partial_images: 2, output_format: 'webp', output_compression: 80 }],
 	})
 
