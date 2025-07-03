@@ -10,14 +10,16 @@ export type Message = {
 
 type ChatState = {
 	messages: Message[]
+	getMessages: () => Message[]
 	addMessage: (msg: Message) => void
 	updateLastMessage: (update: ((prev: Message) => Message) | Message) => void
 	setMessageLoading: (id: string, loading: boolean) => void
 	clear: () => void
 }
 
-export const useChatStore = create<ChatState>((set) => ({
+export const useChatStore = create<ChatState>((set, get) => ({
 	messages: [],
+	getMessages: () => get().messages,
 	addMessage: (msg) => set((state) => ({ messages: [...state.messages, msg] })),
 	updateLastMessage: (update) =>
 		set((state) => {

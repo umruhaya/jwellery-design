@@ -3,6 +3,7 @@ import { openai } from '~/services/openai'
 import { z } from 'astro/zod'
 
 const ChatRequest = z.object({
+	locale: z.string(),
 	messages: z.array(
 		z.object({ role: z.enum(['user', 'assistant']), content: z.string() }),
 	),

@@ -37,6 +37,8 @@ type TranslationKey =
 	| 'gifts.cta'
 	| 'footer.impressum'
 	| 'footer.privacy'
+	| 'assistant.sendButton'
+	| 'assistant.input.placeholder'
 
 // Utility type: ensures each language has all translation keys
 type Translations = {
@@ -81,6 +83,8 @@ const ui: Translations = {
 		'gifts.cta': 'Enter the timeless universe',
 		'footer.impressum': 'Impressum',
 		'footer.privacy': 'Privacy',
+		'assistant.sendButton': 'Send',
+		'assistant.input.placeholder': 'Describe your dream jwellery...',
 	},
 	fr: {
 		'nav.home': 'Accueil',
@@ -117,6 +121,8 @@ const ui: Translations = {
 		'gifts.cta': 'Entrez dans l’univers intemporel',
 		'footer.impressum': 'Mentions légales',
 		'footer.privacy': 'Confidentialité',
+		'assistant.sendButton': 'Envoyer',
+		'assistant.input.placeholder': 'Décrivez votre bijou de rêve...',
 	},
 	de: {
 		'nav.home': 'Startseite',
@@ -153,6 +159,8 @@ const ui: Translations = {
 		'gifts.cta': 'Treten Sie in das zeitlose Universum ein',
 		'footer.impressum': 'Impressum',
 		'footer.privacy': 'Datenschutz',
+		'assistant.sendButton': 'Senden',
+		'assistant.input.placeholder': 'Beschreiben Sie Ihr Traumschmuckstück...',
 	},
 } as const
 
