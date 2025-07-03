@@ -160,3 +160,16 @@ export const getTranslationForLocale = (language: string) => {
 	const lang = (language in ui ? language : 'en') as keyof typeof ui
 	return ui[lang]
 }
+
+/**
+ * Prefix Path with a locale
+ * @param locale
+ * @returns
+ */
+export const getLocalePath = (locale: string) => (path: string) => locale === 'en' ? path : `/${locale}${path}`
+
+export const getLanguageFromLocale = (locale: string) => {
+	return locale in languages ? languages[locale as LanguageKeys] : 'English'
+}
+
+export const normalizeLocale = (locale: string) => (locale in languages ? locale : 'en') as LanguageKeys

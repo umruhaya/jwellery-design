@@ -1,9 +1,10 @@
 ---
 import { AssistantWidget } from '~/components/assistant-widget'
-import { getTranslationForLocale } from '~/i18n/ui'
+import { getTranslationForLocale, getLocalePath } from '~/i18n/ui'
 
 const { locale } = Astro.props
 const ui = getTranslationForLocale(locale ?? 'en')
+const localePath = getLocalePath(locale ?? 'en')
 ---
 
 <head>
@@ -34,7 +35,7 @@ const ui = getTranslationForLocale(locale ?? 'en')
 			</a>
 			<nav class="flex items-center space-x-8">
 				<a href="#gallery" class="text-white">{ui['nav.gallery']}</a>
-				<a href={locale === 'de' ? '/de/about' : '/about'} class="text-white">{ui['nav.about']}</a>
+				<a href={localePath('/about')} class="text-white">{ui['nav.about']}</a>
 			</nav>
 		</header>
 
@@ -167,9 +168,9 @@ const ui = getTranslationForLocale(locale ?? 'en')
 				<span class="text-gray-500 relative top-1">© {new Date().getFullYear()}</span>
 			</div>
 			<div class="flex items-center space-x-6 mb-4 md:mb-0">
-				<a href={locale === 'de' ? '/de/impressum' : '/impressum'} class="text-gray-300">{ui['footer.impressum']}</a>
-				<a href={locale === 'de' ? '/de/privacy' : '/privacy'} class="text-gray-300">{ui['footer.privacy']}</a>
-				<a href={locale === 'de' ? '/de/about' : '/about'} class="text-gray-300">{ui['nav.about']}</a>
+				<a href={localePath('/impressum')} class="text-gray-300">{ui['footer.impressum']}</a>
+				<a href={localePath('/privacy')} class="text-gray-300">{ui['footer.privacy']}</a>
+				<a href={localePath('/about')} class="text-gray-300">{ui['nav.about']}</a>
 			</div>
 			<div class="flex items-center space-x-4">
 				<a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">
