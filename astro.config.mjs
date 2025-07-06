@@ -34,6 +34,8 @@ export default defineConfig({
 			EMAIL_USER: envField.string({ access: 'secret', context: 'server' }),
 			EMAIL_PASSWORD: envField.string({ access: 'secret', context: 'server' }),
 			RECIPIENT_EMAIL: envField.string({ access: 'secret', context: 'server' }),
+			SERVICE_ACCOUNT_KEY: envField.string({ access: 'secret', context: 'server' }),
+			BUCKET_NAME: envField.string({ access: 'secret', context: 'server' }),
 		},
 	},
 })
