@@ -1,19 +1,54 @@
 import { create } from 'zustand'
+import { z } from 'astro/zod'
+import { produce, type WritableDraft } from 'immer'
 
-export type Message = {
-	id: string
-	role: 'user' | 'assistant'
-	type: 'text' | 'image'
-	content: string
-	loading?: boolean
-}
+export const userMessageSchema = z.object({
+	// id: z.string(),
+	role: z.literal('user'),
+	content: z.array(z.union([
+		z.object({
+			type: z.literal('input_text'),
+			text: z.string(),
+		}),
+		z.object({
+			type: z.literal('input_image'),
+			image_url: z.string(),
+			// detail: z.enum(['low', 'high', 'auto']),
+		}),
+	])),
+})
+
+export const assistantMessageSchema = z.object({
+	// id: z.string(),
+	role: z.literal('assistant'),
+	content: z.array(z.union([
+		z.object({
+			type: z.literal('output_text'),
+			text: z.string(),
+		}),
+		z.object({
+			type: z.literal('input_image'),
+			image_url: z.string(),
+			// detail: z.enum(['low', 'high', 'auto']),
+		}),
+	])),
+})
+
+export const chatSchema = z.object({
+	lastUpdatedAt: z.date(),
+	messages: z.array(z.union([userMessageSchema, assistantMessageSchema])),
+})
+
+export type Chat = z.infer<typeof chatSchema>
+export type UserMessage = z.infer<typeof userMessageSchema>
+export type AssistantMessage = z.infer<typeof assistantMessageSchema>
+export type Message = Chat['messages'][0]
 
 type ChatState = {
 	messages: Message[]
 	getMessages: () => Message[]
 	addMessage: (msg: Message) => void
 	updateLastMessage: (update: ((prev: Message) => Message) | Message) => void
-	setMessageLoading: (id: string, loading: boolean) => void
 	clear: () => void
 }
 
@@ -30,9 +65,13 @@ export const useChatStore = create<ChatState>((set, get) => ({
 			msgs[idx] = typeof update === 'function' ? update(last) : update
 			return { messages: msgs }
 		}),
-	setMessageLoading: (id, loading) =>
-		set((state) => ({
-			messages: state.messages.map((m) => m.id === id ? { ...m, loading } : m),
-		})),
 	clear: () => set({ messages: [] }),
 }))
+
+export const setChatStore = (callback: (draft: WritableDraft<ChatState>) => void) => {
+	useChatStore.setState((state) =>
+		produce(state, (draft) => {
+			callback(draft)
+		})
+	)
+}

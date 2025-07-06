@@ -17,6 +17,8 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "astro": "^5.10.0",
+    "immer": "^10.1.1",
+    "lucide-react": "^0.525.0",
     "markdown-it": "^14.1.0",
     "nodemailer": "^7.0.4",
     "openai": "^5.8.2",
@@ -24,6 +26,7 @@
     "react-dom": "^19.1.0",
     "react-native-sse": "^1.2.1",
     "tailwindcss": "^4.1.10",
+    "ulidx": "^2.4.1",
     "zustand": "^5.0.6"
   },
   "devDependencies": {

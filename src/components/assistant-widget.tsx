@@ -1,9 +1,10 @@
 import type { ResponseStreamEvent } from 'openai/resources/responses/responses.mjs'
-import { useMemo, useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import EventSource, { type EventSourceOptions } from 'react-native-sse'
-import { type Message, useChatStore } from '~/store/chat'
+import { type AssistantMessage, type Message, setChatStore, useChatStore, type UserMessage } from '~/store/chat'
 import { MarkdownRenderer } from '~/components/markdown-renderer'
 import { getTranslationForLocale } from '~/i18n/ui'
+import { ImageIcon, XIcon } from 'lucide-react'
 
 const DEFAULT_SSE_OPTIONS: EventSourceOptions = {
 	method: 'POST',
@@ -39,25 +40,80 @@ function makeBase64Image(format: 'webp' | 'jpeg' | 'png', base64: string, alt: s
 	return `data:${mime[format]};base64,${base64}`
 }
 
+const MAX_ALLOWED_IMAGES = 2
+
 export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 	const [input, setInput] = useState('')
 	const [loading, setLoading] = useState(false)
-	const { messages, getMessages, addMessage, updateLastMessage, setMessageLoading } = useChatStore()
+	const [attachedImages, setAttachedImages] = useState<{ url: string; file: File }[]>([])
+	const [warning, setWarning] = useState<string | null>(null)
+	const { messages, getMessages, addMessage, updateLastMessage } = useChatStore()
+	const imageRef = useRef<HTMLInputElement>(null)
 
 	const ui = useMemo(() => getTranslationForLocale(locale), [locale, getTranslationForLocale])
 
+	const disableSendMessage = !input.trim() || loading
+
+	const handleImageAttach = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const files = e.target.files
+		if (!files) return
+
+		const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
+		const newFiles = Array.from(files)
+		const totalImages = attachedImages.length + newFiles.length
+
+		if (totalImages > MAX_ALLOWED_IMAGES) {
+			setWarning(`You can attach up to ${MAX_ALLOWED_IMAGES} images only.`)
+			return
+		} else if (newFiles.some(file => allowedTypes.includes(file.type) === false)) {
+			setWarning('Only JPG, PNG, and WEBP images are allowed.')
+			return
+		} else {
+			setWarning(null)
+		}
+
+		setWarning(null)
+		Promise.all(
+			newFiles.map(file => {
+				return new Promise<{ url: string; file: File }>((resolve, reject) => {
+					const reader = new FileReader()
+					reader.onload = () => resolve({ url: reader.result as string, file })
+					reader.onerror = reject
+					reader.readAsDataURL(file)
+				})
+			}),
+		).then(images => {
+			setAttachedImages(prev => [...prev, ...images])
+		})
+	}
+
+	const handleRemoveImage = (idx: number) => {
+		setAttachedImages(prev => prev.filter((_, i) => i !== idx))
+	}
+
 	const handleSend = () => {
-		if (!input.trim() || loading) return
+		if (disableSendMessage) return
 		setLoading(true)
 		// add user message
-		const userId = `u-${Date.now()}`
-		const userMsg: Message = { id: userId, role: 'user', type: 'text', content: input }
-		addMessage(userMsg)
+		addMessage({
+			role: 'user',
+			content: [
+				...attachedImages.map(img => ({
+					type: 'input_image' as const,
+					image_url: img.url,
+				})),
+				{ type: 'input_text', text: input },
+			],
+		})
+
+		setAttachedImages([])
+
+		const OUTPUT_IDX_OFFSET = getMessages().length
 
 		// prepare SSE options with body
 		const options: EventSourceOptions = {
 			...DEFAULT_SSE_OPTIONS,
-			body: JSON.stringify({ messages: getMessages().filter(m => m.type === 'text'), locale }),
+			body: JSON.stringify({ messages: getMessages(), locale }),
 		}
 
 		const sse = new EventSource('/api/chat', options)
@@ -67,42 +123,61 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 		})
 
 		sse.addEventListener('message', (data) => {
-			console.log(data)
-
 			if (data.data === '[DONE]') {
 				setLoading(false)
 				return
 			}
 
 			const event = parseEvent(data.data || '')
+			console.debug(event)
 			if (!event) {
 				return
 			}
 
 			switch (event.type) {
-				case 'response.output_item.added': {
-					const id = event.sequence_number.toString()
-					if (event.item.type === 'message') {
-						addMessage({ id: event.item.id, role: 'assistant', type: 'text', content: '', loading: true })
-					} else if (event.item.type === 'image_generation_call') {
-						addMessage({ id: event.item.id, role: 'assistant', type: 'image', content: '', loading: true })
-					}
-					break
-				}
 				case 'response.output_text.delta': {
-					updateLastMessage(msg => ({ ...msg, content: msg.content + event.delta }))
-					break
-				}
-				case 'response.output_text.done': {
-					updateLastMessage(msg => ({ ...msg, loading: false }))
+					setChatStore(draft => {
+						const outputIdx = event.output_index + OUTPUT_IDX_OFFSET
+						const contentIdx = event.content_index
+						if (draft.messages[outputIdx] === undefined) {
+							draft.messages[outputIdx] = {
+								role: 'assistant',
+								content: [],
+							}
+						}
+						const message = draft.messages[outputIdx]
+						if (message.role === 'assistant') {
+							if (message.content[contentIdx] === undefined) {
+								message.content[contentIdx] = {
+									type: 'output_text',
+									text: '',
+								}
+							}
+							if (message.content[contentIdx].type === 'output_text') {
+								message.content[contentIdx].text += event.delta
+							}
+						}
+					})
 					break
 				}
 				case 'response.image_generation_call.partial_image': {
-					updateLastMessage(msg => ({ ...msg, content: event.partial_image_b64 }))
+					setChatStore(draft => {
+						const outputIdx = event.output_index + OUTPUT_IDX_OFFSET
+						if (draft.messages[outputIdx] === undefined) {
+							draft.messages[outputIdx] = {
+								role: 'assistant',
+								content: [],
+							}
+						}
+						draft.messages[outputIdx].content[0] = {
+							type: 'input_image',
+							image_url: makeBase64Image('webp', event.partial_image_b64),
+						}
+					})
 					break
 				}
-				case 'response.image_generation_call.completed': {
-					updateLastMessage(msg => ({ ...msg, loading: false }))
+				case 'response.completed': {
+					setLoading(false)
 					break
 				}
 			}
@@ -113,11 +188,12 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 		})
 
 		setInput('')
+		setAttachedImages([])
 	}
 
 	return (
 		<div className='w-full max-w-md lg:max-w-lg xl:max-w-xl bg-white/90 rounded-xl shadow-lg p-4 flex flex-col'>
-			<div className='h-64 overflow-y-auto mb-4 space-y-2'>
+			<div className='h-96 md:h-[36rem] overflow-y-auto mb-4 space-y-2'>
 				{messages.length === 0
 					? (
 						<div className='flex flex-col justify-center gap-4 items-center h-full'>
@@ -135,35 +211,38 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 							<span className='font-semibold text-gray-800'>CYO Atelier Assistant</span>
 						</div>
 					)}
-				{messages.map((msg) => (
-					<div
-						key={msg.id}
-						className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-					>
-						<div
-							className={`p-2 rounded-lg ${msg.loading ? 'animate-pulse' : ''}`}
-						>
-							{msg.type === 'text'
-								? msg.role === 'user'
-									? <div className='p-2 rounded-lg bg-primary text-white'>{msg.content}</div>
-									: <MarkdownRenderer text={msg.content} />
-								: null}
-							{msg.type === 'image'
-								? (
-									<img
-										src={msg.content === ''
-											? 'https://www.svgrepo.com/show/508699/landscape-placeholder.svg'
-											: makeBase64Image('webp', msg.content)}
-										alt='assistant'
-										className='max-w-xs rounded'
-									/>
-								)
-								: null}
-						</div>
-					</div>
+				{messages.map((msg, i) => (
+					msg.role === 'user' ? <UserMessageUI key={i} {...msg} /> : <AssistantMessageUI key={i} {...msg} />
 				))}
 			</div>
+			{warning && <div className='text-red-600 text-sm mb-2'>{warning}</div>}
+			{attachedImages.length > 0 && (
+				<div className='flex gap-2 mb-2'>
+					{attachedImages.map((img, idx) => (
+						<div key={idx} className='relative'>
+							<img src={img.url} alt='attachment' className='w-20 h-20 object-cover rounded' />
+							<XIcon
+								type='button'
+								onClick={() => handleRemoveImage(idx)}
+								className='absolute top-0 right-0 bg-zinc-700 p-1 m-1 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs'
+							/>
+						</div>
+					))}
+				</div>
+			)}
 			<div className='flex space-x-2'>
+				<label className='p-2 bg-gray-200 rounded-full cursor-pointer flex items-center justify-center'>
+					<input
+						ref={imageRef}
+						type='file'
+						accept='image/jpeg,image/png,image/webp'
+						multiple
+						style={{ display: 'none' }}
+						onChange={handleImageAttach}
+						disabled={loading || attachedImages.length >= 2}
+					/>
+					<ImageIcon onClick={() => imageRef.current?.click()} />
+				</label>
 				<input
 					type='text'
 					value={input}
@@ -176,7 +255,7 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 					type='button'
 					onClick={handleSend}
 					className='p-2 bg-primary text-white rounded-full disabled:opacity-50 flex items-center justify-center'
-					disabled={loading || input.length === 0}
+					disabled={disableSendMessage}
 				>
 					{loading
 						? (
@@ -212,6 +291,54 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 							/>
 						)}
 				</button>
+			</div>
+		</div>
+	)
+}
+
+const UserMessageUI = ({ content }: UserMessage) => {
+	return (
+		<div className='flex justify-end'>
+			<div className='p-2 bg-primary text-white rounded-2xl'>
+				<div className='flex gap-2'>
+					{content.map(part =>
+						part.type === 'input_image' && (
+							<img
+								src={part.image_url === ''
+									? 'https://www.svgrepo.com/show/508699/landscape-placeholder.svg'
+									: part.image_url}
+								alt='user-image'
+								className='aspect-square w-24 rounded'
+							/>
+						)
+					)}
+				</div>
+				{content.map(part =>
+					part.type === 'input_text' &&
+					<div className='bg-primary text-white'>{part.text}</div>
+				)}
+			</div>
+		</div>
+	)
+}
+
+const AssistantMessageUI = ({ content }: AssistantMessage) => {
+	return (
+		<div className='flex justify-start'>
+			<div className='px-2 py-1 rounded-2xl bg-gray-100 text-gray-800'>
+				{content.map(part =>
+					part.type === 'output_text'
+						? <MarkdownRenderer text={part.text} />
+						: (
+							<img
+								src={part.image_url === ''
+									? 'https://www.svgrepo.com/show/508699/landscape-placeholder.svg'
+									: part.image_url}
+								alt='user-image'
+								className='max-w-xs rounded'
+							/>
+						)
+				)}
 			</div>
 		</div>
 	)

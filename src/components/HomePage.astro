@@ -52,7 +52,7 @@ const localePath = getLocalePath(locale ?? 'en')
 				</div>
 				<AssistantWidget client:load locale={locale ?? 'en'} />
 			</div>
-			<a href="#gallery" class="animate-bounce mt-4 flex flex-col items-center text-white">
+			<a href="#gallery" class="animate-bounce mt-4 hidden md:flex flex-col items-center text-white">
 				<svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" /></svg>
 				<span class="text-sm mt-1">{ui['hero.scrollToGallery']}</span>
 			</a>
