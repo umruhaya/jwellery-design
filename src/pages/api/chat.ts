@@ -35,6 +35,28 @@ export const POST: APIRoute = async ({ request }) => {
 			],
 			tools: [
 				{ type: 'image_generation', partial_images: 2, output_format: 'webp', output_compression: 80 },
+				{
+					type: 'function',
+					name: 'send_email',
+					strict: true,
+					description:
+						'Send an email to a given recipient with a subject and message. Only once the customer has clearly confirmed the design',
+					parameters: {
+						type: 'object',
+						properties: {
+							subject: {
+								type: 'string',
+								description: 'Email subject line.',
+							},
+							body: {
+								type: 'string',
+								description: 'Body of the email message.',
+							},
+						},
+						required: ['subject', 'body'],
+						additionalProperties: false,
+					},
+				},
 			],
 		})
 
