@@ -230,7 +230,7 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 					))}
 				</div>
 			)}
-			<div className='flex space-x-2'>
+			<div className='flex flex-wrap items-stretch gap-2'>
 				<label className='p-2 bg-gray-200 rounded-full cursor-pointer flex items-center justify-center'>
 					<input
 						ref={imageRef}
@@ -248,19 +248,19 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 					value={input}
 					onChange={(e) => setInput(e.currentTarget.value)}
 					placeholder={ui['assistant.input.placeholder']}
-					className='flex-1 px-3 py-2 border rounded-2xl focus:outline-none'
+					className='flex-1 min-w-0 px-3 py-2 border rounded-2xl focus:outline-none'
 					disabled={loading}
 				/>
 				<button
 					type='button'
 					onClick={handleSend}
-					className='p-2 bg-primary text-white rounded-full disabled:opacity-50 flex items-center justify-center'
+					className='p-2 bg-primary text-white rounded-full disabled:opacity-50 flex items-center justify-center w-12 h-12 min-w-[3rem] min-h-[3rem]'
 					disabled={disableSendMessage}
 				>
 					{loading
 						? (
 							<svg
-								className='animate-spin h-5 w-5 mr-2 text-white'
+								className='animate-spin h-5 w-5 text-white'
 								xmlns='http://www.w3.org/2000/svg'
 								fill='none'
 								viewBox='0 0 24 24'
@@ -286,7 +286,7 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 						: (
 							<img
 								src='/icons/message-send.svg'
-								className='relative top-0.5'
+								className='w-6 h-6 object-contain'
 								alt={ui['assistant.sendButton']}
 							/>
 						)}
