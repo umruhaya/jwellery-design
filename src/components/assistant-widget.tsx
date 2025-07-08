@@ -192,8 +192,8 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 	}
 
 	return (
-		<div className='w-full max-w-md lg:max-w-lg xl:max-w-xl bg-white/90 rounded-xl shadow-lg p-4 flex flex-col'>
-			<div className='h-96 md:h-[36rem] overflow-y-auto mb-4 space-y-2'>
+		<div className='w-full h-[28rem] md:h-[36rem] max-w-md lg:max-w-lg xl:max-w-xl bg-white/90 rounded-xl shadow-lg p-4 flex flex-col'>
+			<div className='overflow-y-auto mb-4 h-full space-y-2'>
 				{messages.length === 0
 					? (
 						<div className='flex flex-col justify-center gap-4 items-center h-full'>
