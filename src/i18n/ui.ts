@@ -38,6 +38,7 @@ type TranslationKey =
 	| 'footer.impressum'
 	| 'footer.privacy'
 	| 'assistant.sendButton'
+	| 'assistant.description'
 	| 'assistant.input.placeholder'
 
 // Utility type: ensures each language has all translation keys
@@ -84,6 +85,9 @@ const ui: Translations = {
 		'footer.impressum': 'Impressum',
 		'footer.privacy': 'Privacy',
 		'assistant.sendButton': 'Send',
+		'assistant.description': `I will help you design your dream jewelry.
+Just upload an inspiration photo, or tell me about the jewelry you want.
+You can talk to me with text or voice. I will help you, step by step.`,
 		'assistant.input.placeholder': 'Describe your dream jwellery...',
 	},
 	fr: {
@@ -122,6 +126,9 @@ const ui: Translations = {
 		'footer.impressum': 'Mentions légales',
 		'footer.privacy': 'Confidentialité',
 		'assistant.sendButton': 'Envoyer',
+		'assistant.description': `Je vais vous aider à créer le bijou de vos rêves.
+Téléchargez une photo d’inspiration ou décrivez-moi le bijou que vous souhaitez.
+Vous pouvez me parler par texte ou par voix. Je vous guiderai, étape par étape.`,
 		'assistant.input.placeholder': 'Décrivez votre bijou de rêve...',
 	},
 	de: {
@@ -160,6 +167,9 @@ const ui: Translations = {
 		'footer.impressum': 'Impressum',
 		'footer.privacy': 'Datenschutz',
 		'assistant.sendButton': 'Senden',
+		'assistant.description': `Ich helfe Ihnen, Ihr Traum-Schmuckstück zu entwerfen.
+Laden Sie ein Inspirationsfoto hoch oder erzählen Sie mir, welches Schmuckstück Sie möchten.
+Sie können mit Text oder Stimme mit mir sprechen. Ich führe Sie Schritt für Schritt.`,
 		'assistant.input.placeholder': 'Beschreiben Sie Ihr Traumschmuckstück...',
 	},
 } as const

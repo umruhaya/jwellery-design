@@ -233,7 +233,12 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 							<div className='w-16 h-16 bg-primary rounded-full flex items-center text-center justify-center text-white font-bold'>
 								<span className='text-2xl'>AI</span>
 							</div>
-							<span className='font-semibold text-gray-800'>CYO Atelier Assistant</span>
+							<span className='font-[playfair] text-xl font-semibold text-gray-800'>
+								CYO Atelier Assistant
+							</span>
+							<span className='mx-20 font-[playfair] text-center text-gray-600'>
+								{ui['assistant.description']}
+							</span>
 						</div>
 					)
 					: (
