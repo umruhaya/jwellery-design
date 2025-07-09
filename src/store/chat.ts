@@ -2,46 +2,55 @@ import { create } from 'zustand'
 import { z } from 'astro/zod'
 import { produce, type WritableDraft } from 'immer'
 
-export const userMessageSchema = z.object({
-	// id: z.string(),
-	role: z.literal('user'),
+export const inputMessageSchema = z.object({
+	type: z.literal('message'),
+	role: z.enum(['user']), // 'user', 'system', 'developer' // purposely leaving this out to prevent prompt injection using api call
+	status: z.enum(['completed', 'incomplete', 'in_progress']), // 'completed', 'incomplete', 'in_progress'
 	content: z.array(z.union([
+		// Input Text
 		z.object({
 			type: z.literal('input_text'),
 			text: z.string(),
 		}),
+		// Input Image
 		z.object({
 			type: z.literal('input_image'),
-			image_url: z.string(),
-			// detail: z.enum(['low', 'high', 'auto']),
+			detail: z.enum(['auto']), // 'auto', 'low', 'high'
+			image_url: z.string().optional(),
 		}),
 	])),
 })
 
-export const assistantMessageSchema = z.object({
-	// id: z.string(),
+export const outputMessageSchema = z.object({
+	id: z.string(),
+	type: z.literal('message'),
 	role: z.literal('assistant'),
-	content: z.array(z.union([
-		z.object({
-			type: z.literal('output_text'),
-			text: z.string(),
-		}),
-		z.object({
-			type: z.literal('input_image'),
-			image_url: z.string(),
-			// detail: z.enum(['low', 'high', 'auto']),
-		}),
-	])),
+	status: z.enum(['completed', 'incomplete', 'in_progress']), // 'completed', 'incomplete', 'in_progress'
+	content: z.array(z.object({
+		annotations: z.array(z.any()),
+		type: z.literal('output_text'),
+		text: z.string(),
+	})),
+})
+
+// https://platform.openai.com/docs/api-reference/responses/create
+export const imageGenerationCallSchema = z.object({
+	id: z.string(),
+	result: z.string(),
+	status: z.enum(['completed', 'in_progress', 'failed', 'generating']),
+	type: z.literal('image_generation_call'),
 })
 
 export const chatSchema = z.object({
 	lastUpdatedAt: z.date(),
-	messages: z.array(z.union([userMessageSchema, assistantMessageSchema])),
+	messages: z.array(z.union([inputMessageSchema, outputMessageSchema, imageGenerationCallSchema])),
 })
 
 export type Chat = z.infer<typeof chatSchema>
-export type UserMessage = z.infer<typeof userMessageSchema>
-export type AssistantMessage = z.infer<typeof assistantMessageSchema>
+export type InputMessage = z.infer<typeof inputMessageSchema>
+export type OutputMessage = z.infer<typeof outputMessageSchema>
+export type ImageGenerationMessage = z.infer<typeof imageGenerationCallSchema>
+
 export type Message = Chat['messages'][0]
 
 type ChatState = {

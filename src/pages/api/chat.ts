@@ -4,14 +4,15 @@ import { z } from 'astro/zod'
 import { getLanguageFromLocale } from '~/i18n/ui'
 import { SYSTEM_PROMPT } from '~/lib/assistant-prompt'
 import { sendAlert } from '~/services/email'
-import { assistantMessageSchema, userMessageSchema } from '~/store/chat'
+import { imageGenerationCallSchema, inputMessageSchema, outputMessageSchema } from '~/store/chat'
 
 const ChatRequest = z.object({
 	locale: z.string(),
-	messages: z.array(z.union([userMessageSchema, assistantMessageSchema])),
+	messages: z.array(z.union([inputMessageSchema, outputMessageSchema, imageGenerationCallSchema])),
 })
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async (ctx) => {
+	const { request } = ctx
 	try {
 		const payload = await request.json()
 		const parsed = ChatRequest.safeParse(payload)
@@ -29,8 +30,7 @@ export const POST: APIRoute = async ({ request }) => {
 			model: 'gpt-4.1',
 			stream: true,
 			input: [
-				{ role: 'system', content: formattedSystemPrompt },
-				// @ts-ignore
+				// { role: 'system', content: formattedSystemPrompt },
 				...messages,
 			],
 			tools: [

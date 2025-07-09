@@ -1,7 +1,13 @@
 import type { ResponseStreamEvent } from 'openai/resources/responses/responses.mjs'
 import React, { useMemo, useRef, useState } from 'react'
 import EventSource, { type EventSourceOptions } from 'react-native-sse'
-import { type AssistantMessage, type Message, setChatStore, useChatStore, type UserMessage } from '~/store/chat'
+import {
+	type ImageGenerationMessage,
+	type InputMessage,
+	type OutputMessage,
+	setChatStore,
+	useChatStore,
+} from '~/store/chat'
 import { MarkdownRenderer } from '~/components/markdown-renderer'
 import { getTranslationForLocale } from '~/i18n/ui'
 import { ImageIcon, XIcon } from 'lucide-react'
@@ -94,14 +100,18 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 	const handleSend = () => {
 		if (disableSendMessage) return
 		setLoading(true)
+		const imagePart = attachedImages.map(img => ({
+			type: 'input_image' as const,
+			detail: 'auto' as const,
+			image_url: img.url,
+		}))
 		// add user message
 		addMessage({
+			type: 'message',
 			role: 'user',
+			status: 'completed',
 			content: [
-				...attachedImages.map(img => ({
-					type: 'input_image' as const,
-					image_url: img.url,
-				})),
+				...imagePart,
 				{ type: 'input_text', text: input },
 			],
 		})
@@ -141,21 +151,31 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 						const contentIdx = event.content_index
 						if (draft.messages[outputIdx] === undefined) {
 							draft.messages[outputIdx] = {
+								type: 'message',
 								role: 'assistant',
-								content: [],
+								id: event.item_id,
+								status: 'in_progress',
+								content: [{ type: 'output_text', annotations: [], text: '' }],
 							}
 						}
 						const message = draft.messages[outputIdx]
-						if (message.role === 'assistant') {
-							if (message.content[contentIdx] === undefined) {
-								message.content[contentIdx] = {
-									type: 'output_text',
-									text: '',
-								}
-							}
-							if (message.content[contentIdx].type === 'output_text') {
-								message.content[contentIdx].text += event.delta
-							}
+						if (
+							message.type === 'message' && message.role === 'assistant' &&
+							message.content[contentIdx]?.type === 'output_text'
+						) {
+							message.content[contentIdx].text += event.delta
+						}
+					})
+					break
+				}
+				case 'response.image_generation_call.generating': {
+					setChatStore(draft => {
+						const outputIdx = event.output_index + OUTPUT_IDX_OFFSET
+						draft.messages[outputIdx] = {
+							type: 'image_generation_call',
+							id: event.item_id,
+							status: 'generating',
+							result: '',
 						}
 					})
 					break
@@ -163,21 +183,34 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 				case 'response.image_generation_call.partial_image': {
 					setChatStore(draft => {
 						const outputIdx = event.output_index + OUTPUT_IDX_OFFSET
-						if (draft.messages[outputIdx] === undefined) {
-							draft.messages[outputIdx] = {
-								role: 'assistant',
-								content: [],
-							}
+						draft.messages[outputIdx] = {
+							type: 'image_generation_call',
+							id: event.item_id,
+							status: 'in_progress',
+							result: makeBase64Image('webp', event.partial_image_b64),
 						}
-						draft.messages[outputIdx].content[0] = {
-							type: 'input_image',
-							image_url: makeBase64Image('webp', event.partial_image_b64),
+					})
+					break
+				}
+				case 'response.image_generation_call.completed': {
+					setChatStore(draft => {
+						const outputIdx = event.output_index + OUTPUT_IDX_OFFSET
+						if (draft.messages[outputIdx] !== undefined) {
+							draft.messages[outputIdx].status = 'completed'
 						}
 					})
 					break
 				}
 				case 'response.completed': {
 					setLoading(false)
+					break
+				}
+				case 'response.failed': {
+					alert(event.response.error?.message)
+					break
+				}
+				case 'error': {
+					alert(`${event.code} ${event.message} ${event.type}`)
 					break
 				}
 			}
@@ -212,7 +245,11 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 						</div>
 					)}
 				{messages.map((msg, i) => (
-					msg.role === 'user' ? <UserMessageUI key={i} {...msg} /> : <AssistantMessageUI key={i} {...msg} />
+					<>
+						{msg.type === 'message' && msg.role === 'user' && <InputMessageUI key={i} {...msg} />}
+						{msg.type === 'message' && msg.role === 'assistant' && <OutputMessageUI key={i} {...msg} />}
+						{msg.type === 'image_generation_call' && <ImageGenerationMessageUI key={i} {...msg} />}
+					</>
 				))}
 			</div>
 			{warning && <div className='text-red-600 text-sm mb-2'>{warning}</div>}
@@ -296,49 +333,55 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 	)
 }
 
-const UserMessageUI = ({ content }: UserMessage) => {
+const InputMessageUI = ({ content }: InputMessage) => {
 	return (
-		<div className='flex justify-end'>
-			<div className='p-2 bg-primary text-white rounded-2xl'>
-				<div className='flex gap-2'>
-					{content.map(part =>
-						part.type === 'input_image' && (
-							<img
-								src={part.image_url === ''
-									? 'https://www.svgrepo.com/show/508699/landscape-placeholder.svg'
-									: part.image_url}
-								alt='user-image'
-								className='aspect-square w-24 rounded'
-							/>
-						)
-					)}
+		<div className='flex justify-end ml-8'>
+			<div className='flex flex-col gap-1'>
+				<div className='flex justify-end'>
+					<div className='flex flex-col gap-2'>
+						{content.map(part =>
+							part.type === 'input_image' && (
+								<img
+									src={part.image_url === ''
+										? 'https://www.svgrepo.com/show/508699/landscape-placeholder.svg'
+										: part.image_url}
+									alt='user-image'
+									className='aspect-square w-[16rem] rounded'
+								/>
+							)
+						)}
+					</div>
 				</div>
 				{content.map(part =>
 					part.type === 'input_text' &&
-					<div className='bg-primary text-white'>{part.text}</div>
+					<div className='p-2 rounded-2xl bg-primary text-white'>{part.text}</div>
 				)}
 			</div>
 		</div>
 	)
 }
 
-const AssistantMessageUI = ({ content }: AssistantMessage) => {
+const OutputMessageUI = ({ id, status, content }: OutputMessage) => {
 	return (
-		<div className='flex justify-start'>
+		<div className='flex justify-start mr-8' key={id}>
 			<div className='px-2 py-1 rounded-2xl bg-gray-100 text-gray-800'>
-				{content.map(part =>
-					part.type === 'output_text'
-						? <MarkdownRenderer text={part.text} />
-						: (
-							<img
-								src={part.image_url === ''
-									? 'https://www.svgrepo.com/show/508699/landscape-placeholder.svg'
-									: part.image_url}
-								alt='user-image'
-								className='max-w-xs rounded'
-							/>
-						)
-				)}
+				{content.map((part, i) => <MarkdownRenderer key={i} text={part.text} />)}
+			</div>
+		</div>
+	)
+}
+
+const ImageGenerationMessageUI = ({ id, result, status }: ImageGenerationMessage) => {
+	return (
+		<div className='flex justify-start' id={id}>
+			<div className='px-2 py-1 rounded-2xl bg-gray-100 text-gray-800'>
+				<img
+					src={result === ''
+						? 'https://www.svgrepo.com/show/508699/landscape-placeholder.svg'
+						: result}
+					alt='Generated Design Image'
+					className={`w-[16rem] rounded ${status !== 'completed' ? 'animate-pulse' : ''}`}
+				/>
 			</div>
 		</div>
 	)
