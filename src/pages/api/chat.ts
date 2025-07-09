@@ -30,7 +30,7 @@ export const POST: APIRoute = async (ctx) => {
 			model: 'gpt-4.1',
 			stream: true,
 			input: [
-				// { role: 'system', content: formattedSystemPrompt },
+				{ role: 'system', content: formattedSystemPrompt },
 				...messages,
 			],
 			tools: [

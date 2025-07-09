@@ -11,6 +11,7 @@ import {
 import { MarkdownRenderer } from '~/components/markdown-renderer'
 import { getTranslationForLocale } from '~/i18n/ui'
 import { ImageIcon, XIcon } from 'lucide-react'
+import { downscaleBase64Image, makeBase64Image } from '~/lib/image-utils'
 
 const DEFAULT_SSE_OPTIONS: EventSourceOptions = {
 	method: 'POST',
@@ -34,16 +35,6 @@ const parseEvent = (data: string) => {
 		console.error(e)
 		return null
 	}
-}
-
-function makeBase64Image(format: 'webp' | 'jpeg' | 'png', base64: string, alt: string = ''): string {
-	const mime: Record<'webp' | 'jpeg' | 'png', string> = {
-		webp: 'image/webp',
-		jpeg: 'image/jpeg',
-		png: 'image/png',
-	}
-
-	return `data:${mime[format]};base64,${base64}`
 }
 
 const MAX_ALLOWED_IMAGES = 2
@@ -97,14 +88,20 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 		setAttachedImages(prev => prev.filter((_, i) => i !== idx))
 	}
 
-	const handleSend = () => {
+	const handleSend = async () => {
 		if (disableSendMessage) return
 		setLoading(true)
-		const imagePart = attachedImages.map(img => ({
-			type: 'input_image' as const,
-			detail: 'auto' as const,
-			image_url: img.url,
-		}))
+
+		const imagePart = await Promise.all(
+			attachedImages.map(async img => {
+				const downsizedUrl = img.url !== '' ? await downscaleBase64Image(img.url) : ''
+				return ({
+					type: 'input_image' as const,
+					detail: 'auto' as const,
+					image_url: downsizedUrl,
+				})
+			}),
+		)
 		// add user message
 		addMessage({
 			type: 'message',
@@ -351,7 +348,7 @@ const InputMessageUI = ({ content }: InputMessage) => {
 										? 'https://www.svgrepo.com/show/508699/landscape-placeholder.svg'
 										: part.image_url}
 									alt='user-image'
-									className='aspect-square w-[16rem] rounded'
+									className='w-[16rem] rounded'
 								/>
 							)
 						)}
@@ -359,7 +356,11 @@ const InputMessageUI = ({ content }: InputMessage) => {
 				</div>
 				{content.map(part =>
 					part.type === 'input_text' &&
-					<div className='p-2 rounded-2xl bg-primary text-white'>{part.text}</div>
+					(
+						<div className='flex justify-end'>
+							<div className='p-2 rounded-2xl bg-primary text-white flex'>{part.text}</div>
+						</div>
+					)
 				)}
 			</div>
 		</div>
