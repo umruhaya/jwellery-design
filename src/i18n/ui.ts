@@ -56,7 +56,7 @@ const ui: Translations = {
 		'nav.gallery': 'Gallery',
 		'hero.title': 'Bespoke jewelry, crafted for your story',
 		'hero.subtitle':
-			'Experience the CYO Live Atelier: luxury, artistry, and personal guidance—digitally and personally.',
+			'Experience the CYO Live Atelier: luxury, artistry, and personal guidance - digitally and personally.',
 		'hero.scrollToGallery': 'Scroll to Gallery',
 		'lead.title': 'Get in Touch',
 		'lead.description':

@@ -21,9 +21,10 @@ const localePath = getLocalePath(locale ?? 'en')
 <body class="bg-white text-gray-900">
 	{/* HERO SECTION WITH VIDEO BG */}
 	<section class="relative h-[100vh] flex flex-col overflow-hidden">
-		<video class="absolute inset-0 w-full h-full object-cover" autoplay loop muted playsinline>
+		<div class="absolute inset-0 w-full h-full object-cover bg-primary-dark"/>
+		<!-- <video class="absolute inset-0 w-full h-full object-cover" autoplay loop muted playsinline>
 			<source src="/hero.mp4" type="video/mp4" />
-		</video>
+		</video> -->
 		{/* Overlay for readability */}
 		<!-- <div class="absolute inset-0 bg-emerald-900/40"></div> -->
 
@@ -31,24 +32,24 @@ const localePath = getLocalePath(locale ?? 'en')
 		<header class="flex justify-between items-center px-10 pt-8 relative z-20">
 			<a href={locale === 'de' ? '/de' : '/'} class="flex items-center space-x-3">
 				<img src="/logo.jpeg" alt="CYO Design Logo" class="h-12 w-12 rounded-full shadow" />
-				<span class="text-3xl font-playfair text-white tracking-wide">CYO design</span>
+				<span class="text-xl sm:text-3xl font-[playfair] text-white tracking-wide">CYO design</span>
 			</a>
-			<nav class="flex items-center gap-2 md:gap-8">
-				<a href="#gallery" class="text-white">{ui['nav.gallery']}</a>
-				<a href={localePath('/about')} class="text-white">{ui['nav.about']}</a>
+			<nav class="flex items-center gap-2 md:gap-8 text-base md:text-2xl">
+				<a href="#gallery" class="text-white font-[playfair]">{ui['nav.gallery']}</a>
+				<a href={localePath('/about')} class="text-white font-[playfair]">{ui['nav.about']}</a>
 			</nav>
 		</header>
 
 		{/* Hero Content + AI Assistant */}
 		<div class="flex-1 flex flex-col justify-center items-center relative z-20 px-8">
-			<div class="flex flex-col justify-center items-center lg:flex-row lg:justify-between lg:px-16 w-full">
+			<div class="flex gap-8 flex-col justify-center items-center lg:flex-row lg:justify-between lg:px-16 w-full">
 				<div class="lg:w-[40vw]">
-					<h2 class="text-2xl md:text-5xl font-playfair text-white mb-4 text-center drop-shadow-lg">
+					<h2 class="text-2xl lg:text-5xl font-[playfair] text-white mb-4 text-center drop-shadow-lg">
 						{ui['hero.title']}
 					</h2>
-					<p class="text-white text-sm md:text-lg mb-8 text-center max-w-xl drop-shadow">
+					<h3 class="hidden lg:block font-[playfair] text-white text-sm md:text-lg mt-8 mb-8 text-center drop-shadow">
 						{ui['hero.subtitle']}
-					</p>
+					</h3>
 				</div>
 				<AssistantWidget client:load locale={locale ?? 'en'} />
 			</div>
@@ -62,8 +63,8 @@ const localePath = getLocalePath(locale ?? 'en')
 	{/* GDPR LEAD COLLECTION */}
 	<section class="py-10 px-6 bg-gray-50 border-t border-b border-gray-200 w-full z-30 relative">
 		<div class="max-w-lg mx-auto text-center">
-			<h2 class="font-playfair text-2xl mb-4">{ui['lead.title']}</h2>
-			<p class="mb-6 text-gray-700">{ui['lead.description']}</p>
+			<h2 class="font-[playfair] text-2xl mb-4">{ui['lead.title']}</h2>
+			<p class="font-[playfair] mb-6 text-gray-700">{ui['lead.description']}</p>
 			<form id="subscribe-form" method="POST" action="/api/subscribe" class="space-y-4">
 				<input
 					type="email"
@@ -93,9 +94,9 @@ const localePath = getLocalePath(locale ?? 'en')
 	</section>
 
 	{/* GALLERY / INSPIRATIONS */}
-	<section id="gallery" class="w-full flex flex-col md:flex-row pt-16">
+	<section id="gallery" class="w-full flex flex-col md:flex-row">
 		<div class="absolute left-0 right-0 -top-10 flex justify-center z-10">
-			<span class="bg-white/90 px-6 py-2 rounded-full shadow font-playfair text-lg tracking-wide border border-gray-200">
+			<span class="bg-white/90 px-6 py-2 rounded-full shadow font-[playfair] text-lg tracking-wide border border-gray-200">
 				{ui['gallery.title']}
 			</span>
 		</div>
@@ -105,7 +106,7 @@ const localePath = getLocalePath(locale ?? 'en')
 			  alt={ui['gallery.imgAlt']}
 			  class="h-52 mx-auto mb-6 object-contain"
 			/>
-			<h3 class="font-playfair text-xl mb-2 text-center">{ui['gallery.itemTitle']}</h3>
+			<h3 class="font-[playfair] text-xl mb-2 text-center">{ui['gallery.itemTitle']}</h3>
 			<span class="text-gray-500 mb-6 text-center">{ui['gallery.itemMaterial']}</span>
 			<div class="flex space-x-2 mb-8">
 			  <div class="w-2 h-2 rounded-full bg-gray-400"></div>
@@ -125,23 +126,24 @@ const localePath = getLocalePath(locale ?? 'en')
 	</section>
 
 	{/* THE GOLDEN BEADS DANCE */}
-	<section class="relative w-full mt-4 sm:mt-0">
+	<section class="relative w-full overflow-hidden">
 		<img
 			src="/watch-and-stem.jpg"
+			srcset="watch-and-stem-mobile.jpg 480w, watch-and-stem.jpg 800w"
+			sizes="(width <= 48rem) 480px,800px"
 			alt=""
 			class="w-full h-auto object-cover"
-			style={{ maxHeight: '80vh' }}
 		/>
-		<div class="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-			<h2 class="font-playfair text-xl md:text-4xl mb-6 text-white drop-shadow-lg">
+		<div class="absolute inset-0 hidden md:flex flex-col items-center justify-center text-center px-6">
+			<h2 class="font-[playfair] text-xl md:text-4xl mb-6 text-white drop-shadow-lg">
 				{ui['beadsDance.title']}
 			</h2>
-			<p class="text-white text-xs max-w-2xl mb-4 drop-shadow md:px-8 px-4">
+			<p class="text-white text-xs md:text-xl max-w-2xl mb-4 drop-shadow md:px-8 px-4">
 				{ui['beadsDance.description']}
 			</p>
 			<a
 				href="#"
-				class="uppercase tracking-widest text-gray-100 border-b border-white pb-1 text-xs drop-shadow"
+				class="uppercase tracking-widest text-gray-100 border-b border-white pb-1 text-xs md:text-xl drop-shadow"
 			>
 				{ui['beadsDance.cta']}
 			</a>
@@ -149,38 +151,48 @@ const localePath = getLocalePath(locale ?? 'en')
 	</section>
 
 	{/* ENCHANTING GIFTS */}
-	<section class="py-12 max-w-5xl mx-auto text-center">
-		<h2 class="font-playfair text-4xl mb-8">{ui['gifts.title']}</h2>
+	<section class="py-12 mx-8 md:max-w-5xl md:mx-auto text-center">
+		<h2 class="font-[playfair] text-4xl mb-8">{ui['gifts.title']}</h2>
 		<img
 			class="mx-auto mb-6 w-full object-cover max-h-96 rounded"
 			src="/jwellery-on-branch.jpg"
 			alt={ui['gifts.imgAlt']}
 		/>
-		<p class="text-gray-700 mb-8 max-w-2xl mx-auto">
+		<p class="text-gray-700 mb-8 max-w-2xl mx-auto text-base md:text-2xl">
 			{ui['gifts.description']}
 		</p>
-		<a href="#" class="uppercase text-gray-500 tracking-widest border-b border-gray-300 pb-1 text-sm">
+		<a href="#" class="text-sm md:text-xl uppercase text-gray-500 tracking-widest border-b border-gray-300 pb-1">
 			{ui['gifts.cta']}
 		</a>
 	</section>
 
 	{/* FOOTER */}
 	<footer class="bg-primary-dark text-gray-100 py-8 mt-16">
-		<div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center px-6">
-			<div class="flex items-center space-x-4 mb-4 md:mb-0">
-				<a href={locale === 'de' ? '/de' : '/'} class="font-playfair text-xl text-white">CYO Design</a>
+		<div class="flex flex-row justify-around items-center align-middle px-6">
+			<div class="flex items-center align-middle gap-4 md:mb-0">
+				<a href={locale === 'de' ? '/de' : '/'} class="font-[playfair] text-xl text-white">CYO Design</a>
 				<span class="text-gray-500 relative top-1">© {new Date().getFullYear()}</span>
-			</div>
-			<div class="flex items-center space-x-6 mb-4 md:mb-0">
-				<a href={localePath('/impressum')} class="text-gray-300">{ui['footer.impressum']}</a>
-				<a href={localePath('/privacy')} class="text-gray-300">{ui['footer.privacy']}</a>
-				<a href={localePath('/about')} class="text-gray-300">{ui['nav.about']}</a>
 			</div>
 			<div class="flex items-center space-x-4">
 				<a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">
 					<svg class="w-6 h-6 text-gray-300" fill="currentColor" viewBox="0 0 24 24"><path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5A4.25 4.25 0 0 0 20.5 16.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zm4.25 3.25a5.25 5.25 0 1 1 0 10.5 5.25 5.25 0 0 1 0-10.5zm0 1.5a3.75 3.75 0 1 0 0 7.5 3.75 3.75 0 0 0 0-7.5zm5.25.75a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
 				</a>
+				<a href="https://facebook.com/" target="_blank" rel="noopener" aria-label="Facebook">
+					<svg class="w-6 h-6 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+						<path d="M22 12c0-5.522-4.477-10-10-10S2 6.478 2 12c0 5 3.657 9.127 8.438 9.877v-6.987h-2.54v-2.89h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.242 0-1.632.771-1.632 1.562v1.875h2.773l-.443 2.89h-2.33v6.987C18.343 21.127 22 17 22 12"/>
+					</svg>
+				</a>
+				<a href="https://x.com/" target="_blank" rel="noopener" aria-label="X">
+					<svg class="w-6 h-6 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+						<path d="M17.53 3H21l-7.19 8.19L22 21h-6.56l-5.19-6.19L3 21H0l7.81-8.89L2 3h6.56l4.81 5.74L17.53 3zm-2.13 16h2.13l-5.19-6.19L5.47 19h2.13l3.19-3.81L15.4 19z"/>
+					</svg>
+				</a>
 			</div>
+			<!-- <div class="flex items-center space-x-6 mb-4 md:mb-0">
+				<a href={localePath('/impressum')} class="text-gray-300">{ui['footer.impressum']}</a>
+				<a href={localePath('/privacy')} class="text-gray-300">{ui['footer.privacy']}</a>
+				<a href={localePath('/about')} class="text-gray-300">{ui['nav.about']}</a>
+			</div> -->
 		</div>
 	</footer>
 </body>
