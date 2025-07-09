@@ -29,7 +29,7 @@ const localePath = getLocalePath(locale ?? 'en')
 		<!-- <div class="absolute inset-0 bg-emerald-900/40"></div> -->
 
 		{/* Navigation/Header */}
-		<header class="flex justify-between items-center px-10 pt-8 relative z-20">
+		<header class="flex justify-between items-center px-4 md:px-10 pt-8 relative z-20">
 			<a href={locale === 'de' ? '/de' : '/'} class="flex items-center space-x-3">
 				<img src="/logo.jpeg" alt="CYO Design Logo" class="h-12 w-12 rounded-full shadow" />
 				<span class="text-xl sm:text-3xl font-[playfair] text-white tracking-wide">CYO design</span>
@@ -95,11 +95,6 @@ const localePath = getLocalePath(locale ?? 'en')
 
 	{/* GALLERY / INSPIRATIONS */}
 	<section id="gallery" class="w-full flex flex-col md:flex-row">
-		<div class="absolute left-0 right-0 -top-10 flex justify-center z-10">
-			<span class="bg-white/90 px-6 py-2 rounded-full shadow font-[playfair] text-lg tracking-wide border border-gray-200">
-				{ui['gallery.title']}
-			</span>
-		</div>
 		<div class="md:w-1/2 bg-white flex flex-col items-center justify-center py-14">
 			<img
 			  src="https://www.vancleefarpels.com/content/dam/rcq/vca/Tl/Hq/DE/21/Tc/m9/sy/EU/EJ/5H/aA/TlHqDE21Tcm9syEUEJ5HaA.png.transform.vca-w350-1x.png"
@@ -129,10 +124,13 @@ const localePath = getLocalePath(locale ?? 'en')
 	<section class="relative w-full overflow-hidden">
 		<img
 			src="/watch-and-stem.jpg"
-			srcset="watch-and-stem-mobile.jpg 480w, watch-and-stem.jpg 800w"
-			sizes="(width <= 48rem) 480px,800px"
 			alt=""
-			class="w-full h-auto object-cover"
+			class="w-full h-auto object-cover hidden md:block"
+		/>
+		<img
+			src="/watch-and-stem-mobile.jpg"
+			alt=""
+			class="w-full h-auto object-cover md:hidden"
 		/>
 		<div class="absolute inset-0 hidden md:flex flex-col items-center justify-center text-center px-6">
 			<h2 class="font-[playfair] text-xl md:text-4xl mb-6 text-white drop-shadow-lg">
@@ -171,7 +169,7 @@ const localePath = getLocalePath(locale ?? 'en')
 		<div class="flex flex-row justify-around items-center align-middle px-6">
 			<div class="flex items-center align-middle gap-4 md:mb-0">
 				<a href={locale === 'de' ? '/de' : '/'} class="font-[playfair] text-xl text-white">CYO Design</a>
-				<span class="text-gray-500 relative top-1">© {new Date().getFullYear()}</span>
+				<span class="text-gray-500">© {new Date().getFullYear()}</span>
 			</div>
 			<div class="flex items-center space-x-4">
 				<a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">
