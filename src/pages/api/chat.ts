@@ -4,7 +4,12 @@ import { z } from 'astro/zod'
 import { getLanguageFromLocale } from '~/i18n/ui'
 import { SYSTEM_PROMPT } from '~/lib/assistant-prompt'
 import { sendAlert } from '~/services/email'
-import { imageGenerationCallSchema, inputMessageSchema, outputMessageSchema } from '~/store/chat'
+import {
+	imageGenerationCallSchema,
+	type ImageGenerationMessage,
+	inputMessageSchema,
+	outputMessageSchema,
+} from '~/store/chat'
 import { IMG_FORMAT } from 'astro:env/client'
 
 const ChatRequest = z.object({
@@ -27,6 +32,14 @@ export const POST: APIRoute = async (ctx) => {
 
 		const formattedSystemPrompt = SYSTEM_PROMPT.replaceAll('{{ language }}', getLanguageFromLocale(locale))
 
+		// Find the latest completed image generation result
+		const latestImage = [...messages]
+			.reverse()
+			.find((msg): msg is ImageGenerationMessage =>
+				msg.type === 'image_generation_call' && msg.status === 'completed'
+			)
+		const latestImageUrl = latestImage?.result
+
 		const stream = await openai.responses.create({
 			model: 'gpt-4.1',
 			stream: true,
@@ -41,7 +54,7 @@ export const POST: APIRoute = async (ctx) => {
 					name: 'send_email',
 					strict: true,
 					description:
-						'Send an email to a given recipient with a subject and message. Only once the customer has clearly confirmed the design',
+						'Send an email to a given recipient with a subject, message, and optionally include the latest generated image. Only once the customer has clearly confirmed the design',
 					parameters: {
 						type: 'object',
 						properties: {
@@ -52,6 +65,11 @@ export const POST: APIRoute = async (ctx) => {
 							body: {
 								type: 'string',
 								description: 'Body of the email message.',
+							},
+							includeLatestImage: {
+								type: 'boolean',
+								description: 'Whether to include the latest generated image in the email.',
+								default: false,
 							},
 						},
 						required: ['subject', 'body'],
@@ -72,7 +90,9 @@ export const POST: APIRoute = async (ctx) => {
 						continue
 					}
 					if (event.type === 'response.function_call_arguments.done') {
-						sendAlert(JSON.parse(event.arguments))
+						const args = JSON.parse(event.arguments)
+						const imageUrls = args.includeLatestImage && latestImageUrl ? [latestImageUrl] : undefined
+						sendAlert({ ...args, imageUrls })
 						continue
 					}
 					controller.enqueue(

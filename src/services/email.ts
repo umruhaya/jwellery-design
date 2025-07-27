@@ -17,12 +17,27 @@ const transporter = nodemailer.createTransport({
 	// tls: { rejectUnauthorized: false }, // Uncomment if CERT errors (while debugging only!)
 })
 
-export const sendAlert = async ({ subject, body }: { subject: string; body: string }) => {
+export const sendAlert = async (
+	{ subject, body, imageUrls }: { subject: string; body: string; imageUrls?: string[] },
+) => {
+	const attachments = imageUrls?.map((url, index) => ({
+		path: url,
+		filename: `image-${index + 1}.jpg`,
+		cid: `image-${index + 1}`,
+	})) || []
+
+	const htmlBody = `
+		${body.split('\n').map(line => `<p>${line}</p>`).join('\n')}
+		${attachments.map(att => `<br><img src="cid:${att.cid}" style="max-width: 100%;">`).join('\n')}
+	`
+
 	const info = await transporter.sendMail({
 		from: '"New Lead From CYO Design" <alerts@cyodesign.com>',
 		to: RECIPIENT_EMAIL,
 		subject,
 		text: body,
+		html: htmlBody,
+		attachments,
 	})
 	console.log('Alert sent: %s', info.messageId)
 }
