@@ -44,7 +44,7 @@ export const POST: APIRoute = async (ctx) => {
 			model: 'gpt-4.1',
 			stream: true,
 			input: [
-				// { role: 'system', content: formattedSystemPrompt },
+				{ role: 'system', content: formattedSystemPrompt },
 				...messages,
 			],
 			tools: [
@@ -54,7 +54,7 @@ export const POST: APIRoute = async (ctx) => {
 					name: 'send_email',
 					strict: true,
 					description:
-						'Send an email to a given recipient with a subject, message, and optionally include the latest generated image. Only once the customer has clearly confirmed the design',
+						'This send an email to our team with a subject, message, and optionally include the latest generated image. Only once the customer has clearly confirmed the design, it includes any important details of the design and personal information of the user.',
 					parameters: {
 						type: 'object',
 						properties: {
@@ -72,7 +72,7 @@ export const POST: APIRoute = async (ctx) => {
 								default: false,
 							},
 						},
-						required: ['subject', 'body'],
+						required: ['subject', 'body', 'includeLatestImage'],
 						additionalProperties: false,
 					},
 				},
