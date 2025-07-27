@@ -6,9 +6,10 @@ import { CheckIcon, XIcon } from 'lucide-react'
 type AudioRecorderProps = {
 	onAccept: (audioBlob: Blob) => void
 	onCancel: () => void
+	isLoading: boolean
 }
 
-export const AudioRecorder = ({ onAccept, onCancel }: AudioRecorderProps) => {
+export const AudioRecorder = ({ onAccept, onCancel, isLoading = false }: AudioRecorderProps) => {
 	const containerRef = useRef<HTMLDivElement>(null)
 	const wavesurferRef = useRef<WaveSurfer | null>(null)
 	const recordRef = useRef<any>(null) // RecordPlugin type is not exported
@@ -97,15 +98,40 @@ export const AudioRecorder = ({ onAccept, onCancel }: AudioRecorderProps) => {
 			<div ref={containerRef} className='flex-1 h-[40px] bg-gray-100 rounded-2xl overflow-hidden' />
 			<button
 				onClick={handleCancel}
-				className='p-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300'
+				disabled={isLoading}
+				className='p-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 disabled:opacity-50'
 			>
 				<XIcon className='w-5 h-5' />
 			</button>
 			<button
 				onClick={handleAccept}
-				className='p-2 bg-primary text-white rounded-full hover:bg-primary/90'
+				disabled={isLoading}
+				className='p-2 bg-primary text-white rounded-full hover:bg-primary/90 disabled:bg-gray-200'
 			>
-				<CheckIcon className='w-5 h-5' />
+				{isLoading
+					? (
+						<svg
+							className='animate-spin h-5 w-5 text-gray-600'
+							xmlns='http://www.w3.org/2000/svg'
+							fill='none'
+							viewBox='0 0 24 24'
+						>
+							<circle
+								className='opacity-25'
+								cx='12'
+								cy='12'
+								r='10'
+								stroke='currentColor'
+								strokeWidth='4'
+							/>
+							<path
+								className='opacity-75'
+								fill='currentColor'
+								d='M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z'
+							/>
+						</svg>
+					)
+					: <CheckIcon className='w-5 h-5' />}
 			</button>
 		</div>
 	)

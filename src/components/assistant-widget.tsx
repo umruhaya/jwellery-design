@@ -73,7 +73,7 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 			return data.text
 		},
 		onSuccess: (text) => {
-			setInput(text)
+			setInput(input => `${input} ${text}`)
 			setIsRecording(false)
 		},
 		onError: (error) => {
@@ -306,6 +306,7 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 					<AudioRecorder
 						onAccept={(blob) => transcribeMutation.mutate(blob)}
 						onCancel={() => setIsRecording(false)}
+						isLoading={transcribeMutation.isPending}
 					/>
 				)
 				: (
