@@ -1,0 +1,24 @@
+# Infra Related Files
+
+## Add Cors policy To Bucket
+
+```bash
+gcloud storage buckets update gs://bucketname \
+  --cors-file="cors-config.json" \
+  --project="projectname"
+```
+
+## SSH Access
+
+```bash
+ssh -i ~/.ssh/my-gcp-key umer@cyodesign.com
+```
+
+## deploy
+
+```bash
+git pull
+pnpm i
+pnpm build
+pm2 restart ecosystem.config.cjs
+```
