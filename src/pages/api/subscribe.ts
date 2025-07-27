@@ -15,7 +15,7 @@ export const POST: APIRoute = async ({ request }) => {
 		})
 		return new Response(JSON.stringify({ success: true }), { status: 200 })
 	} catch (err) {
-        console.error('FROM /api/subscribe', { err })
+		console.error('FROM /api/subscribe', { err })
 		return new Response(JSON.stringify({ error: 'Invalid request' }), { status: 400 })
 	}
 }
