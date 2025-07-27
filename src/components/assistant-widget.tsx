@@ -10,8 +10,11 @@ import {
 } from '~/store/chat'
 import { MarkdownRenderer } from '~/components/markdown-renderer'
 import { getTranslationForLocale } from '~/i18n/ui'
-import { ImageIcon, XIcon } from 'lucide-react'
+import { ImageIcon, MicIcon, XIcon } from 'lucide-react'
 import { downscaleBase64Image, makeBase64Image } from '~/lib/image-utils'
+import { AudioRecorder } from './audio-recorder'
+import { useMutation } from '@tanstack/react-query'
+import { queryClient } from '~/lib/query-client'
 
 const DEFAULT_SSE_OPTIONS: EventSourceOptions = {
 	method: 'POST',
@@ -44,12 +47,41 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 	const [loading, setLoading] = useState(false)
 	const [attachedImages, setAttachedImages] = useState<{ url: string; file: File }[]>([])
 	const [warning, setWarning] = useState<string | null>(null)
+	const [isRecording, setIsRecording] = useState(false)
 	const { messages, getMessages, addMessage, updateLastMessage } = useChatStore()
 	const imageRef = useRef<HTMLInputElement>(null)
 
 	const ui = useMemo(() => getTranslationForLocale(locale), [locale, getTranslationForLocale])
 
 	const disableSendMessage = !input.trim() || loading
+
+	const transcribeMutation = useMutation({
+		mutationFn: async (audioBlob: Blob) => {
+			const formData = new FormData()
+			formData.append('audio', audioBlob, 'recording.mp3')
+
+			const response = await fetch('/api/transcribe', {
+				method: 'POST',
+				body: formData,
+			})
+
+			if (!response.ok) {
+				throw new Error('Failed to transcribe audio')
+			}
+
+			const data = await response.json()
+			return data.text
+		},
+		onSuccess: (text) => {
+			setInput(text)
+			setIsRecording(false)
+		},
+		onError: (error) => {
+			console.error('Transcription error:', error)
+			setWarning('Failed to transcribe audio')
+			setIsRecording(false)
+		},
+	}, queryClient)
 
 	const handleImageAttach = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const files = e.target.files
@@ -269,68 +301,86 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 					))}
 				</div>
 			)}
-			<div className='flex flex-wrap items-stretch gap-2'>
-				<label className='p-2 bg-gray-200 rounded-full cursor-pointer flex items-center justify-center'>
-					<input
-						ref={imageRef}
-						type='file'
-						accept='image/jpeg,image/png,image/webp'
-						multiple
-						style={{ display: 'none' }}
-						onChange={handleImageAttach}
-						disabled={loading || attachedImages.length >= 2}
+			{isRecording
+				? (
+					<AudioRecorder
+						onAccept={(blob) => transcribeMutation.mutate(blob)}
+						onCancel={() => setIsRecording(false)}
 					/>
-					<ImageIcon onClick={() => imageRef.current?.click()} />
-				</label>
-				<input
-					type='text'
-					value={input}
-					onChange={(e) => setInput(e.currentTarget.value)}
-					placeholder={ui['assistant.input.placeholder']}
-					className='flex-1 min-w-0 px-3 py-2 border rounded-2xl focus:outline-none'
-					disabled={loading}
-				/>
-				<button
-					type='button'
-					onClick={handleSend}
-					className='p-2 bg-primary text-white rounded-full disabled:opacity-50 flex items-center justify-center w-12 h-12 min-w-[3rem] min-h-[3rem]'
-					disabled={disableSendMessage}
-				>
-					{loading
-						? (
-							<svg
-								className='animate-spin h-5 w-5 text-white'
-								xmlns='http://www.w3.org/2000/svg'
-								fill='none'
-								viewBox='0 0 24 24'
-							>
-								<title>{ui['assistant.sendButton']}</title>
-								<circle
-									className='opacity-25'
-									cx='12'
-									cy='12'
-									r='10'
-									stroke='currentColor'
-									strokeWidth='4'
-								>
-								</circle>
-								<path
-									className='opacity-75'
-									fill='currentColor'
-									d='M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z'
-								>
-								</path>
-							</svg>
-						)
-						: (
-							<img
-								src='/icons/message-send.svg'
-								className='w-6 h-6 object-contain'
-								alt={ui['assistant.sendButton']}
+				)
+				: (
+					<div className='flex flex-wrap items-stretch gap-2'>
+						<label className='p-2 bg-gray-200 rounded-full cursor-pointer flex items-center justify-center'>
+							<input
+								ref={imageRef}
+								type='file'
+								accept='image/jpeg,image/png,image/webp'
+								multiple
+								style={{ display: 'none' }}
+								onChange={handleImageAttach}
+								disabled={loading || attachedImages.length >= 2}
 							/>
-						)}
-				</button>
-			</div>
+							<ImageIcon onClick={() => imageRef.current?.click()} />
+						</label>
+						<button
+							type='button'
+							onClick={() =>
+								setIsRecording(true)}
+							className='p-2 bg-gray-200 rounded-full cursor-pointer flex items-center justify-center'
+							disabled={loading}
+						>
+							<MicIcon className='w-5 h-5' />
+						</button>
+						<input
+							type='text'
+							value={input}
+							onChange={(e) => setInput(e.currentTarget.value)}
+							placeholder={ui['assistant.input.placeholder']}
+							className='flex-1 min-w-0 px-3 py-2 border rounded-2xl focus:outline-none'
+							disabled={loading}
+						/>
+						<button
+							type='button'
+							onClick={handleSend}
+							className='p-2 bg-primary text-white rounded-full disabled:opacity-50 flex items-center justify-center w-12 h-12 min-w-[3rem] min-h-[3rem]'
+							disabled={disableSendMessage}
+						>
+							{loading
+								? (
+									<svg
+										className='animate-spin h-5 w-5 text-white'
+										xmlns='http://www.w3.org/2000/svg'
+										fill='none'
+										viewBox='0 0 24 24'
+									>
+										<title>{ui['assistant.sendButton']}</title>
+										<circle
+											className='opacity-25'
+											cx='12'
+											cy='12'
+											r='10'
+											stroke='currentColor'
+											strokeWidth='4'
+										>
+										</circle>
+										<path
+											className='opacity-75'
+											fill='currentColor'
+											d='M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z'
+										>
+										</path>
+									</svg>
+								)
+								: (
+									<img
+										src='/icons/message-send.svg'
+										className='w-6 h-6 object-contain'
+										alt={ui['assistant.sendButton']}
+									/>
+								)}
+						</button>
+					</div>
+				)}
 		</div>
 	)
 }
