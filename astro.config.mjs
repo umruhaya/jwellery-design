@@ -42,6 +42,7 @@ export default defineConfig({
 				default: 'webp',
 				values: ['webp', 'jpeg', 'png'],
 			}),
+			DASHBOARD_AUTH: envField.string({ access: 'secret', context: 'server' }),
 		},
 	},
 })

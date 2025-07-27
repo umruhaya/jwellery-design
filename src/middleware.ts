@@ -6,6 +6,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
 	const locale = context.preferredLocale || 'en'
 
+	// skip any localization for admin routes
+	if (pathname.startsWith('/admin')) {
+		return next()
+	}
+
 	if (pathname.startsWith('/en')) {
 		return context.rewrite(pathname.slice(3) || '/')
 	}

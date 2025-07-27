@@ -1,0 +1,170 @@
+---
+import { DASHBOARD_AUTH } from 'astro:env/server'
+import { DatabaseService } from '~/services/database'
+
+// Basic Auth Check
+const auth = Astro.request.headers.get('Authorization')
+
+if (!auth) {
+	return new Response('Unauthorized', {
+		status: 401,
+		headers: {
+			'WWW-Authenticate': 'Basic realm="Admin Area"',
+		},
+	})
+}
+
+const base64Credentials = auth.split(' ')[1]
+const credentials = atob(base64Credentials)
+const [username, password] = credentials.split(':')
+
+if (username !== 'admin' || password !== DASHBOARD_AUTH) {
+	return new Response('Unauthorized', {
+		status: 401,
+		headers: {
+			'WWW-Authenticate': 'Basic realm="Admin Area"',
+		},
+	})
+}
+
+const dashboardAuthPassword = DASHBOARD_AUTH
+
+// Fetch initial data
+const db = await DatabaseService.get()
+const designs = await db.getAllFinalDesigns()
+const gallery = await db.getGallery()
+---
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Admin Dashboard</title>
+	</head>
+	<body>
+		<div class="max-w-7xl mx-auto p-8">
+			<h1 class="text-2xl font-bold">Admin Dashboard</h1>
+
+			<h2 class="text-xl font-semibold mt-4">All Designs</h2>
+			<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4" id="designs-grid">
+				{
+					designs.map(design => (
+						<div class="border border-gray-200 p-4 rounded-lg" data-design-id={design.id}>
+							<img src={design.url} alt={design.customerName} class="w-full h-48 object-cover rounded" />
+							<h3 class="font-medium mt-2">{design.customerName}</h3>
+							<p class="text-sm text-gray-600">{design.specifications}</p>
+							<button
+								class="mt-2 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+								onclick={`addToGallery(${design.id})`}
+							>
+								Add to Gallery
+							</button>
+						</div>
+					))
+				}
+			</div>
+
+			<div class="mt-8 pt-8 border-t border-gray-200">
+				<h2 class="text-xl font-semibold">Gallery</h2>
+				<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4" id="gallery-grid">
+					{
+						gallery.map(item => (
+							<div class="border border-gray-200 p-4 rounded-lg" data-gallery-id={item.galleryId}>
+								<div class="cursor-move p-2 bg-gray-100 mb-2 rounded">Rank: {item.rank}</div>
+								<img src={item.url} alt={item.customerName} class="w-full h-48 object-cover rounded" />
+								<h3 class="font-medium mt-2">{item.customerName}</h3>
+								<button
+									class="mt-2 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+									onclick={`removeFromGallery(${item.galleryId})`}
+								>
+									Remove
+								</button>
+							</div>
+						))
+					}
+				</div>
+			</div>
+		</div>
+
+		<script
+			type="module"
+			define:vars={{
+				designs,
+				gallery,
+			}}
+		>
+		// Client-side JavaScript for handling interactions
+let draggedItem = null
+
+async function addToGallery(designId) {
+	const rank = await getCurrentMaxRank() + 1
+	try {
+		const response = await fetch('/api/admin/gallery', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': 'Basic ' + btoa('admin:' + dashboardAuthPassword),
+			},
+			body: JSON.stringify({ designId, rank }),
+		})
+
+		if (response.ok) {
+			window.location.reload()
+		}
+	} catch (error) {
+		console.error('Failed to add to gallery:', error)
+	}
+}
+
+async function getCurrentMaxRank() {
+	const response = await fetch('/api/admin/gallery', {
+		headers: {
+			'Authorization': 'Basic ' + btoa('admin:' + dashboardAuthPassword),
+		},
+	})
+	const gallery = await response.json()
+	return Math.max(...gallery.map(item => item.rank), 0)
+}
+
+// Initialize drag and drop
+document.querySelectorAll('.cursor-move').forEach(handle => {
+	handle.addEventListener('dragstart', (e) => {
+		draggedItem = e.target.closest('.border')
+		e.dataTransfer.setData('text/plain', '')
+	})
+})
+
+document.querySelector('#gallery-grid')?.addEventListener('dragover', (e) => {
+	e.preventDefault()
+})
+
+document.querySelector('#gallery-grid')?.addEventListener('drop', async (e) => {
+	e.preventDefault()
+	const dropTarget = e.target.closest('.border')
+	if (!dropTarget) return
+	if (draggedItem && dropTarget && draggedItem !== dropTarget) {
+		const draggedRank = parseInt(draggedItem.querySelector('.cursor-move').textContent.split(': ')[1])
+		const targetRank = parseInt(dropTarget.querySelector('.cursor-move').textContent.split(': ')[1])
+
+		await updateRank(draggedItem.dataset.galleryId, targetRank)
+		window.location.reload()
+	}
+})
+
+async function updateRank(id, newRank) {
+	try {
+		await fetch('/api/admin/gallery', {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': 'Basic ' + btoa('admin:' + dashboardAuthPassword),
+			},
+			body: JSON.stringify({ id, newRank }),
+		})
+	} catch (error) {
+		console.error('Failed to update rank:', error)
+	}
+}
+		</script>
+	</body>
+</html>
