@@ -2,24 +2,8 @@
 
 import { drizzle } from 'drizzle-orm/libsql'
 import { createClient } from '@libsql/client/node'
-import { sql } from 'drizzle-orm'
-import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core'
-
-// Define schema
-const finalDesigns = sqliteTable('final_designs', {
-	id: integer('id').primaryKey({ autoIncrement: true }),
-	url: text('url').notNull(),
-	customerName: text('customer_name').notNull(),
-	specifications: text('specifications').notNull(),
-	createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
-})
-
-const gallery = sqliteTable('gallery', {
-	id: integer('id').primaryKey({ autoIncrement: true }),
-	designId: integer('design_id').notNull(),
-	rank: integer('rank').notNull(),
-	createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
-})
+import { count, sql } from 'drizzle-orm'
+import { finalDesigns, gallery } from '~/models'
 
 // Initialize client
 const client = createClient({
@@ -78,6 +62,62 @@ export class DatabaseService {
 		} catch (error) {
 			console.error('Error adding final design:', error)
 			throw new Error('Failed to add final design')
+		}
+	}
+
+	async seedTablesWithSplashUrlData() {
+		try {
+			// Sample data for seeding
+			const sampleDesigns = [
+				{
+					url: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338',
+					customerName: 'Elegance Collection',
+					specifications: 'Handcrafted diamond pendant with platinum chain and custom setting',
+				},
+				{
+					url: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f',
+					customerName: 'Royal Gems',
+					specifications: 'Sapphire and diamond engagement ring with vintage-inspired filigree',
+				},
+				{
+					url: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e',
+					customerName: 'Artisan Treasures',
+					specifications: 'Custom rose gold bracelet with personalized birthstone arrangement',
+				},
+				{
+					url: 'https://images.unsplash.com/photo-1608042314453-ae338d80c427',
+					customerName: 'Heritage Designs',
+					specifications: 'Family heirloom redesigned into modern earrings with original emeralds',
+				},
+				{
+					url: 'https://images.unsplash.com/photo-1611652022419-a9419f74343d',
+					customerName: 'Luxury Adornments',
+					specifications: 'Statement necklace featuring ethically sourced rubies and white gold accents',
+				},
+			]
+
+			// check if the table is empty
+			const finalDesignsCount = await db.select({ count: count() }).from(finalDesigns)
+			if (finalDesignsCount[0].count > 0) {
+				console.log('Database already seeded with sample designs')
+				return
+			}
+
+			// Insert designs and add to gallery
+			for (let i = 0; i < sampleDesigns.length; i++) {
+				const designId = await this.addFinalDesign(sampleDesigns[i])
+
+				// Add to gallery with rank based on insertion order
+				await this.addToGallery({
+					designId,
+					rank: i + 1,
+				})
+			}
+
+			console.log('Database seeded successfully with sample designs')
+		} catch (error) {
+			console.error('Error seeding database:', error)
+			throw new Error('Failed to seed database with sample data')
 		}
 	}
 
@@ -194,6 +234,8 @@ export class DatabaseService {
 	 * Initialize the database by creating tables if they don't exist
 	 */
 	async initializeDatabase() {
+		// await this.seedTablesWithSplashUrlData()
+
 		try {
 			await client.execute(`
         CREATE TABLE IF NOT EXISTS final_designs (

@@ -11,6 +11,7 @@ import {
 	outputMessageSchema,
 } from '~/store/chat'
 import { IMG_FORMAT } from 'astro:env/client'
+import { DatabaseService } from '~/services/database'
 
 const ChatRequest = z.object({
 	locale: z.string(),
@@ -91,8 +92,17 @@ export const POST: APIRoute = async (ctx) => {
 					}
 					if (event.type === 'response.function_call_arguments.done') {
 						const args = JSON.parse(event.arguments)
-						const imageUrls = args.includeLatestImage && latestImageUrl ? [latestImageUrl] : undefined
-						sendAlert({ ...args, imageUrls })
+
+						if (args.includeLatestImage && latestImageUrl) {
+							const db = await DatabaseService.get()
+							db.addFinalDesign({
+								url: latestImageUrl,
+								customerName: args.customerName,
+								specifications: args.specifications,
+							})
+							sendAlert({ ...args, imageUrls: [latestImageUrl] })
+						}
+
 						continue
 					}
 					controller.enqueue(

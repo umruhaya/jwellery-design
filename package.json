@@ -1,41 +1,44 @@
 {
-  "name": "jwellery",
-  "type": "module",
-  "version": "0.0.1",
-  "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
-  },
-  "dependencies": {
-    "@astrojs/node": "^9.2.2",
-    "@astrojs/react": "^4.3.0",
-    "@google-cloud/storage": "^7.16.0",
-    "@libsql/client": "^0.15.10",
-    "@tailwindcss/vite": "^4.1.10",
-    "@tanstack/react-query": "^5.81.5",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
-    "astro": "^5.10.0",
-    "drizzle-orm": "^0.44.3",
-    "immer": "^10.1.1",
-    "lucide-react": "^0.525.0",
-    "markdown-it": "^14.1.0",
-    "nodemailer": "^7.0.4",
-    "openai": "^5.8.2",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "react-native-sse": "^1.2.1",
-    "tailwind-merge": "^3.3.1",
-    "tailwindcss": "^4.1.10",
-    "ulidx": "^2.4.1",
-    "wavesurfer.js": "^7.10.1",
-    "zustand": "^5.0.6"
-  },
-  "devDependencies": {
-    "@types/nodemailer": "^6.4.17",
-    "drizzle-kit": "^0.31.4",
-    "vite": "^7.0.0"
-  }
+	"name": "jwellery",
+	"type": "module",
+	"version": "0.0.1",
+	"scripts": {
+		"dev": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview",
+		"astro": "astro"
+	},
+	"dependencies": {
+		"@astrojs/node": "^9.2.2",
+		"@astrojs/react": "^4.3.0",
+		"@google-cloud/storage": "^7.16.0",
+		"@libsql/client": "^0.15.10",
+		"@tailwindcss/vite": "^4.1.10",
+		"@tanstack/react-query": "^5.81.5",
+		"@types/react": "^19.1.8",
+		"@types/react-dom": "^19.1.6",
+		"@types/react-slick": "^0.23.13",
+		"astro": "^5.10.0",
+		"drizzle-orm": "^0.44.3",
+		"immer": "^10.1.1",
+		"lucide-react": "^0.525.0",
+		"markdown-it": "^14.1.0",
+		"nodemailer": "^7.0.4",
+		"openai": "^5.8.2",
+		"react": "^19.1.0",
+		"react-dom": "^19.1.0",
+		"react-native-sse": "^1.2.1",
+		"react-slick": "^0.30.2",
+		"slick-carousel": "^1.8.1",
+		"tailwind-merge": "^3.3.1",
+		"tailwindcss": "^4.1.10",
+		"ulidx": "^2.4.1",
+		"wavesurfer.js": "^7.10.1",
+		"zustand": "^5.0.6"
+	},
+	"devDependencies": {
+		"@types/nodemailer": "^6.4.17",
+		"drizzle-kit": "^0.31.4",
+		"vite": "^7.0.0"
+	}
 }

@@ -1,5 +1,9 @@
 ---
 import '~/styles/global.css'
 import HomePage from '~/components/HomePage.astro'
+import { DatabaseService } from '~/services/database'
+
+const db = await DatabaseService.get()
+const gallery = await db.getGallery()
 ---
-<HomePage locale="en" />
+<HomePage locale="en" gallery={gallery} />
