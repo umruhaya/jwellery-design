@@ -47,7 +47,9 @@ export class GCSStorageService extends StorageService {
 		const file = this.storage.bucket(bucket).file(key)
 		const [signedUrl] = await file.getSignedUrl({
 			action: 'write',
-			expires: Date.now() + expiresIn * 1000,
+			expires: Date.now() + (expiresIn * 1000),
+			version: 'v4',
+			contentType: 'application/octet-stream',
 		})
 		const publicUrl = `https://storage.googleapis.com/${bucket}/${encodeURIComponent(key)}`
 		return { signedUrl, publicUrl }

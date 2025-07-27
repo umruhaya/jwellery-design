@@ -1,5 +1,5 @@
 import type { ResponseStreamEvent } from 'openai/resources/responses/responses.mjs'
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import EventSource, { type EventSourceOptions } from 'react-native-sse'
 import { setChatStore, useChatStore } from '~/store/chat'
 import { getTranslationForLocale } from '~/i18n/ui'
@@ -10,6 +10,9 @@ import { useMutation } from '@tanstack/react-query'
 import { queryClient } from '~/lib/query-client'
 import { Spinner } from './spinner'
 import { ImageGenerationMessageUI, InputMessageUI, OutputMessageUI } from '~/components/messages-ui'
+import { useRef as useReactRef } from 'react'
+import { IMG_FORMAT } from 'astro:env/client'
+
 const DEFAULT_SSE_OPTIONS: EventSourceOptions = {
 	method: 'POST',
 	timeout: 0,
@@ -36,6 +39,53 @@ const parseEvent = (data: string) => {
 
 const MAX_ALLOWED_IMAGES = 2
 
+// Utility: Detect if a string is base64 (data:) or a URL (http)
+function isBase64Image(str: string | undefined): boolean {
+	return !!str && str.startsWith('data:')
+}
+function isHttpUrl(str: string | undefined): boolean {
+	return !!str && str.startsWith('http')
+}
+
+// Utility: Convert base64 to Blob
+function base64ToBlob(base64: string): Blob {
+	const arr = base64.split(',')
+	const match = arr[0].match(/:(.*?);/)
+	if (!match) {
+		throw new Error('Invalid base64 image: cannot determine mime type')
+	}
+	const mime = match[1]
+	const bstr = atob(arr[1])
+	let n = bstr.length
+	const u8arr = new Uint8Array(n)
+	while (n--) {
+		u8arr[n] = bstr.charCodeAt(n)
+	}
+	return new Blob([u8arr], { type: mime })
+}
+
+// React Query mutation for uploading base64 image to GCS and returning public URL
+const useImageUploadMutation = () =>
+	useMutation({
+		mutationFn: async (base64: string) => {
+			// 1. Get signed URL
+			const res = await fetch('/api/create-signed-url', { method: 'POST' })
+			if (!res.ok) throw new Error('Failed to get signed URL')
+			const { signedUrl, publicUrl } = await res.json()
+			// 2. Convert base64 to Blob
+			const blob = base64ToBlob(base64)
+			// 3. Upload to signed URL
+			const uploadRes = await fetch(signedUrl, {
+				method: 'PUT',
+				body: blob,
+				headers: { 'Content-Type': 'application/octet-stream' },
+			})
+			if (!uploadRes.ok) throw new Error('Failed to upload image')
+			// 4. Return public URL
+			return publicUrl
+		},
+	}, queryClient)
+
 export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 	const [input, setInput] = useState('')
 	const [loading, setLoading] = useState(false)
@@ -44,6 +94,8 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 	const [isRecording, setIsRecording] = useState(false)
 	const { messages, getMessages, addMessage, updateLastMessage } = useChatStore()
 	const imageRef = useRef<HTMLInputElement>(null)
+	const imageUploadMutation = useImageUploadMutation()
+	const uploadingImagesRef = useReactRef(new Set<string>()) // To avoid duplicate uploads
 
 	const ui = useMemo(() => getTranslationForLocale(locale), [locale, getTranslationForLocale])
 
@@ -210,7 +262,7 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 							type: 'image_generation_call',
 							id: event.item_id,
 							status: 'in_progress',
-							result: makeBase64Image('webp', event.partial_image_b64),
+							result: makeBase64Image(IMG_FORMAT, event.partial_image_b64),
 						}
 					})
 					break
@@ -246,6 +298,73 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 		setInput('')
 		setAttachedImages([])
 	}
+
+	// Background effect: scan all messages for base64 images and upload them
+	useEffect(() => {
+		// do not want to mess with the chat state while loading
+		if (loading) return
+
+		// Helper to update input image URL in chat state
+		function updateInputImageUrl(msgIdx: number, contentIdx: number, newUrl: string) {
+			setChatStore(draft => {
+				const msg = draft.messages[msgIdx]
+				if (msg && msg.type === 'message' && msg.role === 'user') {
+					const content = msg.content[contentIdx]
+					if (content && content.type === 'input_image') {
+						content.image_url = newUrl
+					}
+				}
+			})
+		}
+		// Helper to update output image (image generation) result in chat state
+		function updateOutputImageResult(msgIdx: number, newUrl: string) {
+			setChatStore(draft => {
+				const msg = draft.messages[msgIdx]
+				if (msg && msg.type === 'image_generation_call') {
+					msg.result = newUrl
+				}
+			})
+		}
+		// Scan all messages
+		messages.forEach((msg, msgIdx) => {
+			// Input images (user messages)
+			if (msg.type === 'message' && msg.role === 'user') {
+				msg.content.forEach((content, contentIdx) => {
+					if (
+						content.type === 'input_image' && isBase64Image(content.image_url) &&
+						!uploadingImagesRef.current.has(content.image_url!)
+					) {
+						uploadingImagesRef.current.add(content.image_url!)
+						imageUploadMutation.mutate(content.image_url!, {
+							onSuccess: (publicUrl) => {
+								updateInputImageUrl(msgIdx, contentIdx, publicUrl)
+								uploadingImagesRef.current.delete(content.image_url!)
+							},
+							onError: () => {
+								uploadingImagesRef.current.delete(content.image_url!)
+							},
+						})
+					}
+				})
+			}
+			// Output images (assistant image generations)
+			if (
+				msg.type === 'image_generation_call' && isBase64Image(msg.result) &&
+				!uploadingImagesRef.current.has(msg.result)
+			) {
+				uploadingImagesRef.current.add(msg.result)
+				imageUploadMutation.mutate(msg.result, {
+					onSuccess: (publicUrl) => {
+						updateOutputImageResult(msgIdx, publicUrl)
+						uploadingImagesRef.current.delete(msg.result)
+					},
+					onError: () => {
+						uploadingImagesRef.current.delete(msg.result)
+					},
+				})
+			}
+		})
+	}, [messages.length, imageUploadMutation])
 
 	return (
 		<div className='w-full h-[28rem] md:h-[36rem] max-w-md lg:max-w-lg xl:max-w-xl bg-white/90 rounded-xl shadow-lg p-4 flex flex-col'>

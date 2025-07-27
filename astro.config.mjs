@@ -36,6 +36,12 @@ export default defineConfig({
 			RECIPIENT_EMAIL: envField.string({ access: 'secret', context: 'server' }),
 			SERVICE_ACCOUNT_KEY: envField.string({ access: 'secret', context: 'server' }),
 			BUCKET_NAME: envField.string({ access: 'secret', context: 'server' }),
+			IMG_FORMAT: envField.enum({
+				access: 'public',
+				context: 'client',
+				default: 'webp',
+				values: ['webp', 'jpeg', 'png'],
+			}),
 		},
 	},
 })

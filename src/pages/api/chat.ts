@@ -5,6 +5,7 @@ import { getLanguageFromLocale } from '~/i18n/ui'
 import { SYSTEM_PROMPT } from '~/lib/assistant-prompt'
 import { sendAlert } from '~/services/email'
 import { imageGenerationCallSchema, inputMessageSchema, outputMessageSchema } from '~/store/chat'
+import { IMG_FORMAT } from 'astro:env/client'
 
 const ChatRequest = z.object({
 	locale: z.string(),
@@ -30,11 +31,11 @@ export const POST: APIRoute = async (ctx) => {
 			model: 'gpt-4.1',
 			stream: true,
 			input: [
-				{ role: 'system', content: formattedSystemPrompt },
+				// { role: 'system', content: formattedSystemPrompt },
 				...messages,
 			],
 			tools: [
-				{ type: 'image_generation', partial_images: 2, output_format: 'webp', output_compression: 80 },
+				{ type: 'image_generation', partial_images: 2, output_format: IMG_FORMAT, output_compression: 80 },
 				{
 					type: 'function',
 					name: 'send_email',
