@@ -1,14 +1,7 @@
 import type { ResponseStreamEvent } from 'openai/resources/responses/responses.mjs'
 import React, { useMemo, useRef, useState } from 'react'
 import EventSource, { type EventSourceOptions } from 'react-native-sse'
-import {
-	type ImageGenerationMessage,
-	type InputMessage,
-	type OutputMessage,
-	setChatStore,
-	useChatStore,
-} from '~/store/chat'
-import { MarkdownRenderer } from '~/components/markdown-renderer'
+import { setChatStore, useChatStore } from '~/store/chat'
 import { getTranslationForLocale } from '~/i18n/ui'
 import { ImageIcon, MicIcon, XIcon } from 'lucide-react'
 import { downscaleBase64Image, makeBase64Image } from '~/lib/image-utils'
@@ -16,7 +9,7 @@ import { AudioRecorder } from './audio-recorder'
 import { useMutation } from '@tanstack/react-query'
 import { queryClient } from '~/lib/query-client'
 import { Spinner } from './spinner'
-
+import { ImageGenerationMessageUI, InputMessageUI, OutputMessageUI } from '~/components/messages-ui'
 const DEFAULT_SSE_OPTIONS: EventSourceOptions = {
 	method: 'POST',
 	timeout: 0,
@@ -359,64 +352,6 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 						</button>
 					</div>
 				)}
-		</div>
-	)
-}
-
-const InputMessageUI = ({ content }: InputMessage) => {
-	return (
-		<div className='flex justify-end ml-8'>
-			<div className='flex flex-col gap-1'>
-				<div className='flex justify-end'>
-					<div className='flex flex-col gap-2'>
-						{content.map(part =>
-							part.type === 'input_image' && (
-								<img
-									src={part.image_url === ''
-										? 'https://www.svgrepo.com/show/508699/landscape-placeholder.svg'
-										: part.image_url}
-									alt='user-image'
-									className='w-[16rem] rounded'
-								/>
-							)
-						)}
-					</div>
-				</div>
-				{content.map(part =>
-					part.type === 'input_text' &&
-					(
-						<div className='flex justify-end'>
-							<div className='p-2 rounded-2xl bg-primary text-white flex'>{part.text}</div>
-						</div>
-					)
-				)}
-			</div>
-		</div>
-	)
-}
-
-const OutputMessageUI = ({ id, status, content }: OutputMessage) => {
-	return (
-		<div className='flex justify-start mr-8' key={id}>
-			<div className='px-2 py-1 rounded-2xl bg-gray-100 text-gray-800'>
-				{content.map((part, i) => <MarkdownRenderer key={i} text={part.text} />)}
-			</div>
-		</div>
-	)
-}
-
-const ImageGenerationMessageUI = ({ id, result, status }: ImageGenerationMessage) => {
-	return (
-		<div className='flex justify-start' id={id}>
-			<div className='px-2 py-1 rounded-2xl bg-gray-100 text-gray-800'>
-				<img
-					src={result === ''
-						? 'https://www.svgrepo.com/show/508699/landscape-placeholder.svg'
-						: result}
-					alt='Generated Design Image'
-					className={`w-[16rem] rounded ${status !== 'completed' ? 'animate-pulse' : ''}`}
-				/>
-			</div>
 		</div>
 	)
 }
