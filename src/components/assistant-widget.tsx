@@ -322,23 +322,23 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 							/>
 							<ImageIcon onClick={() => imageRef.current?.click()} />
 						</label>
-						<button
-							type='button'
-							onClick={() =>
-								setIsRecording(true)}
-							className='p-2 bg-gray-200 rounded-full cursor-pointer flex items-center justify-center'
-							disabled={loading}
-						>
-							<MicIcon className='w-5 h-5' />
-						</button>
 						<input
 							type='text'
 							value={input}
-							onChange={(e) => setInput(e.currentTarget.value)}
+							onChange={(e) =>
+								setInput(e.currentTarget.value)}
 							placeholder={ui['assistant.input.placeholder']}
 							className='flex-1 min-w-0 px-3 py-2 border rounded-2xl focus:outline-none'
 							disabled={loading}
 						/>
+						<button
+							type='button'
+							onClick={() => setIsRecording(true)}
+							className='p-2 bg-gray-200 rounded-full cursor-pointer flex items-center justify-center'
+							disabled={loading}
+						>
+							<MicIcon className='w-6 h-6' />
+						</button>
 						<button
 							type='button'
 							onClick={handleSend}

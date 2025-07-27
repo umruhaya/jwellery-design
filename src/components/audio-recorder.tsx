@@ -21,9 +21,16 @@ export const AudioRecorder = ({ onAccept, onCancel }: AudioRecorderProps) => {
 		// Create WaveSurfer instance
 		const wavesurfer = WaveSurfer.create({
 			container: containerRef.current,
-			waveColor: 'rgb(200, 0, 200)',
-			progressColor: 'rgb(100, 0, 100)',
-			height: 50,
+			waveColor: '#4B5563', // gray-600
+			progressColor: '#374151', // gray-700
+			height: 40,
+			cursorWidth: 0,
+			interact: false,
+			hideScrollbar: true,
+			autoScroll: true,
+			normalize: true,
+			barWidth: 2,
+			barGap: 1,
 		})
 
 		// Initialize Record plugin
@@ -31,8 +38,6 @@ export const AudioRecorder = ({ onAccept, onCancel }: AudioRecorderProps) => {
 			RecordPlugin.create({
 				renderRecordedAudio: false,
 				scrollingWaveform: true,
-				continuousWaveform: true,
-				scrollingWaveformWindow: 2,
 			}),
 		)
 
@@ -87,23 +92,21 @@ export const AudioRecorder = ({ onAccept, onCancel }: AudioRecorderProps) => {
 	}
 
 	return (
-		<div className='flex flex-col gap-4 w-full'>
-			<div className='text-sm text-gray-500 text-center'>{recordingTime}</div>
-			<div ref={containerRef} className='w-full h-[50px] border rounded-lg overflow-hidden' />
-			<div className='flex justify-center gap-4'>
-				<button
-					onClick={handleCancel}
-					className='p-2 bg-red-500 text-white rounded-full hover:bg-red-600'
-				>
-					<XIcon className='w-5 h-5' />
-				</button>
-				<button
-					onClick={handleAccept}
-					className='p-2 bg-green-500 text-white rounded-full hover:bg-green-600'
-				>
-					<CheckIcon className='w-5 h-5' />
-				</button>
-			</div>
+		<div className='flex items-center gap-2 w-full'>
+			<div className='text-sm text-gray-500 min-w-[48px] text-center'>{recordingTime}</div>
+			<div ref={containerRef} className='flex-1 h-[40px] bg-gray-100 rounded-2xl overflow-hidden' />
+			<button
+				onClick={handleCancel}
+				className='p-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300'
+			>
+				<XIcon className='w-5 h-5' />
+			</button>
+			<button
+				onClick={handleAccept}
+				className='p-2 bg-primary text-white rounded-full hover:bg-primary/90'
+			>
+				<CheckIcon className='w-5 h-5' />
+			</button>
 		</div>
 	)
 }
