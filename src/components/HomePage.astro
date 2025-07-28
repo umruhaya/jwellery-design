@@ -82,7 +82,7 @@ const localePath = getLocalePath(locale ?? 'en')
 	<section id="gallery" class="w-full">
 		<div class="max-w-7xl mx-auto">
 			<h2 class="text-4xl font-[playfair] text-center mb-8 pt-12">{ui['gallery.title']}</h2>
-			<GalleryCarousel client:only items={gallery} ui={ui} />
+			<GalleryCarousel client:only items={gallery} />
 		</div>
 	</section>
 

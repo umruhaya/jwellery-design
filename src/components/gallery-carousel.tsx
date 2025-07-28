@@ -15,10 +15,9 @@ interface GalleryItem {
 
 interface GalleryCarouselProps {
 	items: GalleryItem[]
-	ui: Record<string, string>
 }
 
-const GalleryCarousel: React.FC<GalleryCarouselProps> = ({ items, ui }) => {
+const GalleryCarousel: React.FC<GalleryCarouselProps> = ({ items }) => {
 	const settings = {
 		dots: true,
 		infinite: true,
