@@ -103,6 +103,18 @@ export function useAssistantStream() {
 							})
 							break
 						}
+						case 'response.output_text.done': {
+							setChatStore(draft => {
+								const outputIdx = event.output_index + OUTPUT_IDX_OFFSET
+								const contentIdx = event.content_index
+								const message = draft.messages[outputIdx]
+								if (message?.type === 'message' && message.role === 'assistant') {
+									message.content[contentIdx].text = event.text
+									message.status = 'completed'
+								}
+							})
+							break
+						}
 						case 'response.image_generation_call.generating': {
 							setChatStore(draft => {
 								const outputIdx = event.output_index + OUTPUT_IDX_OFFSET
@@ -137,6 +149,7 @@ export function useAssistantStream() {
 							break
 						}
 						case 'response.completed': {
+							console.log(getMessages())
 							// Stream completed successfully
 							break
 						}
