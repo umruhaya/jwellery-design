@@ -13,6 +13,7 @@
 		"@astrojs/react": "^4.3.0",
 		"@google-cloud/storage": "^7.16.0",
 		"@libsql/client": "^0.15.10",
+		"@sentry/astro": "^9.43.0",
 		"@tailwindcss/vite": "^4.1.10",
 		"@tanstack/react-query": "^5.81.5",
 		"@types/react": "^19.1.8",

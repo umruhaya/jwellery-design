@@ -4,6 +4,7 @@ import { defineConfig, envField } from 'astro/config'
 import node from '@astrojs/node'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@astrojs/react'
+import sentry from '@sentry/astro'
 
 // https://astro.build/config
 export default defineConfig({
@@ -17,7 +18,16 @@ export default defineConfig({
 		plugins: [tailwindcss()],
 	},
 
-	integrations: [react()],
+	integrations: [
+		react(),
+		sentry({
+			sourceMapsUploadOptions: {
+				project: 'node',
+				org: 'umernaeem',
+				authToken: process.env.SENTRY_AUTH_TOKEN,
+			},
+		}),
+	],
 
 	i18n: {
 		locales: ['en', 'de', 'fr', 'it', 'es'],
