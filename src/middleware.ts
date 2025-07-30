@@ -29,9 +29,6 @@ export const onRequest = defineMiddleware(async (context, next) => {
 			pathname.startsWith('/fr')
 		)
 	) {
-		console.log('MATCHED')
-
-		console.log({ locale })
 		return context.redirect(`/${locale}${pathname}`, 302)
 	}
 

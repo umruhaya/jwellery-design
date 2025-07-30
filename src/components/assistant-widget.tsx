@@ -214,7 +214,6 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 			}
 
 			const event = parseEvent(data.data || '')
-			console.debug(event)
 			if (!event) {
 				return
 			}
