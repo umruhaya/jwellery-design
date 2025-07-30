@@ -234,7 +234,7 @@ export class DatabaseService {
 	 * Initialize the database by creating tables if they don't exist
 	 */
 	async initializeDatabase() {
-		// await this.seedTablesWithSplashUrlData()
+		await this.seedTablesWithSplashUrlData()
 
 		try {
 			await client.execute(`

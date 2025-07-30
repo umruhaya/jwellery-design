@@ -59,7 +59,7 @@ const GalleryCarousel: React.FC<GalleryCarouselProps> = ({ items }) => {
 								/>
 							</div>
 							<div className='p-4'>
-								<h3 className='font-[playfair] text-xl mb-2'>{item.customerName}</h3>
+								<h3 className='font-didot text-xl mb-2'>{item.customerName}</h3>
 								{/* wrap the text into two lines */}
 								<p className='text-gray-600 text-sm line-clamp-2'>{item.specifications}</p>
 							</div>
