@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import GalleryCarousel from './gallery-carousel'
+import { queryClient } from '~/lib/query-client'
 
 // Helper to get auth header
 const getAuthHeader = (basicAuthString: string) => ({
@@ -27,7 +28,6 @@ type AdminDashboardProps = {
 }
 
 export default function AdminDashboard({ basicAuthString }: AdminDashboardProps) {
-	const queryClient = useQueryClient()
 	const { data: designs = [], isLoading: loadingDesigns } = useQuery({
 		queryKey: ['designs'],
 		queryFn: () => fetchDesigns(basicAuthString),

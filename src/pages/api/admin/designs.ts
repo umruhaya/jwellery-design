@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro'
-import { DatabaseService } from '../../../services/database'
+import { DASHBOARD_AUTH } from 'astro:env/server'
+import { DatabaseService } from '~/services/database'
 
 export const GET: APIRoute = async ({ request }) => {
 	// Basic auth check
@@ -39,6 +40,5 @@ function isValidAuth(authHeader: string | null): boolean {
 	const credentials = atob(base64Credentials)
 	const [username, password] = credentials.split(':')
 
-	// Replace these with your actual credentials
-	return username === 'admin' && password === 'your-secure-password'
+	return username === 'admin' && password === DASHBOARD_AUTH
 }
