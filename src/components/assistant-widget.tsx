@@ -1,6 +1,5 @@
 import type { ResponseStreamEvent } from 'openai/resources/responses/responses.mjs'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import EventSource, { type EventSourceOptions } from 'react-native-sse'
 import { setChatStore, useChatStore } from '~/store/chat'
 import { getTranslationForLocale } from '~/i18n/ui'
 import { ImageIcon, MicIcon, XIcon } from 'lucide-react'
@@ -12,29 +11,10 @@ import { Spinner } from './spinner'
 import { ImageGenerationMessageUI, InputMessageUI, OutputMessageUI } from '~/components/messages-ui'
 import { useRef as useReactRef } from 'react'
 import { IMG_FORMAT } from 'astro:env/client'
+import { useAssistantStream } from '~/hooks/use-assistant-stream'
 
-const DEFAULT_SSE_OPTIONS: EventSourceOptions = {
-	method: 'POST',
-	timeout: 0,
-	timeoutBeforeConnection: 500,
-	withCredentials: false,
-	headers: { 'Content-Type': 'application/json' },
-	body: undefined,
-	debug: false,
-	pollingInterval: 0, // disable reconnections // other wise client would span the API
-}
-
-type SSEAssistantWidgetProps = {
+type AssistantWidgetProps = {
 	locale: string
-}
-
-const parseEvent = (data: string) => {
-	try {
-		return JSON.parse(data) as ResponseStreamEvent
-	} catch (e) {
-		console.error(e)
-		return null
-	}
 }
 
 const MAX_ALLOWED_IMAGES = 2
@@ -42,9 +22,6 @@ const MAX_ALLOWED_IMAGES = 2
 // Utility: Detect if a string is base64 (data:) or a URL (http)
 function isBase64Image(str: string | undefined): boolean {
 	return !!str && str.startsWith('data:')
-}
-function isHttpUrl(str: string | undefined): boolean {
-	return !!str && str.startsWith('http')
 }
 
 // Utility: Convert base64 to Blob
@@ -86,19 +63,22 @@ const useImageUploadMutation = () =>
 		},
 	}, queryClient)
 
-export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
+export const AssistantWidget = ({ locale }: AssistantWidgetProps) => {
 	const [input, setInput] = useState('')
-	const [loading, setLoading] = useState(false)
 	const [attachedImages, setAttachedImages] = useState<{ url: string; file: File }[]>([])
 	const [warning, setWarning] = useState<string | null>(null)
 	const [isRecording, setIsRecording] = useState(false)
-	const { messages, getMessages, addMessage, updateLastMessage } = useChatStore()
+	const { messages, getMessages, addMessage } = useChatStore()
 	const imageRef = useRef<HTMLInputElement>(null)
 	const imageUploadMutation = useImageUploadMutation()
-	const uploadingImagesRef = useReactRef(new Set<string>()) // To avoid duplicate uploads
+	const uploadingImagesRef = useReactRef(new Set<string>())
+	const abortControllerRef = useRef<AbortController | null>(null)
+
+	const assistantStream = useAssistantStream()
 
 	const ui = useMemo(() => getTranslationForLocale(locale), [locale, getTranslationForLocale])
 
+	const loading = assistantStream.isPending
 	const disableSendMessage = !input.trim() || loading
 
 	const transcribeMutation = useMutation({
@@ -168,7 +148,14 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 
 	const handleSend = async () => {
 		if (disableSendMessage) return
-		setLoading(true)
+
+		// Cancel any existing request
+		if (abortControllerRef.current) {
+			abortControllerRef.current.abort()
+		}
+
+		// Create new abort controller
+		abortControllerRef.current = new AbortController()
 
 		const imagePart = await Promise.all(
 			attachedImages.map(async img => {
@@ -180,7 +167,8 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 				})
 			}),
 		)
-		// add user message
+
+		// Add user message
 		addMessage({
 			type: 'message',
 			role: 'user',
@@ -191,112 +179,26 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 			],
 		})
 
-		setAttachedImages([])
-
-		const OUTPUT_IDX_OFFSET = getMessages().length
-
-		// prepare SSE options with body
-		const options: EventSourceOptions = {
-			...DEFAULT_SSE_OPTIONS,
-			body: JSON.stringify({ messages: getMessages(), locale }),
-		}
-
-		const sse = new EventSource('/api/chat', options)
-
-		sse.addEventListener('open', () => {
-			console.debug('SSE connection opened')
-		})
-
-		sse.addEventListener('message', (data) => {
-			if (data.data === '[DONE]') {
-				setLoading(false)
-				return
-			}
-
-			const event = parseEvent(data.data || '')
-			if (!event) {
-				return
-			}
-
-			switch (event.type) {
-				case 'response.output_text.delta': {
-					setChatStore(draft => {
-						const outputIdx = event.output_index + OUTPUT_IDX_OFFSET
-						const contentIdx = event.content_index
-						if (draft.messages[outputIdx] === undefined) {
-							draft.messages[outputIdx] = {
-								type: 'message',
-								role: 'assistant',
-								id: event.item_id,
-								status: 'in_progress',
-								content: [{ type: 'output_text', annotations: [], text: '' }],
-							}
-						}
-						const message = draft.messages[outputIdx]
-						if (
-							message.type === 'message' && message.role === 'assistant' &&
-							message.content[contentIdx]?.type === 'output_text'
-						) {
-							message.content[contentIdx].text += event.delta
-						}
-					})
-					break
-				}
-				case 'response.image_generation_call.generating': {
-					setChatStore(draft => {
-						const outputIdx = event.output_index + OUTPUT_IDX_OFFSET
-						draft.messages[outputIdx] = {
-							type: 'image_generation_call',
-							id: event.item_id,
-							status: 'generating',
-							result: '',
-						}
-					})
-					break
-				}
-				case 'response.image_generation_call.partial_image': {
-					setChatStore(draft => {
-						const outputIdx = event.output_index + OUTPUT_IDX_OFFSET
-						draft.messages[outputIdx] = {
-							type: 'image_generation_call',
-							id: event.item_id,
-							status: 'in_progress',
-							result: makeBase64Image(IMG_FORMAT, event.partial_image_b64),
-						}
-					})
-					break
-				}
-				case 'response.image_generation_call.completed': {
-					setChatStore(draft => {
-						const outputIdx = event.output_index + OUTPUT_IDX_OFFSET
-						if (draft.messages[outputIdx] !== undefined) {
-							draft.messages[outputIdx].status = 'completed'
-						}
-					})
-					break
-				}
-				case 'response.completed': {
-					setLoading(false)
-					break
-				}
-				case 'response.failed': {
-					alert(event.response.error?.message)
-					break
-				}
-				case 'error': {
-					alert(`${event.code} ${event.message} ${event.type}`)
-					break
-				}
-			}
-		})
-
-		sse.addEventListener('close', (data) => {
-			setLoading(false)
-		})
-
+		// Clear input and images
 		setInput('')
 		setAttachedImages([])
+
+		// Start the stream
+		assistantStream.mutate({
+			messages: getMessages(),
+			locale,
+			abortController: abortControllerRef.current,
+		})
 	}
+
+	// Cleanup abort controller on unmount
+	useEffect(() => {
+		return () => {
+			if (abortControllerRef.current) {
+				abortControllerRef.current.abort()
+			}
+		}
+	}, [])
 
 	// Background effect: scan all messages for base64 images and upload them
 	useEffect(() => {
@@ -363,7 +265,7 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 				})
 			}
 		})
-	}, [messages.length, imageUploadMutation])
+	}, [messages.length, imageUploadMutation, loading])
 
 	return (
 		<div className='w-full h-[28rem] md:h-[36rem] max-w-md lg:max-w-lg xl:max-w-xl bg-white/90 rounded-xl shadow-lg p-4 flex flex-col'>
@@ -391,11 +293,11 @@ export const AssistantWidget = ({ locale }: SSEAssistantWidgetProps) => {
 						</div>
 					)}
 				{messages.map((msg, i) => (
-					<>
-						{msg.type === 'message' && msg.role === 'user' && <InputMessageUI key={i} {...msg} />}
-						{msg.type === 'message' && msg.role === 'assistant' && <OutputMessageUI key={i} {...msg} />}
-						{msg.type === 'image_generation_call' && <ImageGenerationMessageUI key={i} {...msg} />}
-					</>
+					<React.Fragment key={i}>
+						{msg.type === 'message' && msg.role === 'user' && <InputMessageUI {...msg} />}
+						{msg.type === 'message' && msg.role === 'assistant' && <OutputMessageUI {...msg} />}
+						{msg.type === 'image_generation_call' && <ImageGenerationMessageUI {...msg} />}
+					</React.Fragment>
 				))}
 			</div>
 			{warning && <div className='text-red-600 text-sm mb-2'>{warning}</div>}
