@@ -20,6 +20,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
 		return next()
 	}
 
+	// no henky penky on `/api` routes as well, (this one caused me and client alot of pain in the ass)
+	if (pathname.startsWith('/api')) {
+		return next()
+	}
+
 	// if the pathname does not include any non default language locale, then add one
 	if (
 		!(
