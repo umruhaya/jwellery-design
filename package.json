@@ -32,6 +32,7 @@
 		"slick-carousel": "^1.8.1",
 		"tailwind-merge": "^3.3.1",
 		"tailwindcss": "^4.1.10",
+		"ua-parser-js": "^2.0.4",
 		"ulidx": "^2.4.1",
 		"wavesurfer.js": "^7.10.1",
 		"zustand": "^5.0.6"

@@ -12,6 +12,7 @@ import { ImageGenerationMessageUI, InputMessageUI, OutputMessageUI } from '~/com
 import { useRef as useReactRef } from 'react'
 import { IMG_FORMAT } from 'astro:env/client'
 import { useAssistantStream } from '~/hooks/use-assistant-stream'
+import { UAParser } from 'ua-parser-js'
 
 type AssistantWidgetProps = {
 	locale: string
@@ -40,6 +41,11 @@ function base64ToBlob(base64: string): Blob {
 	}
 	return new Blob([u8arr], { type: mime })
 }
+
+const parser = new UAParser()
+const deviceType = parser.getDevice().type
+// Check if it's mobile or tablet
+const isMobileOrTablet = deviceType === 'mobile' || deviceType === 'tablet'
 
 // React Query mutation for uploading base64 image to GCS and returning public URL
 const useImageUploadMutation = () =>
@@ -337,11 +343,19 @@ export const AssistantWidget = ({ locale }: AssistantWidgetProps) => {
 							/>
 							<ImageIcon onClick={() => imageRef.current?.click()} />
 						</label>
-						<input
-							type='text'
+						<textarea
+							style={{ resize: 'none' }}
 							value={input}
-							onChange={(e) =>
+							rows={2}
+							onChange={e =>
 								setInput(e.currentTarget.value)}
+							onKeyDown={e => {
+								if (isMobileOrTablet) return
+								if (e.key === 'Enter' && !e.shiftKey) {
+									e.preventDefault()
+									handleSend()
+								}
+							}}
 							placeholder={ui['assistant.input.placeholder']}
 							className='flex-1 min-w-0 px-3 py-2 border rounded-2xl focus:outline-none'
 							disabled={loading}
