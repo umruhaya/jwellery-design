@@ -11,7 +11,7 @@ gcloud storage buckets update gs://bucketname \
 ## SSH Access
 
 ```bash
-ssh -i ~/.ssh/my-gcp-key umernaeem135acc@cyodesign.com
+ssh -i ~/.ssh/my-gcp-key umer@cyodesign.com
 ```
 
 ## deploy
