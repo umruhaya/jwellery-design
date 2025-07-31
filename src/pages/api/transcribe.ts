@@ -16,7 +16,6 @@ export const POST: APIRoute = async ({ request }) => {
 		const transcription = await openai.audio.transcriptions.create({
 			file: audioFile,
 			model: 'whisper-1',
-			language: 'en',
 		})
 
 		return new Response(JSON.stringify({ text: transcription.text }), {
