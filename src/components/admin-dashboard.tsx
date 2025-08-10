@@ -1,116 +1,238 @@
-import React, { useRef, useState } from 'react'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import GalleryCarousel from './gallery-carousel'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { queryClient } from '~/lib/query-client'
 
-// Helper to get auth header
-const getAuthHeader = (basicAuthString: string) => ({
-	Authorization: 'Basic ' + btoa(basicAuthString),
-	'Content-Type': 'application/json',
-})
-
-// Fetch all designs
-const fetchDesigns = async (basicAuthString: string) => {
-	const res = await fetch('/api/admin/designs', { headers: getAuthHeader(basicAuthString) })
-	if (!res.ok) throw new Error('Failed to fetch designs')
-	return res.json()
+// Type definitions
+export type Design = {
+	id: number
+	url: string
+	customerName: string
+	specifications: string
 }
 
-// Fetch gallery
-const fetchGallery = async (basicAuthString: string) => {
-	const res = await fetch('/api/admin/gallery', { headers: getAuthHeader(basicAuthString) })
-	if (!res.ok) throw new Error('Failed to fetch gallery')
-	return res.json()
+export type GalleryItem = {
+	galleryId: number
+	designId: number
+	rank: number
+	url: string
+	customerName: string
 }
 
 type AdminDashboardProps = {
 	basicAuthString: string
 }
 
-export default function AdminDashboard({ basicAuthString }: AdminDashboardProps) {
-	const { data: designs = [], isLoading: loadingDesigns } = useQuery({
+// Helper function to create headers
+const createAuthHeaders = (basicAuthString: string) => ({
+	'Authorization': `Basic ${btoa(basicAuthString)}`,
+	'Content-Type': 'application/json',
+})
+
+export function AdminDashboard({ basicAuthString }: AdminDashboardProps) {
+	const authHeaders = createAuthHeaders(basicAuthString)
+
+	// Query: Fetch all designs
+	const {
+		data: designs = [],
+		isLoading: designsLoading,
+		error: designsError,
+	} = useQuery({
 		queryKey: ['designs'],
-		queryFn: () => fetchDesigns(basicAuthString),
+		queryFn: async (): Promise<Design[]> => {
+			const response = await fetch('/api/admin/designs', {
+				headers: authHeaders,
+			})
+			if (!response.ok) {
+				throw new Error('Failed to fetch designs')
+			}
+			return response.json()
+		},
 	}, queryClient)
-	const { data: gallery = [], isLoading: loadingGallery } = useQuery({
+
+	// Query: Fetch gallery items
+	const {
+		data: gallery = [],
+		isLoading: galleryLoading,
+		error: galleryError,
+	} = useQuery({
 		queryKey: ['gallery'],
-		queryFn: () => fetchGallery(basicAuthString),
+		queryFn: async (): Promise<GalleryItem[]> => {
+			const response = await fetch('/api/admin/gallery', {
+				headers: authHeaders,
+			})
+			if (!response.ok) {
+				throw new Error('Failed to fetch gallery')
+			}
+			return response.json()
+		},
 	}, queryClient)
 
-	// Add to gallery mutation
-	const addToGallery = useMutation({
+	// Mutation: Add to gallery
+	const addToGalleryMutation = useMutation({
 		mutationFn: async (designId: number) => {
-			const rank = Math.max(0, ...gallery.map((g: any) => g.rank)) + 1
-			const res = await fetch('/api/admin/gallery', {
+			// Get current gallery data to calculate next rank
+			const currentGallery = queryClient.getQueryData<GalleryItem[]>(['gallery']) || []
+			const nextRank = Math.max(0, ...currentGallery.map(item => item.rank)) + 1
+
+			const response = await fetch('/api/admin/gallery', {
 				method: 'POST',
-				headers: getAuthHeader(basicAuthString),
-				body: JSON.stringify({ designId, rank }),
+				headers: authHeaders,
+				body: JSON.stringify({ designId, rank: nextRank }),
 			})
-			if (!res.ok) throw new Error('Failed to add to gallery')
-			return res.json()
+
+			if (!response.ok) {
+				throw new Error('Failed to add design to gallery')
+			}
+
+			return response.json()
 		},
-		onSuccess: () => queryClient.invalidateQueries({ queryKey: ['gallery'] }),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['gallery'] })
+		},
 	}, queryClient)
 
-	// Remove from gallery mutation
-	const removeFromGallery = useMutation({
+	// Mutation: Remove from gallery
+	const removeFromGalleryMutation = useMutation({
 		mutationFn: async (galleryId: number) => {
-			const res = await fetch(`/api/admin/gallery?id=${galleryId}`, {
+			const response = await fetch(`/api/admin/gallery?id=${galleryId}`, {
 				method: 'DELETE',
-				headers: getAuthHeader(basicAuthString),
+				headers: authHeaders,
 			})
-			if (!res.ok) throw new Error('Failed to remove from gallery')
-			return res.json()
+
+			if (!response.ok) {
+				throw new Error('Failed to remove design from gallery')
+			}
+
+			return response.json()
 		},
-		onSuccess: () => queryClient.invalidateQueries({ queryKey: ['gallery'] }),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['gallery'] })
+		},
 	}, queryClient)
 
-	if (loadingDesigns || loadingGallery) return <div>Loading...</div>
+	// Helper function to check if design is in gallery
+	const isDesignInGallery = (designId: number) => {
+		return gallery.some(item => item.designId === designId)
+	}
 
-	return (
-		<div className='max-w-7xl mx-auto p-8'>
-			<h1 className='text-2xl font-bold'>Admin Dashboard</h1>
-
-			<h2 className='mt-4 mb-2 text-lg font-semibold'>Gallery Carousel Preview</h2>
-			<GalleryCarousel items={gallery} />
-
-			<h2 className='text-xl font-semibold mt-8'>All Designs</h2>
-			<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4'>
-				{designs.map((design: any) => (
-					<div key={design.id} className='border border-gray-200 p-4 rounded-lg'>
-						<img src={design.url} alt={design.customerName} className='w-full h-48 object-cover rounded' />
-						<h3 className='font-medium mt-2'>{design.customerName}</h3>
-						<p className='text-sm text-gray-600'>{design.specifications}</p>
-						<button
-							className='mt-2 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600'
-							onClick={() => addToGallery.mutate(design.id)}
-							disabled={addToGallery.isPending || gallery.some((g: any) => g.designId === design.id)}
-						>
-							{gallery.some((g: any) => g.designId === design.id) ? 'In Gallery' : 'Add to Gallery'}
-						</button>
-					</div>
-				))}
-			</div>
-
-			<div className='mt-8 pt-8 border-t border-gray-200'>
-				<h2 className='text-xl font-semibold'>Gallery Images</h2>
-				<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4'>
-					{gallery.map((item: any) => (
-						<div key={item.galleryId} className='border border-gray-200 p-4 rounded-lg'>
-							<img src={item.url} alt={item.customerName} className='w-full h-48 object-cover rounded' />
-							<h3 className='font-medium mt-2'>{item.customerName}</h3>
-							<button
-								className='mt-2 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600'
-								onClick={() =>
-									removeFromGallery.mutate(item.galleryId)}
-								disabled={removeFromGallery.isPending}
-							>
-								Remove
-							</button>
-						</div>
-					))}
+	// Show loading state while either query is loading
+	if (designsLoading || galleryLoading) {
+		return (
+			<div className='flex items-center justify-center min-h-screen'>
+				<div className='text-center'>
+					<div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4'></div>
+					<p className='text-lg text-gray-600'>Loading...</p>
 				</div>
 			</div>
+		)
+	}
+
+	// Show error state if either query failed
+	if (designsError || galleryError) {
+		return (
+			<div className='flex items-center justify-center min-h-screen'>
+				<div className='text-center text-red-600'>
+					<p className='text-lg'>Error loading data</p>
+					<p className='text-sm mt-2'>
+						{designsError?.message || galleryError?.message}
+					</p>
+				</div>
+			</div>
+		)
+	}
+
+	return (
+		<div className='p-8 max-w-7xl mx-auto'>
+			<h1 className='text-3xl font-bold text-gray-900 mb-8'>Admin Dashboard</h1>
+
+			{/* All Designs Section */}
+			<section className='mb-12'>
+				<h2 className='text-2xl font-semibold text-gray-800 mb-6'>All Designs</h2>
+				<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
+					{designs.map((design) => {
+						const inGallery = isDesignInGallery(design.id)
+						const isAddingToGallery = addToGalleryMutation.isPending
+
+						return (
+							<div
+								key={design.id}
+								className='bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow'
+							>
+								<div className='aspect-square relative overflow-hidden w-24 h-24'>
+									<img
+										src={design.url}
+										alt={`Design for ${design.customerName}`}
+										className='w-24 h-24'
+									/>
+								</div>
+								<div className='p-4'>
+									<h3 className='font-semibold text-gray-900 mb-2'>
+										{design.customerName}
+									</h3>
+									<p className='text-sm text-gray-600 mb-4 line-clamp-3'>
+										{design.specifications}
+									</p>
+									<button
+										onClick={() => addToGalleryMutation.mutate(design.id)}
+										disabled={inGallery || isAddingToGallery}
+										className={`w-full py-2 px-4 rounded-md font-medium transition-colors ${
+											inGallery
+												? 'bg-green-100 text-green-800 cursor-not-allowed'
+												: isAddingToGallery
+												? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+												: 'bg-blue-600 text-white hover:bg-blue-700'
+										}`}
+									>
+										{inGallery ? 'In Gallery' : 'Add to Gallery'}
+									</button>
+								</div>
+							</div>
+						)
+					})}
+				</div>
+				{designs.length === 0 && <p className='text-gray-500 text-center py-8'>No designs available</p>}
+			</section>
+
+			{/* Gallery Images Section */}
+			<section>
+				<h2 className='text-2xl font-semibold text-gray-800 mb-6'>Gallery Images</h2>
+				<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
+					{gallery.map((item) => {
+						const isRemoving = removeFromGalleryMutation.isPending
+
+						return (
+							<div
+								key={item.galleryId}
+								className='bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow'
+							>
+								<div className='aspect-square relative overflow-hidden'>
+									<img
+										src={item.url}
+										alt={`Gallery item for ${item.customerName}`}
+										className='w-full h-full object-cover'
+									/>
+								</div>
+								<div className='p-4'>
+									<h3 className='font-semibold text-gray-900 mb-4'>
+										{item.customerName}
+									</h3>
+									<button
+										onClick={() => removeFromGalleryMutation.mutate(item.galleryId)}
+										disabled={isRemoving}
+										className={`w-full py-2 px-4 rounded-md font-medium transition-colors ${
+											isRemoving
+												? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+												: 'bg-red-600 text-white hover:bg-red-700'
+										}`}
+									>
+										{isRemoving ? 'Removing...' : 'Remove'}
+									</button>
+								</div>
+							</div>
+						)
+					})}
+				</div>
+				{gallery.length === 0 && <p className='text-gray-500 text-center py-8'>No items in gallery</p>}
+			</section>
 		</div>
 	)
 }

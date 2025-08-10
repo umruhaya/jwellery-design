@@ -274,7 +274,7 @@ export const AssistantWidget = ({ locale }: AssistantWidgetProps) => {
 	}, [messages.length, imageUploadMutation, loading])
 
 	return (
-		<div className='w-full h-[28rem] md:h-[36rem] max-w-md lg:max-w-lg xl:max-w-xl bg-white/90 rounded-xl shadow-lg p-4 flex flex-col'>
+		<div className='w-full max-w-[800px] h-full bg-white/90 rounded-xl shadow-lg p-4 flex flex-col'>
 			<div className='overflow-y-auto mb-4 h-full space-y-2'>
 				{messages.length === 0
 					? (
@@ -331,7 +331,7 @@ export const AssistantWidget = ({ locale }: AssistantWidgetProps) => {
 				)
 				: (
 					<div className='flex flex-wrap items-stretch gap-2'>
-						<label className='p-2 bg-gray-200 rounded-full cursor-pointer flex items-center justify-center'>
+						<label className='p-2rounded-full cursor-pointer flex items-center justify-center'>
 							<input
 								ref={imageRef}
 								type='file'
@@ -347,8 +347,7 @@ export const AssistantWidget = ({ locale }: AssistantWidgetProps) => {
 							style={{ resize: 'none' }}
 							value={input}
 							rows={2}
-							onChange={e =>
-								setInput(e.currentTarget.value)}
+							onChange={e => setInput(e.currentTarget.value)}
 							onKeyDown={e => {
 								if (isMobileOrTablet) return
 								if (e.key === 'Enter' && !e.shiftKey) {
@@ -363,27 +362,29 @@ export const AssistantWidget = ({ locale }: AssistantWidgetProps) => {
 						<button
 							type='button'
 							onClick={() => setIsRecording(true)}
-							className='p-2 bg-gray-200 rounded-full cursor-pointer flex items-center justify-center'
+							className='p-2 rounded-full cursor-pointer flex items-center justify-center'
 							disabled={loading}
 						>
 							<MicIcon className='w-6 h-6' />
 						</button>
-						<button
-							type='button'
-							onClick={handleSend}
-							className='p-2 bg-primary text-white rounded-full disabled:opacity-50 flex items-center justify-center w-12 h-12 min-w-[3rem] min-h-[3rem]'
-							disabled={disableSendMessage}
-						>
-							{loading
-								? <Spinner className='w-6 h-6 text-white' />
-								: (
-									<img
-										src='/icons/message-send.svg'
-										className='w-6 h-6 object-contain'
-										alt={ui['assistant.sendButton']}
-									/>
-								)}
-						</button>
+						<div className='flex items-center justify-center'>
+							<button
+								type='button'
+								onClick={handleSend}
+								className='p-2 bg-primary text-white rounded-full disabled:opacity-50 flex items-center justify-center w-12 h-12 min-w-[3rem] min-h-[3rem]'
+								disabled={disableSendMessage}
+							>
+								{loading
+									? <Spinner className='w-6 h-6 text-white' />
+									: (
+										<img
+											src='/icons/message-send.svg'
+											className='w-6 h-6 object-contain'
+											alt={ui['assistant.sendButton']}
+										/>
+									)}
+							</button>
+						</div>
 					</div>
 				)}
 		</div>

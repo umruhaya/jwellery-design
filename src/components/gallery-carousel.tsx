@@ -51,11 +51,11 @@ const GalleryCarousel: React.FC<GalleryCarouselProps> = ({ items }) => {
 				{items.map((item) => (
 					<div key={item.galleryId} className='px-2'>
 						<div className='bg-white rounded-lg shadow-lg overflow-hidden'>
-							<div className='relative pb-[100%]'>
+							<div className='relative pb-[80%]'>
 								<img
 									src={item.url}
 									alt={`${item.customerName}'s design`}
-									className='absolute inset-0 w-full h-full object-cover'
+									className='absolute inset-0 w-full'
 								/>
 							</div>
 							<div className='p-4'>

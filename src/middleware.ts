@@ -2,7 +2,6 @@ import { defineMiddleware } from 'astro:middleware'
 
 export const onRequest = defineMiddleware(async (context, next) => {
 	const { pathname } = new URL(context.request.url)
-	console.log({ pathname })
 
 	const locale = context.preferredLocale || 'en'
 

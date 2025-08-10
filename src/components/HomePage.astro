@@ -2,7 +2,11 @@
 import { AssistantWidget } from '~/components/assistant-widget'
 import { getLocalePath, getTranslationForLocale } from '~/i18n/ui'
 import GalleryCarousel from '~/components/gallery-carousel'
+import { CyoDesignLogo } from '~/components/logo'
 
+interface Props {
+	locale: string
+}
 interface GalleryItem {
 	galleryId: number
 	rank: number
@@ -13,12 +17,50 @@ interface GalleryItem {
 	createdAt: string | null
 }
 
-interface Props {
-	locale: string
-	gallery: GalleryItem[]
-}
+const gallery: GalleryItem[] = [
+	{
+		galleryId: 1,
+		designId: 1,
+		rank: 1,
+		url: '/gallery-1.webp',
+		customerName: 'Prism Spectrum Necklace',
+		createdAt: new Date().toISOString(),
+		specifications:
+			'Rainbow-gradient tennis necklace set in 18k yellow gold, featuring a continuous row of round brilliant sapphires, emeralds, and tourmalines transitioning through violet, blue, green, yellow and pink hues; secure hidden box clasp with safety catch and total gemstone weight approx. 20–30 ct (custom sizing available)',
+	},
+	{
+		galleryId: 2,
+		designId: 2,
+		rank: 2,
+		url: '/gallery-2.webp',
+		customerName: 'Celestial Halo',
+		createdAt: new Date().toISOString(),
+		specifications:
+			'Oval-cut center diamond with a pavé halo and diamond-set white gold band, milgrain detailing and four-prong secure setting',
+	},
+	{
+		galleryId: 3,
+		designId: 3,
+		rank: 3,
+		url: '/gallery-3.webp',
+		customerName: 'Golden Radiance Cuff',
+		createdAt: new Date().toISOString(),
+		specifications:
+			'Open gold cuff adorned with three cushion-cut center diamonds, each haloed by pavé-set round diamonds; dual-row pavé detailing along top and bottom edges, 18k yellow gold setting, total diamond weight approx. 3.5–4.0 ct (estimated), secured with bezel-prong mounts and polished inner band',
+	},
+	{
+		galleryId: 4,
+		designId: 4,
+		rank: 4,
+		url: '/gallery-4.webp',
+		customerName: 'Blossom Radiance',
+		createdAt: new Date().toISOString(),
+		specifications:
+			'Floral-inspired cocktail ring featuring seven pear-cut rubies set in 18k yellow gold surrounding a brilliant round-cut diamond halo; micro-pave accent diamonds and secure prong settings for a vintage-meets-modern statement piece.',
+	},
+]
 
-const { locale, gallery } = Astro.props
+const { locale } = Astro.props
 const ui = getTranslationForLocale(locale ?? 'en')
 const localePath = getLocalePath(locale ?? 'en')
 ---
@@ -34,15 +76,18 @@ const localePath = getLocalePath(locale ?? 'en')
 	.font-didot { font-family: 'GFS Didot', serif; }
 	html { scroll-behavior: smooth; }
 	</style>
+
+	<!-- Preload hero background video -->
+	<link rel="preload" as="video" href="/hero-background-high.webm" type="video/webm">
 </head>
 
 <body class="bg-white text-gray-900">
 	{/* HERO SECTION WITH VIDEO BG */}
 	<section class="relative h-[100vh] flex flex-col overflow-hidden">
-		<div class="absolute inset-0 w-full h-full object-cover bg-primary-dark" />
-		<!-- <video class="absolute inset-0 w-full h-full object-cover" autoplay loop muted playsinline>
-			<source src="/hero.mp4" type="video/mp4" />
-		</video> -->
+		<!-- <div class="absolute inset-0 w-full h-full object-cover bg-primary-dark" /> -->
+		<video preload="auto" class="absolute inset-0 w-full h-full object-cover" autoplay loop muted playsinline>
+			<source src="/hero-background-high.webm" type="video/webm" />
+		</video>
 		{/* Overlay for readability */}
 		<!-- <div class="absolute inset-0 bg-emerald-900/40"></div> -->
 
@@ -50,34 +95,44 @@ const localePath = getLocalePath(locale ?? 'en')
 		<header class="flex justify-between items-center px-4 md:px-10 pt-2 md:pt-8 relative z-20">
 			<div></div>
 			<a href={locale === 'de' ? '/de' : '/'} class="flex items-center space-x-3">
-				<img src="/logo.jpeg" alt="CYO Design Logo" class="h-12 w-12 rounded-full shadow" />
-				<span class="text-xl sm:text-3xl font-light font-didot text-white tracking-wide">CYO design</span>
+				<CyoDesignLogo size={150} />
 			</a>
-			<nav class="flex items-center gap-2 md:gap-8 text-base md:text-2xl">
+			<div></div>
+			<!-- <nav class="flex items-center gap-2 md:gap-8 text-base md:text-2xl">
 				<a href="#gallery" class="text-white font-didot">{ui['nav.gallery']}</a>
 				<a href={localePath('/about')} class="text-white font-didot">{ui['nav.about']}</a>
-			</nav>
+			</nav> -->
 		</header>
 
-		{/* Hero Content + AI Assistant */}
-		<div class="flex-1 flex flex-col justify-center items-center relative z-20 px-8">
-			<div class="flex gap-8 flex-col justify-center items-center lg:flex-row lg:justify-between lg:px-16 w-full">
-				<div class="lg:w-[40vw]">
-					<h2 class="text-2xl lg:text-5xl font-didot text-white mb-4 text-center drop-shadow-lg">
-						{ui['hero.title']}
-					</h2>
-					<h3 class="hidden lg:block font-didot text-white text-sm md:text-lg mt-8 mb-8 text-center drop-shadow">
-						{ui['hero.subtitle']}
-					</h3>
-				</div>
-				<AssistantWidget client:load locale={locale ?? 'en'} />
+		{/* Hero Content */}
+		<div class="flex-1 flex flex-col justify-end items-center relative z-20 px-8 pb-16">
+			<div class="text-center">
+				<h2 class="text-2xl lg:text-5xl font-didot text-white mb-4 drop-shadow-lg">
+					{ui['hero.title']}
+				</h2>
+				<h3 class="lg:block font-didot text-white text-sm md:text-lg mt-4 drop-shadow">
+					{ui['hero.subtitle']}
+				</h3>
+				<a
+					href="#assistant"
+					class="mt-8 inline-block bg-primary text-white px-6 py-3 rounded-full font-semibold text-lg shadow-lg hover:bg-primary-dark transition-colors duration-300"
+				>
+					💎 {ui['hero.callToAction']}
+				</a>
 			</div>
-			<a href="#gallery" class="animate-bounce mt-4 hidden md:flex flex-col items-center text-white">
+			<a href="#gallery" class="animate-bounce mt-8 hidden md:flex flex-col items-center text-white">
 				<svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 					<path d="M19 9l-7 7-7-7" />
 				</svg>
 				<span class="text-sm mt-1">{ui['hero.scrollToGallery']}</span>
 			</a>
+		</div>
+	</section>
+
+	{/* AI Assistant Section */}
+	<section id="assistant" class="w-full py-16 bg-primary-dark">
+		<div class="w-[95%] h-[600px] flex justify-center items-center mx-auto">
+			<AssistantWidget client:load locale={locale ?? 'en'} />
 		</div>
 	</section>
 

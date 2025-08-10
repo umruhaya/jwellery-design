@@ -14,6 +14,7 @@ type TranslationKey =
 	| 'nav.gallery'
 	| 'hero.title'
 	| 'hero.subtitle'
+	| 'hero.callToAction'
 	| 'hero.scrollToGallery'
 	| 'lead.title'
 	| 'lead.description'
@@ -57,6 +58,7 @@ const ui: Translations = {
 		'hero.title': 'Bespoke jewelry, crafted for your story',
 		'hero.subtitle':
 			'Experience the CYO Live Atelier: luxury, artistry, and personal guidance - digitally and personally.',
+		'hero.callToAction': 'Design Your Jewelry',
 		'hero.scrollToGallery': 'Scroll to Gallery',
 		'lead.title': 'Get in Touch',
 		'lead.description':
@@ -98,6 +100,7 @@ You can talk to me with text or voice. I will help you, step by step.`,
 		'hero.title': 'Bijoux sur mesure, créés pour votre histoire',
 		'hero.subtitle':
 			'Découvrez l’Atelier Live CYO : luxe, art et accompagnement personnalisé – digital et en personne.',
+		'hero.callToAction': 'Ihr Schmuckdesign starten',
 		'hero.scrollToGallery': 'Faire défiler vers la galerie',
 		'lead.title': 'Contactez-nous',
 		'lead.description':
