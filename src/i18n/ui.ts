@@ -100,7 +100,7 @@ You can talk to me with text or voice. I will help you, step by step.`,
 		'hero.title': 'Bijoux sur mesure, créés pour votre histoire',
 		'hero.subtitle':
 			'Découvrez l’Atelier Live CYO : luxe, art et accompagnement personnalisé – digital et en personne.',
-		'hero.callToAction': 'Ihr Schmuckdesign starten',
+		'hero.callToAction': 'Créez Votre Bijou',
 		'hero.scrollToGallery': 'Faire défiler vers la galerie',
 		'lead.title': 'Contactez-nous',
 		'lead.description':
@@ -142,6 +142,7 @@ Vous pouvez me parler par texte ou par voix. Je vous guiderai, étape par étape
 		'hero.title': 'Individuelle Schmuckstücke, gefertigt für Ihre Geschichte',
 		'hero.subtitle':
 			'Erleben Sie das CYO Live Atelier: Luxus, Kunstfertigkeit und persönliche Beratung – digital und persönlich.',
+		'hero.callToAction': 'Ihr Schmuckdesign starten',
 		'hero.scrollToGallery': 'Zur Galerie scrollen',
 		'lead.title': 'Kontakt aufnehmen',
 		'lead.description':

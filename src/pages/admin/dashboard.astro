@@ -1,6 +1,6 @@
 ---
 import { DASHBOARD_AUTH } from 'astro:env/server'
-import AdminDashboard from '~/components/admin-dashboard'
+import { AdminDashboard } from '~/components/admin-dashboard'
 
 // Basic Auth Check
 const auth = Astro.request.headers.get('Authorization')
@@ -34,12 +34,8 @@ const basicAuthString = `${username}:${password}`
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>CYO Design</title>
 	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-	<style>
-	.font-playfair { font-family: 'Playfair Display', serif; }
-	html { scroll-behavior: smooth; }
-	</style>
 </head>
 
-<body class="bg-white text-gray-900">
+<body>
 	<AdminDashboard client:load basicAuthString={basicAuthString} />
 </body>
