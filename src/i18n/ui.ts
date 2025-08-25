@@ -43,6 +43,15 @@ type TranslationKey =
 	| 'aboutus.aboutus'
 	| 'aboutus.title'
 	| 'aboutus.subtitle'
+	| 'steps.title'
+	| 'steps.1.title'
+	| 'steps.1.description'
+	| 'steps.2.title'
+	| 'steps.2.description'
+	| 'steps.3.title'
+	| 'steps.3.description'
+	| 'steps.4.title'
+	| 'steps.4.description'
 
 // Utility type: ensures each language has all translation keys
 type Translations = {
@@ -97,6 +106,17 @@ You can talk to me with text or voice. I will help you, step by step.`,
 		'aboutus.title': 'Inspired by you, crafted by us.',
 		'aboutus.subtitle':
 			'We combine decades of time-tested craftsmanship with the possibilities of artificial intelligence. Our promise: Personal consultation, constant availability, and visualizations until every detail is perfect. Until, together, we create the piece that perfectly reflects your vision.',
+		'steps.title': 'CYO, in four steps', // Assuming this is the title for the whole section
+		'steps.1.title': 'Share Inspiration',
+		'steps.1.description': 'Talk to our AI, show your ideas, and see the first visualizations come to life.',
+		'steps.2.title': 'Perfect the Design',
+		'steps.2.description':
+			"We'll refine every detail together until the piece of jewelry perfectly matches your vision.",
+		'steps.3.title': 'Receive a Quote',
+		'steps.3.description': 'Transparent, clear, and tailored specifically to you.',
+		'steps.4.title': 'Crafting & Delivery',
+		'steps.4.description':
+			'Our master craftsmen transform your vision into a unique piece of jewelry – crafted with the highest precision and delivered directly to you.',
 	},
 	de: {
 		'nav.home': 'Startseite',
@@ -143,6 +163,18 @@ Sie können mit Text oder Stimme mit mir sprechen. Ich führe Sie Schritt für S
 		'aboutus.title': 'Von dir inspiriert, von uns gestaltet.',
 		'aboutus.subtitle':
 			`Wir verbinden jahrzehntelang erprobte Handwerkskunst mit den Möglichkeiten künstlicher Intelligenz. Unser Versprechen: Persönliche Beratung, ständige Erreichbarkeit und Visualisierungen, bis jedes Detail stimmt. So lange, bis wir gemeinsam das Stück erschaffen, das deine Vision perfekt widerspiegelt.`,
+		'steps.title': 'CYO, in vier Schritten', // Assuming this is the title for the whole section
+		'steps.1.title': 'Inspiration teilen',
+		'steps.1.description':
+			'Sprich mit unserer KI, zeige deine Ideen und erlebe, wie erste Visualisierungen entstehen.',
+		'steps.2.title': 'Design vollenden',
+		'steps.2.description':
+			'Wir verfeinern gemeinsam jedes Detail, bis das Schmuckstück genau deiner Vorstellung entspricht.',
+		'steps.3.title': 'Angebot erhalten',
+		'steps.3.description': 'Transparent, klar und individuell auf dich abgestimmt.',
+		'steps.4.title': 'Fertigung & Lieferung',
+		'steps.4.description':
+			'Unsere Meister verwandeln deine Vision in ein einzigartiges Schmuckstück – gefertigt mit höchster Präzision und direkt zu dir geliefert.',
 	},
 } as const
 
