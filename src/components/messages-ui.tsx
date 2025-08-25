@@ -1,4 +1,4 @@
-import type { ImageGenerationMessage, InputMessage, OutputMessage } from '~/store/chat'
+import type { ImageGenerationMessage, InputMessage, OutputMessage } from '~/store'
 import { MarkdownRenderer } from './markdown-renderer'
 
 export const InputMessageUI = ({ content }: InputMessage) => {

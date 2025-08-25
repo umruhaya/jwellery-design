@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { Stream } from 'openai/streaming'
 import type { ResponseStreamEvent } from 'openai/resources/responses/responses.mjs'
-import { setChatStore, useChatStore } from '~/store/chat'
+import { setChatStore, useChatStore } from '~/store'
 import { queryClient } from '~/lib/query-client'
 
 interface UseAssistantStreamParams {

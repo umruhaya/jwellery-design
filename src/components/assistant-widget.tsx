@@ -1,6 +1,6 @@
 import type { ResponseStreamEvent } from 'openai/resources/responses/responses.mjs'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { setChatStore, useChatStore } from '~/store/chat'
+import { setChatStore, useChatStore } from '~/store'
 import { getTranslationForLocale } from '~/i18n/ui'
 import { ImageIcon, MicIcon, XIcon } from 'lucide-react'
 import { downscaleBase64Image, makeBase64Image } from '~/lib/image-utils'

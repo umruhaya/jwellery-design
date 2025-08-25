@@ -2,7 +2,7 @@
 import { AssistantWidget } from '~/components/assistant-widget'
 import { getLocalePath, getTranslationForLocale } from '~/i18n/ui'
 import GalleryCarousel from '~/components/gallery-carousel'
-import { CyoDesignLogo } from '~/components/logo'
+import { Header } from '~/components/header'
 
 interface Props {
 	locale: string
@@ -83,23 +83,13 @@ const localePath = getLocalePath(locale ?? 'en')
 	<section class="relative h-[100vh] flex flex-col overflow-hidden">
 		<!-- <div class="absolute inset-0 w-full h-full object-cover bg-primary-dark" /> -->
 		<video preload="auto" class="absolute inset-0 w-full h-full object-cover" autoplay loop muted playsinline>
-			<source src="/hero-background-high.webm" type="video/webm" />
+			<source src="https://storage.googleapis.com/cyodesign/assets/hero/hero-v2.mp4" type="video/webm" />
 		</video>
 		{/* Overlay for readability */}
 		<!-- <div class="absolute inset-0 bg-emerald-900/40"></div> -->
 
 		{/* Navigation/Header */}
-		<header class="flex justify-between items-center px-4 md:px-10 pt-2 md:pt-8 relative z-20">
-			<div></div>
-			<a href={locale === 'de' ? '/de' : '/'} class="flex items-center space-x-3">
-				<CyoDesignLogo size={150} />
-			</a>
-			<div></div>
-			<!-- <nav class="flex items-center gap-2 md:gap-8 text-base md:text-2xl">
-				<a href="#gallery" class="text-white font-didot">{ui['nav.gallery']}</a>
-				<a href={localePath('/about')} class="text-white font-didot">{ui['nav.about']}</a>
-			</nav> -->
-		</header>
+		<Header locale={locale} client:load />
 
 		{/* Hero Content */}
 		<div class="flex-1 flex flex-col justify-end items-center relative z-20 px-8 pb-16">

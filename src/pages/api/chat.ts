@@ -9,7 +9,7 @@ import {
 	type ImageGenerationMessage,
 	inputMessageSchema,
 	outputMessageSchema,
-} from '~/store/chat'
+} from '~/store'
 import { IMG_FORMAT } from 'astro:env/client'
 import { DatabaseService } from '~/services/database'
 
