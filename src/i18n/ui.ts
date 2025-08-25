@@ -1,6 +1,5 @@
 const languages = {
 	en: 'English',
-	fr: 'Français', // French
 	de: 'Deutsch', // German
 } as const
 
@@ -41,6 +40,9 @@ type TranslationKey =
 	| 'assistant.sendButton'
 	| 'assistant.description'
 	| 'assistant.input.placeholder'
+	| 'aboutus.aboutus'
+	| 'aboutus.title'
+	| 'aboutus.subtitle'
 
 // Utility type: ensures each language has all translation keys
 type Translations = {
@@ -91,48 +93,10 @@ const ui: Translations = {
 Just upload an inspiration photo, or tell me about the jewelry you want.
 You can talk to me with text or voice. I will help you, step by step.`,
 		'assistant.input.placeholder': 'Describe your dream jwellery...',
-	},
-	fr: {
-		'nav.home': 'Accueil',
-		'nav.about': 'À propos',
-		'nav.twitter': 'Twitter',
-		'nav.gallery': 'Galerie',
-		'hero.title': 'Bijoux sur mesure, créés pour votre histoire',
-		'hero.subtitle':
-			'Découvrez l’Atelier Live CYO : luxe, art et accompagnement personnalisé – digital et en personne.',
-		'hero.callToAction': 'Créez Votre Bijou',
-		'hero.scrollToGallery': 'Faire défiler vers la galerie',
-		'lead.title': 'Contactez-nous',
-		'lead.description':
-			'Après avoir soumis votre e-mail, notre équipe vous contactera pour en savoir plus sur vos souhaits en matière de bijoux. Nous respectons votre vie privée et sommes conformes au RGPD.',
-		'lead.emailPlaceholder': 'Votre adresse e-mail',
-		'lead.gdprLabel':
-			'J’accepte de recevoir des e-mails et d’accepter la <a href="/privacy" class="underline">politique de confidentialité</a>.',
-		'lead.button': 'S’inscrire',
-		'lead.success': 'Merci pour votre inscription !',
-		'lead.error': 'Une erreur est survenue. Veuillez réessayer.',
-		'gallery.title': 'Galerie / Inspirations',
-		'gallery.imgAlt': 'Bracelet signature Perlée',
-		'gallery.itemTitle': 'Bracelet signature Perlée, modèle moyen',
-		'gallery.itemMaterial': 'Or jaune',
-		'gallery.more': 'Plus de créations',
-		'gallery.modelAlt': 'Modèle avec Perlée',
-		'beadsDance.title': 'Les perles dorées s’unissent dans une danse gracieuse',
-		'beadsDance.description':
-			'CYO Design présente l’esprit joyeux de la collection Perlée à travers un mouvement vibrant et un style raffiné.',
-		'beadsDance.cta': 'Découvrez la danse gracieuse',
-		'gifts.title': 'Cadeaux enchanteurs',
-		'gifts.imgAlt': 'Bijoux cadeaux',
-		'gifts.description':
-			'Grâce au savoir-faire, à la créativité et à l’excellence, CYO Design accompagne les moments les plus heureux de la vie',
-		'gifts.cta': 'Entrez dans l’univers intemporel',
-		'footer.impressum': 'Mentions légales',
-		'footer.privacy': 'Confidentialité',
-		'assistant.sendButton': 'Envoyer',
-		'assistant.description': `Je vais vous aider à créer le bijou de vos rêves.
-Téléchargez une photo d’inspiration ou décrivez-moi le bijou que vous souhaitez.
-Vous pouvez me parler par texte ou par voix. Je vous guiderai, étape par étape.`,
-		'assistant.input.placeholder': 'Décrivez votre bijou de rêve...',
+		'aboutus.aboutus': 'About Us',
+		'aboutus.title': 'Inspired by you, crafted by us.',
+		'aboutus.subtitle':
+			'We combine decades of time-tested craftsmanship with the possibilities of artificial intelligence. Our promise: Personal consultation, constant availability, and visualizations until every detail is perfect. Until, together, we create the piece that perfectly reflects your vision.',
 	},
 	de: {
 		'nav.home': 'Startseite',
@@ -175,6 +139,10 @@ Vous pouvez me parler par texte ou par voix. Je vous guiderai, étape par étape
 Laden Sie ein Inspirationsfoto hoch oder erzählen Sie mir, welches Schmuckstück Sie möchten.
 Sie können mit Text oder Stimme mit mir sprechen. Ich führe Sie Schritt für Schritt.`,
 		'assistant.input.placeholder': 'Beschreiben Sie Ihr Traumschmuckstück...',
+		'aboutus.aboutus': 'Über uns',
+		'aboutus.title': 'Von dir inspiriert, von uns gestaltet.',
+		'aboutus.subtitle':
+			`Wir verbinden jahrzehntelang erprobte Handwerkskunst mit den Möglichkeiten künstlicher Intelligenz. Unser Versprechen: Persönliche Beratung, ständige Erreichbarkeit und Visualisierungen, bis jedes Detail stimmt. So lange, bis wir gemeinsam das Stück erschaffen, das deine Vision perfekt widerspiegelt.`,
 	},
 } as const
 
