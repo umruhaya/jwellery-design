@@ -12,15 +12,13 @@ const GalleryCarousel: React.FC = () => {
 
 	return (
 		<Carousel
-			className='w-full'
+			className='w-full px-4'
 			opts={{
 				align: 'start',
 				loop: true,
 				slidesToScroll: 1,
 			}}
 			plugins={[plugin.current]}
-			onMouseEnter={plugin.current.stop}
-			onMouseLeave={plugin.current.reset}
 		>
 			<CarouselContent>
 				{gallerySpecs.map((item, index) => (
