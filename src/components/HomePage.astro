@@ -8,58 +8,6 @@ import { StepsTimeline } from '~/components/steps-timeline'
 interface Props {
 	locale: string
 }
-interface GalleryItem {
-	galleryId: number
-	rank: number
-	designId: number
-	url: string
-	customerName: string
-	specifications: string
-	createdAt: string | null
-}
-
-const gallery: GalleryItem[] = [
-	{
-		galleryId: 1,
-		designId: 1,
-		rank: 1,
-		url: '/gallery-1.webp',
-		customerName: 'Prism Spectrum Necklace',
-		createdAt: new Date().toISOString(),
-		specifications:
-			'Rainbow-gradient tennis necklace set in 18k yellow gold, featuring a continuous row of round brilliant sapphires, emeralds, and tourmalines transitioning through violet, blue, green, yellow and pink hues; secure hidden box clasp with safety catch and total gemstone weight approx. 20–30 ct (custom sizing available)',
-	},
-	{
-		galleryId: 2,
-		designId: 2,
-		rank: 2,
-		url: '/gallery-2.webp',
-		customerName: 'Celestial Halo',
-		createdAt: new Date().toISOString(),
-		specifications:
-			'Oval-cut center diamond with a pavé halo and diamond-set white gold band, milgrain detailing and four-prong secure setting',
-	},
-	{
-		galleryId: 3,
-		designId: 3,
-		rank: 3,
-		url: '/gallery-3.webp',
-		customerName: 'Golden Radiance Cuff',
-		createdAt: new Date().toISOString(),
-		specifications:
-			'Open gold cuff adorned with three cushion-cut center diamonds, each haloed by pavé-set round diamonds; dual-row pavé detailing along top and bottom edges, 18k yellow gold setting, total diamond weight approx. 3.5–4.0 ct (estimated), secured with bezel-prong mounts and polished inner band',
-	},
-	{
-		galleryId: 4,
-		designId: 4,
-		rank: 4,
-		url: '/gallery-4.webp',
-		customerName: 'Blossom Radiance',
-		createdAt: new Date().toISOString(),
-		specifications:
-			'Floral-inspired cocktail ring featuring seven pear-cut rubies set in 18k yellow gold surrounding a brilliant round-cut diamond halo; micro-pave accent diamonds and secure prong settings for a vintage-meets-modern statement piece.',
-	},
-]
 
 const { locale } = Astro.props
 const ui = getTranslationForLocale(locale ?? 'en')
@@ -128,7 +76,7 @@ const localePath = getLocalePath(locale ?? 'en')
 	<section id="gallery" class="w-full mb-24">
 		<div class="max-w-7xl mx-auto">
 			<h2 class="text-4xl font-didot text-center mb-8 pt-12">{ui['gallery.title']}</h2>
-			<GalleryCarousel client:only items={gallery} />
+			<GalleryCarousel client:only />
 		</div>
 	</section>
 
