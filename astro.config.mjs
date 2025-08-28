@@ -49,7 +49,7 @@ export default defineConfig({
 			IMG_FORMAT: envField.enum({
 				access: 'public',
 				context: 'client',
-				default: 'webp',
+				default: 'jpeg',
 				values: ['webp', 'jpeg', 'png'],
 			}),
 			DASHBOARD_AUTH: envField.string({ access: 'secret', context: 'server' }),

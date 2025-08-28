@@ -56,7 +56,7 @@ export function StepsTimeline({ locale }: { locale: string }) {
 	return (
 		<div
 			className='relative w-full overflow-hidden bg-cover bg-center bg-no-repeat min-h-[700px] md:min-h-[900px] flex items-center'
-			style={{ backgroundImage: 'url(/jwellery-on-branch.jpg)' }}
+			style={{ backgroundImage: 'url(https://storage.googleapis.com/cyodesign/assets/bracelet-on-step.jpg)' }}
 		>
 			{/* Improved overlay for better contrast */}
 			<div className='absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/10'></div>

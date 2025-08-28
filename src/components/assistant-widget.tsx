@@ -10,7 +10,6 @@ import { queryClient } from '~/lib/query-client'
 import { Spinner } from './spinner'
 import { ImageGenerationMessageUI, InputMessageUI, OutputMessageUI } from '~/components/messages-ui'
 import { useRef as useReactRef } from 'react'
-import { IMG_FORMAT } from 'astro:env/client'
 import { useAssistantStream } from '~/hooks/use-assistant-stream'
 import { UAParser } from 'ua-parser-js'
 

@@ -82,53 +82,17 @@ const localePath = getLocalePath(locale ?? 'en')
 
 	<section>
 		<div class="w-full">
-			<img src="diamond-brooch.webp" alt="Diamond Brooch" class="w-full h-auto object-cover" />
-			<img src="gold-snake-emerald-eye.webp" alt="Emerald Eye on a Gold Snake" class="w-full h-auto object-cover" />
+			<img
+				src="https://storage.googleapis.com/cyodesign/assets/diamond-brooch.jpg"
+				alt="Diamond Brooch"
+				class="w-full h-auto object-cover"
+			/>
+			<img
+				src="https://storage.googleapis.com/cyodesign/assets/gold-snake-emerald-eye.jpg"
+				alt="Emerald Eye on a Gold Snake"
+				class="w-full h-auto object-cover"
+			/>
 		</div>
-	</section>
-
-	{/* THE GOLDEN BEADS DANCE */}
-	<section class="relative w-full overflow-hidden">
-		<img
-			src="/watch-and-stem.jpg"
-			alt=""
-			class="w-full h-auto object-cover hidden md:block"
-		/>
-		<img
-			src="/watch-and-stem-mobile.jpg"
-			alt=""
-			class="w-full h-auto object-cover md:hidden"
-		/>
-		<div class="absolute inset-0 hidden md:flex flex-col items-center justify-center text-center px-6">
-			<h2 class="font-didot text-xl md:text-4xl mb-6 text-white drop-shadow-lg">
-				{ui['beadsDance.title']}
-			</h2>
-			<p class="text-white text-xs md:text-xl max-w-2xl mb-4 drop-shadow md:px-8 px-4">
-				{ui['beadsDance.description']}
-			</p>
-			<a
-				href="#"
-				class="uppercase tracking-widest text-gray-100 border-b border-white pb-1 text-xs md:text-xl drop-shadow"
-			>
-				{ui['beadsDance.cta']}
-			</a>
-		</div>
-	</section>
-
-	{/* ENCHANTING GIFTS */}
-	<section class="py-12 mx-8 md:max-w-5xl md:mx-auto text-center">
-		<h2 class="font-didot text-4xl mb-8">{ui['gifts.title']}</h2>
-		<img
-			class="mx-auto mb-6 w-full object-cover max-h-96 rounded"
-			src="/jwellery-on-branch.jpg"
-			alt={ui['gifts.imgAlt']}
-		/>
-		<p class="text-gray-700 mb-8 max-w-2xl mx-auto text-base md:text-2xl">
-			{ui['gifts.description']}
-		</p>
-		<a href="#" class="text-sm md:text-xl uppercase text-gray-500 tracking-widest border-b border-gray-300 pb-1">
-			{ui['gifts.cta']}
-		</a>
 	</section>
 
 	{/* GDPR LEAD COLLECTION */}
@@ -167,7 +131,15 @@ const localePath = getLocalePath(locale ?? 'en')
 	{/* ABOUT US SECTION (56vw to conform to the video aspect ratio 9/16 = 0.5625) */}
 	<section id="about" class="relative w-full h-auto md:h-[56vw] grid place-items-center px-8 py-18 overflow-hidden">
 		{/* Background Video */}
-		<video preload="auto" class="absolute inset-0 w-full h-full object-cover" autoplay loop muted playsinline>
+		<video
+			preload="auto"
+			poster="https://storage.googleapis.com/cyodesign/assets/aboutus-necklace.jpg"
+			class="absolute inset-0 w-full h-full object-cover"
+			autoplay
+			loop
+			muted
+			playsinline
+		>
 			<source src="https://storage.googleapis.com/cyodesign/assets/aboutus-necklace.mp4" type="video/mp4" />
 		</video>
 		{/* Overlay for readability */}

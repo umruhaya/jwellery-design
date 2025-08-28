@@ -49,7 +49,7 @@ export const POST: APIRoute = async (ctx) => {
 				...messages,
 			],
 			tools: [
-				{ type: 'image_generation', partial_images: 2, output_format: IMG_FORMAT, output_compression: 80 },
+				{ type: 'image_generation', partial_images: 2, output_format: IMG_FORMAT, output_compression: 85 },
 				{
 					type: 'function',
 					name: 'send_email',
