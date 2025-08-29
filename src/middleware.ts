@@ -1,5 +1,7 @@
 import { defineMiddleware } from 'astro:middleware'
 
+const possibleLocalesPrefixes = ['/en', '/de', '/es', '/it', '/fr']
+
 export const onRequest = defineMiddleware(async (context, next) => {
 	const { pathname } = new URL(context.request.url)
 
@@ -10,29 +12,13 @@ export const onRequest = defineMiddleware(async (context, next) => {
 		return next()
 	}
 
-	if (pathname.startsWith('/en')) {
-		return context.rewrite(pathname.slice(3) || '/')
-	}
-
-	// no henky penky on `English` Locale as it is the default
-	if (locale === 'en') {
-		return next()
-	}
-
 	// no henky penky on `/api` routes as well, (this one caused me and client alot of pain in the ass)
 	if (pathname.startsWith('/api')) {
 		return next()
 	}
 
-	// if the pathname does not include any non default language locale, then add one
-	if (
-		!(
-			pathname.startsWith('/de') ||
-			pathname.startsWith('/es') ||
-			pathname.startsWith('/it') ||
-			pathname.startsWith('/fr')
-		)
-	) {
+	// if we do not have a locale prefix in the pathname, then we need to add one based on the preferred locale
+	if (!possibleLocalesPrefixes.some((prefix) => pathname.startsWith(prefix))) {
 		return context.redirect(`/${locale}${pathname}`, 302)
 	}
 
