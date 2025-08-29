@@ -79,8 +79,7 @@ const ui: Translations = {
 		'lead.description':
 			'After you submit your email, our team will reach out to you to learn about your preferences for jewelry design. We respect your privacy and comply with GDPR.',
 		'lead.emailPlaceholder': 'Your email address',
-		'lead.gdprLabel':
-			'I agree to receive emails and accept the <a href="/privacy" class="underline">privacy policy</a>.',
+		'lead.gdprLabel': 'I agree to receive emails',
 		'lead.button': 'Sign Up',
 		'lead.success': 'Thank you for signing up!',
 		'lead.error': 'There was an error. Please try again.',
@@ -137,8 +136,7 @@ const ui: Translations = {
 		'lead.description':
 			'Nach dem Absenden Ihrer E-Mail wird sich unser Team mit Ihnen in Verbindung setzen, um mehr über Ihre Schmuckwünsche zu erfahren. Wir respektieren Ihre Privatsphäre und handeln DSGVO-konform.',
 		'lead.emailPlaceholder': 'Ihre E-Mail-Adresse',
-		'lead.gdprLabel':
-			'Ich stimme dem Erhalt von E-Mails zu und akzeptiere die <a href="/de/privacy" class="underline">Datenschutzerklärung</a>.',
+		'lead.gdprLabel': 'Ich stimme dem Erhalt von E-Mails zu',
 		'lead.button': 'Anmelden',
 		'lead.success': 'Vielen Dank für Ihre Anmeldung!',
 		'lead.error': 'Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
@@ -195,8 +193,7 @@ const ui: Translations = {
 		'lead.description':
 			'Dopo aver inviato la tua email, il nostro team ti contatterà per conoscere le tue preferenze sul design dei gioielli. Rispettiamo la tua privacy e siamo conformi al GDPR.',
 		'lead.emailPlaceholder': 'Il tuo indirizzo email',
-		'lead.gdprLabel':
-			'Accetto di ricevere email e accetto la <a href="/it/privacy" class="underline">politica sulla privacy</a>.',
+		'lead.gdprLabel': 'Accetto di ricevere email',
 		'lead.button': 'Iscriviti',
 		'lead.success': 'Grazie per esserti iscritto!',
 		'lead.error': 'Si è verificato un errore. Per favore, riprova.',
@@ -253,8 +250,7 @@ const ui: Translations = {
 		'lead.description':
 			'Después de enviar tu correo electrónico, nuestro equipo se pondrá en contacto contigo para conocer tus preferencias de diseño de joyas. Respetamos tu privacidad y cumplimos con el RGPD.',
 		'lead.emailPlaceholder': 'Tu dirección de correo electrónico',
-		'lead.gdprLabel':
-			'Acepto recibir correos electrónicos y la <a href="/es/privacy" class="underline">política de privacidad</a>.',
+		'lead.gdprLabel': 'Acepto recibir correos electrónicos',
 		'lead.button': 'Registrarse',
 		'lead.success': '¡Gracias por registrarte!',
 		'lead.error': 'Ha ocurrido un error. Por favor, inténtalo de nuevo.',
@@ -312,8 +308,7 @@ const ui: Translations = {
 		'lead.description':
 			'Après avoir soumis votre e-mail, notre équipe vous contactera pour connaître vos préférences en matière de design de bijoux. Nous respectons votre vie privée et nous conformons au RGPD.',
 		'lead.emailPlaceholder': 'Votre adresse e-mail',
-		'lead.gdprLabel':
-			'J\'accepte de recevoir des e-mails et j\'accepte la <a href="/fr/privacy" class="underline">politique de confidentialité</a>.',
+		'lead.gdprLabel': "J'accepte de recevoir des e-mails",
 		'lead.button': "S'inscrire",
 		'lead.success': 'Merci pour votre inscription !',
 		'lead.error': 'Une erreur est survenue. Veuillez réessayer.',
