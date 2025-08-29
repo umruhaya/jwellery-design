@@ -20,12 +20,14 @@ export const MenuSheet = () => {
 			</SheetTrigger>
 			<SheetContent side='left'>
 				<SheetHeader>
-					<SheetTitle>Menu</SheetTitle>
 				</SheetHeader>
-				<div className='flex flex-col gap-4 p-8'>
-					<div>
-						<h1>Jewelry</h1>
-					</div>
+				<div className='flex flex-col gap-4 p-8 font-didot'>
+					<a href='#about'>
+						<h1 className='text-2xl font-semibold'>About Us</h1>
+					</a>
+					<a href='#gallery'>
+						<h1 className='text-2xl font-semibold'>Gallery</h1>
+					</a>
 				</div>
 			</SheetContent>
 		</Sheet>

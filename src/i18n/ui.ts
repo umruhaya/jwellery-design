@@ -55,6 +55,7 @@ type TranslationKey =
 	| 'steps.3.description'
 	| 'steps.4.title'
 	| 'steps.4.description'
+	| 'menu.languageSwitcher'
 
 // Utility type: ensures each language has all translation keys
 type Translations = {
@@ -120,6 +121,7 @@ const ui: Translations = {
 		'steps.4.title': 'Crafting & Delivery',
 		'steps.4.description':
 			'Our master craftsmen transform your vision into a unique piece of jewelry – crafted with the highest precision and delivered directly to you.',
+		'menu.languageSwitcher': 'Language Switcher',
 	},
 	de: {
 		'nav.home': 'Startseite',
@@ -178,6 +180,7 @@ const ui: Translations = {
 		'steps.4.title': 'Fertigung & Lieferung',
 		'steps.4.description':
 			'Unsere Meister verwandeln deine Vision in ein einzigartiges Schmuckstück – gefertigt mit höchster Präzision und direkt zu dir geliefert.',
+		'menu.languageSwitcher': 'Sprache ändern',
 	},
 	it: {
 		'nav.home': 'Home',
@@ -235,6 +238,7 @@ const ui: Translations = {
 		'steps.4.title': 'Creazione e consegna',
 		'steps.4.description':
 			'I nostri maestri artigiani trasformano la tua visione in un gioiello unico, realizzato con la massima precisione e consegnato direttamente a te.',
+		'menu.languageSwitcher': 'Cambia lingua',
 	},
 	es: {
 		'nav.home': 'Inicio',
@@ -292,6 +296,7 @@ const ui: Translations = {
 		'steps.4.title': 'Fabricación y entrega',
 		'steps.4.description':
 			'Nuestros maestros artesanos transforman tu visión en una joya única, elaborada con la máxima precisión y entregada directamente a ti.',
+		'menu.languageSwitcher': 'Cambiar idioma',
 	},
 	fr: {
 		'nav.home': 'Accueil',
@@ -350,6 +355,7 @@ const ui: Translations = {
 		'steps.4.title': 'Fabrication et livraison',
 		'steps.4.description':
 			'Nos maîtres artisans transforment votre vision en un bijou unique – fabriqué avec la plus haute précision et livré directement chez vous.',
+		'menu.languageSwitcher': 'Changer de langue',
 	},
 } as const
 
