@@ -1,6 +1,9 @@
 const languages = {
 	en: 'English',
 	de: 'Deutsch', // German
+	it: 'Italiano', // Italian
+	es: 'Español', // Spanish
+	fr: 'Français', // French
 } as const
 
 type LanguageKeys = keyof typeof languages
@@ -99,14 +102,14 @@ const ui: Translations = {
 		'footer.privacy': 'Privacy',
 		'assistant.sendButton': 'Send',
 		'assistant.description': `I will help you design your dream jewelry.
-Just upload an inspiration photo, or tell me about the jewelry you want.
-You can talk to me with text or voice. I will help you, step by step.`,
+  Just upload an inspiration photo, or tell me about the jewelry you want.
+  You can talk to me with text or voice. I will help you, step by step.`,
 		'assistant.input.placeholder': 'Describe your dream jwellery...',
 		'aboutus.aboutus': 'About Us',
 		'aboutus.title': 'Inspired by you, crafted by us.',
 		'aboutus.subtitle':
 			'We combine decades of time-tested craftsmanship with the possibilities of artificial intelligence. Our promise: Personal consultation, constant availability, and visualizations until every detail is perfect. Until, together, we create the piece that perfectly reflects your vision.',
-		'steps.title': 'CYO, in four steps', // Assuming this is the title for the whole section
+		'steps.title': 'CYO, in four steps',
 		'steps.1.title': 'Share Inspiration',
 		'steps.1.description': 'Talk to our AI, show your ideas, and see the first visualizations come to life.',
 		'steps.2.title': 'Perfect the Design',
@@ -156,14 +159,14 @@ You can talk to me with text or voice. I will help you, step by step.`,
 		'footer.privacy': 'Datenschutz',
 		'assistant.sendButton': 'Senden',
 		'assistant.description': `Ich helfe Ihnen, Ihr Traum-Schmuckstück zu entwerfen.
-Laden Sie ein Inspirationsfoto hoch oder erzählen Sie mir, welches Schmuckstück Sie möchten.
-Sie können mit Text oder Stimme mit mir sprechen. Ich führe Sie Schritt für Schritt.`,
+  Laden Sie ein Inspirationsfoto hoch oder erzählen Sie mir, welches Schmuckstück Sie möchten.
+  Sie können mit Text oder Stimme mit mir sprechen. Ich führe Sie Schritt für Schritt.`,
 		'assistant.input.placeholder': 'Beschreiben Sie Ihr Traumschmuckstück...',
 		'aboutus.aboutus': 'Über uns',
 		'aboutus.title': 'Von dir inspiriert, von uns gestaltet.',
 		'aboutus.subtitle':
 			`Wir verbinden jahrzehntelang erprobte Handwerkskunst mit den Möglichkeiten künstlicher Intelligenz. Unser Versprechen: Persönliche Beratung, ständige Erreichbarkeit und Visualisierungen, bis jedes Detail stimmt. So lange, bis wir gemeinsam das Stück erschaffen, das deine Vision perfekt widerspiegelt.`,
-		'steps.title': 'CYO, in vier Schritten', // Assuming this is the title for the whole section
+		'steps.title': 'CYO, in vier Schritten',
 		'steps.1.title': 'Inspiration teilen',
 		'steps.1.description':
 			'Sprich mit unserer KI, zeige deine Ideen und erlebe, wie erste Visualisierungen entstehen.',
@@ -175,6 +178,178 @@ Sie können mit Text oder Stimme mit mir sprechen. Ich führe Sie Schritt für S
 		'steps.4.title': 'Fertigung & Lieferung',
 		'steps.4.description':
 			'Unsere Meister verwandeln deine Vision in ein einzigartiges Schmuckstück – gefertigt mit höchster Präzision und direkt zu dir geliefert.',
+	},
+	it: {
+		'nav.home': 'Home',
+		'nav.about': 'Chi siamo',
+		'nav.twitter': 'Twitter',
+		'nav.gallery': 'Galleria',
+		'hero.title': 'Gioielli su misura, creati per la tua storia',
+		'hero.subtitle': "Vivi l'Atelier Live di CYO: lusso, maestria e guida personale, in digitale e di persona.",
+		'hero.callToAction': 'Crea il tuo gioiello',
+		'hero.scrollToGallery': 'Scorri alla galleria',
+		'lead.title': 'Contattaci',
+		'lead.description':
+			'Dopo aver inviato la tua email, il nostro team ti contatterà per conoscere le tue preferenze sul design dei gioielli. Rispettiamo la tua privacy e siamo conformi al GDPR.',
+		'lead.emailPlaceholder': 'Il tuo indirizzo email',
+		'lead.gdprLabel':
+			'Accetto di ricevere email e accetto la <a href="/it/privacy" class="underline">politica sulla privacy</a>.',
+		'lead.button': 'Iscriviti',
+		'lead.success': 'Grazie per esserti iscritto!',
+		'lead.error': 'Si è verificato un errore. Per favore, riprova.',
+		'gallery.title': 'Galleria / Ispirazioni',
+		'gallery.imgAlt': 'Bracciale signature Perlée',
+		'gallery.itemTitle': 'Bracciale signature Perlée, modello medio',
+		'gallery.itemMaterial': 'Oro giallo',
+		'gallery.more': 'Altre creazioni',
+		'gallery.modelAlt': 'Modella con Perlée',
+		'beadsDance.title': 'Le perle dorate si uniscono in una danza aggraziata',
+		'beadsDance.description':
+			'CYO Design mette in mostra lo spirito gioioso della collezione Perlée attraverso movimenti vibranti e uno stile raffinato.',
+		'beadsDance.cta': 'Scopri la danza aggraziata',
+		'gifts.title': 'Regali incantevoli',
+		'gifts.imgAlt': 'Gioielli da regalo',
+		'gifts.description':
+			'Grazie al savoir-faire, alla creatività e all’eccellenza, CYO Design accompagna i momenti più felici della vita',
+		'gifts.cta': "Entra nell'universo senza tempo",
+		'footer.impressum': 'Note Legali',
+		'footer.privacy': 'Privacy',
+		'assistant.sendButton': 'Invia',
+		'assistant.description': `Ti aiuterò a disegnare il gioiello dei tuoi sogni.
+  Carica una foto di ispirazione o parlami del gioiello che desideri.
+  Puoi parlarmi con testo o voce. Ti aiuterò, passo dopo passo.`,
+		'assistant.input.placeholder': 'Descrivi il gioiello dei tuoi sogni...',
+		'aboutus.aboutus': 'Chi Siamo',
+		'aboutus.title': 'Ispirato da te, creato da noi.',
+		'aboutus.subtitle':
+			"Combiniamo decenni di artigianato collaudato con le possibilità dell'intelligenza artificiale. La nostra promessa: consulenza personale, disponibilità costante e visualizzazioni finché ogni dettaglio non è perfetto. Finché, insieme, non creiamo il pezzo che riflette perfettamente la tua visione.",
+		'steps.title': 'CYO, in quattro passaggi',
+		'steps.1.title': "Condividi l'ispirazione",
+		'steps.1.description':
+			'Parla con la nostra IA, mostra le tue idee e guarda le prime visualizzazioni prendere vita.',
+		'steps.2.title': 'Perfeziona il design',
+		'steps.2.description':
+			'Perfezioneremo insieme ogni dettaglio finché il gioiello non corrisponderà perfettamente alla tua visione.',
+		'steps.3.title': 'Ricevi un preventivo',
+		'steps.3.description': 'Trasparente, chiaro e su misura per te.',
+		'steps.4.title': 'Creazione e consegna',
+		'steps.4.description':
+			'I nostri maestri artigiani trasformano la tua visione in un gioiello unico, realizzato con la massima precisione e consegnato direttamente a te.',
+	},
+	es: {
+		'nav.home': 'Inicio',
+		'nav.about': 'Sobre nosotros',
+		'nav.twitter': 'Twitter',
+		'nav.gallery': 'Galería',
+		'hero.title': 'Joyas a medida, creadas para tu historia',
+		'hero.subtitle': 'Experimenta el Atelier en Vivo de CYO: lujo, arte y guía personal, digital y personalmente.',
+		'hero.callToAction': 'Diseña tu joya',
+		'hero.scrollToGallery': 'Ir a la galería',
+		'lead.title': 'Ponte en contacto',
+		'lead.description':
+			'Después de enviar tu correo electrónico, nuestro equipo se pondrá en contacto contigo para conocer tus preferencias de diseño de joyas. Respetamos tu privacidad y cumplimos con el RGPD.',
+		'lead.emailPlaceholder': 'Tu dirección de correo electrónico',
+		'lead.gdprLabel':
+			'Acepto recibir correos electrónicos y la <a href="/es/privacy" class="underline">política de privacidad</a>.',
+		'lead.button': 'Registrarse',
+		'lead.success': '¡Gracias por registrarte!',
+		'lead.error': 'Ha ocurrido un error. Por favor, inténtalo de nuevo.',
+		'gallery.title': 'Galería / Inspiraciones',
+		'gallery.imgAlt': 'Brazalete signature Perlée',
+		'gallery.itemTitle': 'Brazalete signature Perlée, modelo mediano',
+		'gallery.itemMaterial': 'Oro amarillo',
+		'gallery.more': 'Más creaciones',
+		'gallery.modelAlt': 'Modelo con Perlée',
+		'beadsDance.title': 'Las cuentas doradas se unen en una danza elegante',
+		'beadsDance.description':
+			'CYO Design muestra el espíritu alegre de la colección Perlée a través de un movimiento vibrante y un estilo refinado.',
+		'beadsDance.cta': 'Descubre la danza elegante',
+		'gifts.title': 'Regalos encantadores',
+		'gifts.imgAlt': 'Joyas para regalar',
+		'gifts.description':
+			'Gracias al savoir-faire, la creatividad y la excelencia, CYO Design acompaña los momentos más felices de la vida',
+		'gifts.cta': 'Entra en el universo atemporal',
+		'footer.impressum': 'Aviso Legal',
+		'footer.privacy': 'Privacidad',
+		'assistant.sendButton': 'Enviar',
+		'assistant.description': `Te ayudaré a diseñar la joya de tus sueños.
+  Simplemente sube una foto de inspiración o cuéntame sobre la joya que deseas.
+  Puedes hablarme por texto o por voz. Te ayudaré, paso a paso.`,
+		'assistant.input.placeholder': 'Describe la joya de tus sueños...',
+		'aboutus.aboutus': 'Sobre Nosotros',
+		'aboutus.title': 'Inspirado en ti, creado por nosotros.',
+		'aboutus.subtitle':
+			'Combinamos décadas de artesanía probada con las posibilidades de la inteligencia artificial. Nuestra promesa: consulta personal, disponibilidad constante y visualizaciones hasta que cada detalle sea perfecto. Hasta que, juntos, creemos la pieza que refleje perfectamente tu visión.',
+		'steps.title': 'CYO, en cuatro pasos',
+		'steps.1.title': 'Comparte tu inspiración',
+		'steps.1.description':
+			'Habla con nuestra IA, muestra tus ideas y ve cómo cobran vida las primeras visualizaciones.',
+		'steps.2.title': 'Perfecciona el diseño',
+		'steps.2.description':
+			'Refinaremos cada detalle juntos hasta que la joya coincida perfectamente con tu visión.',
+		'steps.3.title': 'Recibe un presupuesto',
+		'steps.3.description': 'Transparente, claro y adaptado específicamente a ti.',
+		'steps.4.title': 'Fabricación y entrega',
+		'steps.4.description':
+			'Nuestros maestros artesanos transforman tu visión en una joya única, elaborada con la máxima precisión y entregada directamente a ti.',
+	},
+	fr: {
+		'nav.home': 'Accueil',
+		'nav.about': 'À propos',
+		'nav.twitter': 'Twitter',
+		'nav.gallery': 'Galerie',
+		'hero.title': 'Bijoux sur mesure, créés pour votre histoire',
+		'hero.subtitle':
+			"Découvrez l'Atelier Live CYO : luxe, art et accompagnement personnel - en numérique et en personne.",
+		'hero.callToAction': 'Créez votre bijou',
+		'hero.scrollToGallery': 'Voir la galerie',
+		'lead.title': 'Contactez-nous',
+		'lead.description':
+			'Après avoir soumis votre e-mail, notre équipe vous contactera pour connaître vos préférences en matière de design de bijoux. Nous respectons votre vie privée et nous conformons au RGPD.',
+		'lead.emailPlaceholder': 'Votre adresse e-mail',
+		'lead.gdprLabel':
+			'J\'accepte de recevoir des e-mails et j\'accepte la <a href="/fr/privacy" class="underline">politique de confidentialité</a>.',
+		'lead.button': "S'inscrire",
+		'lead.success': 'Merci pour votre inscription !',
+		'lead.error': 'Une erreur est survenue. Veuillez réessayer.',
+		'gallery.title': 'Galerie / Inspirations',
+		'gallery.imgAlt': 'Bracelet signature Perlée',
+		'gallery.itemTitle': 'Bracelet signature Perlée, modèle moyen',
+		'gallery.itemMaterial': 'Or jaune',
+		'gallery.more': 'Plus de créations',
+		'gallery.modelAlt': 'Modèle avec Perlée',
+		'beadsDance.title': 'Les perles dorées s’unissent dans une danse gracieuse',
+		'beadsDance.description':
+			'CYO Design met en valeur l’esprit joyeux de la collection Perlée à travers un mouvement vibrant et un style raffiné.',
+		'beadsDance.cta': 'Découvrez la danse gracieuse',
+		'gifts.title': 'Cadeaux enchanteurs',
+		'gifts.imgAlt': 'Bijoux cadeaux',
+		'gifts.description':
+			"Grâce au savoir-faire, à la créativité et à l'excellence, CYO Design accompagne les moments les plus heureux de la vie",
+		'gifts.cta': 'Entrez dans l’univers intemporel',
+		'footer.impressum': 'Mentions Légales',
+		'footer.privacy': 'Confidentialité',
+		'assistant.sendButton': 'Envoyer',
+		'assistant.description': `Je vous aiderai à concevoir le bijou de vos rêves.
+  Téléchargez simplement une photo d'inspiration ou parlez-moi du bijou que vous souhaitez.
+  Vous pouvez me parler par texte ou par voix. Je vous aiderai, étape par étape.`,
+		'assistant.input.placeholder': 'Décrivez le bijou de vos rêves...',
+		'aboutus.aboutus': 'À Propos de Nous',
+		'aboutus.title': 'Inspiré par vous, créé par nous.',
+		'aboutus.subtitle':
+			"Nous combinons des décennies de savoir-faire éprouvé avec les possibilités de l'intelligence artificielle. Notre promesse : une consultation personnelle, une disponibilité constante et des visualisations jusqu'à ce que chaque détail soit parfait. Jusqu'à ce que, ensemble, nous créions la pièce qui reflète parfaitement votre vision.",
+		'steps.title': 'CYO, en quatre étapes',
+		'steps.1.title': 'Partagez votre inspiration',
+		'steps.1.description':
+			'Parlez à notre IA, montrez vos idées et voyez les premières visualisations prendre vie.',
+		'steps.2.title': 'Perfectionnez le design',
+		'steps.2.description':
+			'Nous affinerons ensemble chaque détail jusqu’à ce que le bijou corresponde parfaitement à votre vision.',
+		'steps.3.title': 'Recevez un devis',
+		'steps.3.description': 'Transparent, clair et spécialement conçu pour vous.',
+		'steps.4.title': 'Fabrication et livraison',
+		'steps.4.description':
+			'Nos maîtres artisans transforment votre vision en un bijou unique – fabriqué avec la plus haute précision et livré directement chez vous.',
 	},
 } as const
 
