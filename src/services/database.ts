@@ -20,14 +20,14 @@ export const db = drizzle(client)
 export const upsertChat = async (chatId: string, messages: Chat['messages']) => {
 	await db.insert(chat).values({
 		id: chatId,
-		messages,
+		messages: JSON.stringify(messages),
 		createdAt: new Date().toISOString(),
 		updatedAt: new Date().toISOString(),
 	})
 		.onConflictDoUpdate({
 			target: chat.id,
 			set: {
-				messages,
+				messages: JSON.stringify(messages),
 				updatedAt: new Date().toISOString(),
 			},
 		})

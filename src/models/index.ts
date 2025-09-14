@@ -4,7 +4,7 @@ import type { Chat } from '~/store'
 
 export const chat = sqliteTable('chats', {
 	id: text('id').primaryKey(),
-	messages: text('messages').$type<Chat['messages']>().notNull(),
+	messages: text('messages').notNull(),
 	createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
 })
