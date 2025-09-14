@@ -1,89 +1,87 @@
 import type { APIRoute } from 'astro'
+import { z } from 'astro/zod'
+import { db } from '~/services/database'
+import { gallery } from '~/models'
+import { count, desc } from 'drizzle-orm'
 import { DASHBOARD_AUTH } from 'astro:env/server'
-import { DatabaseService } from '~/services/database'
+
+const GalleryQuerySchema = z.object({
+	page: z.coerce.number().min(1).default(1),
+	limit: z.coerce.number().min(1).max(100).default(10),
+})
 
 export const GET: APIRoute = async ({ request }) => {
-	// Basic auth check (same as designs.ts)
-	const authHeader = request.headers.get('Authorization')
-	if (!isValidAuth(authHeader)) {
-		return new Response('Unauthorized', {
-			status: 401,
-			headers: {
-				'WWW-Authenticate': 'Basic realm="Admin Area"',
-			},
-		})
-	}
-
 	try {
-		const db = await DatabaseService.get()
-		const gallery = await db.getGallery()
-		return new Response(JSON.stringify(gallery), {
-			status: 200,
-			headers: {
-				'Content-Type': 'application/json',
+		// Basic Auth Check
+		const auth = request.headers.get('Authorization')
+
+		if (!auth) {
+			return new Response('Unauthorized', {
+				status: 401,
+				headers: {
+					'WWW-Authenticate': 'Basic realm="Admin Area"',
+				},
+			})
+		}
+
+		const base64Credentials = auth.split(' ')[1]
+		const credentials = atob(base64Credentials)
+		const [username, password] = credentials.split(':')
+
+		if (username !== 'admin' || password !== DASHBOARD_AUTH) {
+			return new Response('Unauthorized', {
+				status: 401,
+				headers: {
+					'WWW-Authenticate': 'Basic realm="Admin Area"',
+				},
+			})
+		}
+
+		const url = new URL(request.url)
+		const queryParams = Object.fromEntries(url.searchParams)
+
+		const { page, limit } = GalleryQuerySchema.parse(queryParams)
+		const offset = (page - 1) * limit
+
+		// Get total count
+		const totalResult = await db.select({ count: count() }).from(gallery)
+		const total = totalResult[0]?.count || 0
+
+		// Get paginated items
+		const items = await db
+			.select()
+			.from(gallery)
+			.orderBy(desc(gallery.createdAt))
+			.limit(limit)
+			.offset(offset)
+
+		const totalPages = Math.ceil(total / limit)
+
+		return new Response(
+			JSON.stringify({
+				items,
+				pagination: {
+					page,
+					limit,
+					total,
+					totalPages,
+					hasNextPage: page < totalPages,
+					hasPreviousPage: page > 1,
+				},
+			}),
+			{
+				status: 200,
+				headers: { 'Content-Type': 'application/json' },
 			},
-		})
+		)
 	} catch (error) {
-		return new Response(JSON.stringify({ error: 'Failed to fetch gallery' }), {
-			status: 500,
-		})
-	}
-}
-
-export const POST: APIRoute = async ({ request }) => {
-	// Basic auth check (same as above)
-	const authHeader = request.headers.get('Authorization')
-	if (!isValidAuth(authHeader)) {
-		return new Response('Unauthorized', {
-			status: 401,
-			headers: {
-				'WWW-Authenticate': 'Basic realm="Admin Area"',
+		console.error('Gallery API error:', error)
+		return new Response(
+			JSON.stringify({ error: 'Failed to fetch gallery items' }),
+			{
+				status: 500,
+				headers: { 'Content-Type': 'application/json' },
 			},
-		})
+		)
 	}
-
-	try {
-		const { designId, rank } = await request.json()
-		const db = await DatabaseService.get()
-		const id = await db.addToGallery({ designId, rank })
-		return new Response(JSON.stringify({ id }), { status: 200 })
-	} catch (error) {
-		return new Response(JSON.stringify({ error: 'Failed to add to gallery' }), {
-			status: 500,
-		})
-	}
-}
-
-export const PUT: APIRoute = async ({ request }) => {
-	// Basic auth check (same as above)
-	const authHeader = request.headers.get('Authorization')
-	if (!isValidAuth(authHeader)) {
-		return new Response('Unauthorized', {
-			status: 401,
-			headers: {
-				'WWW-Authenticate': 'Basic realm="Admin Area"',
-			},
-		})
-	}
-
-	try {
-		const { id, newRank } = await request.json()
-		const db = await DatabaseService.get()
-		await db.updateGalleryRank(id, newRank)
-		return new Response(JSON.stringify({ success: true }), { status: 200 })
-	} catch (error) {
-		return new Response(JSON.stringify({ error: 'Failed to update rank' }), {
-			status: 500,
-		})
-	}
-}
-
-function isValidAuth(authHeader: string | null): boolean {
-	if (!authHeader) return false
-
-	const base64Credentials = authHeader.split(' ')[1]
-	const credentials = atob(base64Credentials)
-	const [username, password] = credentials.split(':')
-
-	return username === 'admin' && password === DASHBOARD_AUTH
 }

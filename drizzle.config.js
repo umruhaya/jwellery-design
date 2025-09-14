@@ -4,8 +4,8 @@ import { defineConfig } from 'drizzle-kit'
 export default defineConfig({
 	schema: './src/models/index.ts',
 	out: './drizzle',
-	dialect: 'sqlite',
+	dialect: 'turso', // sqlite for local file
 	dbCredentials: {
-		url: 'file:./main.db',
+		url: 'http://127.0.0.1:8900', // make sure to run the tunnel to the remote server
 	},
 })

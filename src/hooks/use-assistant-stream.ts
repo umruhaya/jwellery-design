@@ -13,7 +13,7 @@ interface UseAssistantStreamParams {
 const DELTA_TEXT_BUFFER_SIZE = 10
 
 export function useAssistantStream() {
-	const { getMessages } = useChatStore()
+	const { getMessages, chatId } = useChatStore()
 
 	return useMutation({
 		mutationKey: ['assistant-stream'],
@@ -29,7 +29,7 @@ export function useAssistantStream() {
 					'Content-Type': 'application/json',
 					Connection: 'keep-alive',
 				},
-				body: JSON.stringify({ messages, locale }),
+				body: JSON.stringify({ chatId, messages, locale }),
 				signal: abortController.signal,
 			})
 
@@ -69,6 +69,23 @@ export function useAssistantStream() {
 				// Type guard to ensure we have a proper event object
 				if (typeof event === 'object' && 'type' in event) {
 					switch (event.type) {
+						case 'response.function_call_arguments.done': {
+							setChatStore(draft => {
+								const outputIdx = event.output_index + OUTPUT_IDX_OFFSET
+								draft.messages[outputIdx] = {
+									type: 'message',
+									role: 'assistant',
+									id: event.item_id,
+									status: 'completed',
+									content: [{
+										type: 'output_text',
+										annotations: [],
+										text: 'Thank you! Response Recorded',
+									}],
+								}
+							})
+							break
+						}
 						case 'response.output_text.delta': {
 							setChatStore(draft => {
 								const outputIdx = event.output_index + OUTPUT_IDX_OFFSET
@@ -150,7 +167,7 @@ export function useAssistantStream() {
 						}
 						case 'response.completed': {
 							console.log(getMessages())
-							// Stream completed successfully
+							// Stream completed successfully - chat is automatically saved on the server
 							break
 						}
 						case 'response.failed': {

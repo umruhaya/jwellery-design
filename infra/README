@@ -11,14 +11,37 @@ gcloud storage buckets update gs://bucketname \
 ## SSH Access
 
 ```bash
-ssh -i ~/.ssh/my-gcp-key umer@cyodesign.com
+ssh -i ~/.ssh/my-gcp-key umer@cyodesign.com "sudo su - umernaeem135acc"
 ```
 
 ## deploy
 
 ```bash
+cd cyodesign
 git pull
 pnpm i
 pnpm build
 pm2 restart ecosystem.config.cjs
+```
+
+## DB Tunnel
+
+
+### Connect 
+
+```bash
+ssh -t -L 8900:localhost:8900 -i ~/.ssh/my-gcp-key umer@cyodesign.com "sudo su - umernaeem135acc"
+```
+
+### Install Turso
+
+```bash
+curl -sSfL https://get.tur.so/install.sh | bash
+```
+
+### Run Server
+
+```bash
+cd cyodesign
+turso dev --db-file .db/main.db --port 8900
 ```

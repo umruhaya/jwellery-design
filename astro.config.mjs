@@ -39,6 +39,12 @@ export default defineConfig({
 
 	env: {
 		schema: {
+			NODE_ENV: envField.enum({
+				access: 'public',
+				context: 'server',
+				default: 'development',
+				values: ['development', 'production'],
+			}),
 			OPENAI_API_KEY: envField.string({ access: 'secret', context: 'server' }),
 			EMAIL_HOST: envField.string({ access: 'secret', context: 'server' }),
 			EMAIL_USER: envField.string({ access: 'secret', context: 'server' }),

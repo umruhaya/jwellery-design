@@ -54,15 +54,18 @@ export type ImageGenerationMessage = z.infer<typeof imageGenerationCallSchema>
 export type Message = Chat['messages'][0]
 
 type ChatState = {
+	chatId: string
 	isMenuSheetOpen: boolean
 	messages: Message[]
 	getMessages: () => Message[]
 	addMessage: (msg: Message) => void
 	updateLastMessage: (update: ((prev: Message) => Message) | Message) => void
 	clear: () => void
+	setChatId: (chatId: string) => void
 }
 
 export const useChatStore = create<ChatState>((set, get) => ({
+	chatId: crypto.randomUUID(),
 	isMenuSheetOpen: false,
 	messages: [],
 	getMessages: () => get().messages,
@@ -76,7 +79,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
 			msgs[idx] = typeof update === 'function' ? update(last) : update
 			return { messages: msgs }
 		}),
-	clear: () => set({ messages: [] }),
+	clear: () => set({ messages: [], chatId: crypto.randomUUID() }),
+	setChatId: (chatId) => set({ chatId }),
 }))
 
 export const setChatStore = (callback: (draft: WritableDraft<ChatState>) => void) => {

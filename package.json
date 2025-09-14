@@ -6,9 +6,12 @@
 		"dev": "astro dev",
 		"build": "astro build",
 		"preview": "astro preview",
-		"astro": "astro"
+		"astro": "astro",
+		"db:push": "drizzle-kit push",
+		"db:studio": "drizzle-kit studio"
 	},
 	"dependencies": {
+		"@ai-sdk/openai": "^2.0.27",
 		"@astrojs/node": "^9.2.2",
 		"@astrojs/react": "^4.3.0",
 		"@google-cloud/storage": "^7.16.0",
@@ -18,6 +21,7 @@
 		"@sentry/astro": "^9.43.0",
 		"@tailwindcss/vite": "^4.1.10",
 		"@tanstack/react-query": "^5.81.5",
+		"ai": "^5.0.38",
 		"astro": "^5.10.0",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
@@ -29,7 +33,7 @@
 		"markdown-it": "^14.1.0",
 		"motion": "^12.23.12",
 		"nodemailer": "^7.0.4",
-		"openai": "^5.8.2",
+		"openai": "^5.20.2",
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0",
 		"tailwind-merge": "^3.3.1",
@@ -37,12 +41,13 @@
 		"ua-parser-js": "^2.0.4",
 		"ulidx": "^2.4.1",
 		"wavesurfer.js": "^7.10.1",
+		"zod": "^4.1.5",
 		"zustand": "^5.0.6"
 	},
 	"devDependencies": {
+		"@types/nodemailer": "^6.4.17",
 		"@types/react": "^19.1.8",
 		"@types/react-dom": "^19.1.6",
-		"@types/nodemailer": "^6.4.17",
 		"drizzle-kit": "^0.31.4",
 		"tw-animate-css": "^1.3.7",
 		"vite": "^7.0.0"

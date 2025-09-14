@@ -1,0 +1,73 @@
+---
+import { Header } from '~/components/header'
+import { getTranslationForLocale } from '~/i18n/ui'
+import { gallerySpecs } from '~/lib/gallery-specs'
+import { db } from '~/services/database'
+import { gallery as galleryTable } from '~/models'
+import { desc } from 'drizzle-orm'
+
+interface Props {
+	locale: string
+}
+
+const { locale } = Astro.props
+const ui = getTranslationForLocale(locale)
+const dynamicItems = await db.select().from(galleryTable).orderBy(desc(galleryTable.createdAt))
+---
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{ui['nav.gallery']} - CYO Design</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap" rel="stylesheet">
+	<style>
+	.font-didot { font-family: 'GFS Didot', serif; }
+	</style>
+</head>
+
+<body class="bg-white text-gray-900">
+	<Header locale={locale} client:load />
+
+	<main class="max-w-7xl mx-auto px-4 py-10">
+		<h1 class="text-3xl md:text-4xl font-didot text-center mb-8">{ui['gallery.title']}</h1>
+
+		<section class="mb-12">
+			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+				{
+					gallerySpecs.map((item) => (
+						<article class="border rounded overflow-hidden bg-white">
+							<div class="flex">
+								<img src={item.modelUrl} alt={ui['gallery.modelAlt']} class="w-1/2 object-cover" />
+								<img src={item.pieceUrl} alt={ui['gallery.imgAlt']} class="w-1/2 object-cover" />
+							</div>
+							<div class="p-3">
+								<p class="text-gray-700 text-sm line-clamp-2">{item.specification}</p>
+							</div>
+						</article>
+					))
+				}
+			</div>
+		</section>
+
+		<section>
+			{
+				dynamicItems.length > 0 ? (
+					<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+						{
+							dynamicItems.map((g) => (
+								<article class="border rounded overflow-hidden bg-white">
+									<img src={g.imageUrl} alt={ui['gallery.imgAlt']} class="w-full object-cover" />
+									<div class="p-3">
+										<p class="text-gray-700 text-sm line-clamp-3">{g.prompt}</p>
+									</div>
+								</article>
+							))
+						}
+					</div>
+				) : <p class="text-center text-gray-500">No customer designs yet.</p>
+			}
+		</section>
+	</main>
+</body>

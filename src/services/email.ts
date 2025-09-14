@@ -13,31 +13,64 @@ const transporter = nodemailer.createTransport({
 	greetingTimeout: 10_000,
 	socketTimeout: 30_000,
 	logger: process.env.NODE_ENV !== 'production',
-	debug: process.env.NODE_ENV !== 'production',
+	debug: false,
 	// tls: { rejectUnauthorized: false }, // Uncomment if CERT errors (while debugging only!)
 })
 
+export type SendEmailArgs = {
+	subject: string
+	firstName: string
+	lastName: string
+	email: string
+	phone: string
+	city: string
+	country: string
+}
+
+type SendEmailAlertArgs = SendEmailArgs & {
+	imageUrls: string[]
+}
+
 export const sendAlert = async (
-	{ subject, body, imageUrls }: { subject: string; body: string; imageUrls?: string[] },
+	{ subject, firstName, lastName, email, phone, city, country, imageUrls }: SendEmailAlertArgs,
 ) => {
-	const attachments = imageUrls?.map((url, index) => ({
+	const attachments = imageUrls.map((url, index) => ({
 		path: url,
 		filename: `image-${index + 1}.jpg`,
 		cid: `image-${index + 1}`,
-	})) || []
+	}))
 
 	const htmlBody = `
-		${body.split('\n').map(line => `<p>${line}</p>`).join('\n')}
+		<p>First Name: ${firstName}</p>
+		<p>Last Name: ${lastName}</p>
+		<p>Email: ${email}</p>
+		<p>Phone: ${phone}</p>
+		<p>City: ${city}</p>
+		<p>Country: ${country}</p>
+		<strong>Designs:</strong>
 		${attachments.map(att => `<br><img src="cid:${att.cid}" style="max-width: 100%;">`).join('\n')}
 	`
 
-	const info = await transporter.sendMail({
-		from: '"New Lead From CYO Design" <alerts@cyodesign.com>',
-		to: RECIPIENT_EMAIL,
-		subject,
-		text: body,
-		html: htmlBody,
-		attachments,
+	let body = `
+		First Name: ${firstName}
+		Last Name: ${lastName}
+		Email: ${email}
+		Phone: ${phone}
+		City: ${city}
+		Country: ${country}
+
+		\n\nDesigns: ${imageUrls.join('\n')}
+	`
+
+	RECIPIENT_EMAIL.split(',').forEach(async email => {
+		const info = await transporter.sendMail({
+			from: '"CYO Design" <alerts@cyodesign.com>',
+			to: email,
+			subject,
+			text: body,
+			html: htmlBody,
+			attachments,
+		})
+		console.log('Alert sent: %s to %s', info.messageId, email)
 	})
-	console.log('Alert sent: %s', info.messageId)
 }

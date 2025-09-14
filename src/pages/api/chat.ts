@@ -11,9 +11,12 @@ import {
 	outputMessageSchema,
 } from '~/store'
 import { IMG_FORMAT } from 'astro:env/client'
-import { DatabaseService } from '~/services/database'
+import { updateGallery, upsertChat } from '~/services/database'
+import type { ResponseTextDeltaEvent } from 'openai/lib/responses/EventTypes.mjs'
+import type { ResponseTextDoneEvent } from 'openai/resources/responses/responses.mjs'
 
 const ChatRequest = z.object({
+	chatId: z.string().uuid(),
 	locale: z.string(),
 	messages: z.array(z.union([inputMessageSchema, outputMessageSchema, imageGenerationCallSchema])),
 })
@@ -29,7 +32,9 @@ export const POST: APIRoute = async (ctx) => {
 				headers: { 'Content-Type': 'application/json' },
 			})
 		}
-		const { locale, messages } = parsed.data
+		const { chatId, locale, messages } = parsed.data
+
+		await upsertChat(chatId, messages)
 
 		const formattedSystemPrompt = SYSTEM_PROMPT.replaceAll('{{ language }}', getLanguageFromLocale(locale))
 
@@ -39,11 +44,15 @@ export const POST: APIRoute = async (ctx) => {
 			.find((msg): msg is ImageGenerationMessage =>
 				msg.type === 'image_generation_call' && msg.status === 'completed'
 			)
+
 		const latestImageUrl = latestImage?.result
 
 		const stream = await openai.responses.create({
 			model: 'gpt-4.1',
 			stream: true,
+			// reasoning: {
+			// 	effort: 'low',
+			// },
 			input: [
 				{ role: 'system', content: formattedSystemPrompt },
 				...messages,
@@ -63,17 +72,18 @@ export const POST: APIRoute = async (ctx) => {
 								type: 'string',
 								description: 'Email subject line.',
 							},
-							body: {
+							firstName: { type: 'string' },
+							lastName: { type: 'string' },
+							email: { type: 'string' },
+							phone: { type: 'string' },
+							city: { type: 'string' },
+							country: { type: 'string' },
+							prompt: {
 								type: 'string',
-								description: 'Body of the email message.',
-							},
-							includeLatestImage: {
-								type: 'boolean',
-								description: 'Whether to include the latest generated image in the email.',
-								default: false,
+								description: 'Prompt used to generate the last image. aka specifications.',
 							},
 						},
-						required: ['subject', 'body', 'includeLatestImage'],
+						required: ['subject', 'firstName', 'lastName', 'email', 'phone', 'city', 'country', 'prompt'],
 						additionalProperties: false,
 					},
 				},
@@ -85,25 +95,38 @@ export const POST: APIRoute = async (ctx) => {
 		const sseStream = new ReadableStream({
 			async start(controller) {
 				for await (const event of stream) {
-					process.env.NODE_ENV !== 'production' && console.log(event)
-					// Prevent Tool Call leaking to the client
+					if (process.env.NODE_ENV !== 'production' && event.type !== 'response.output_text.delta') {
+						console.log(event)
+					}
+					// Prevent Tool Call delta sending to the client
 					if (event.type === 'response.function_call_arguments.delta') {
 						continue
 					}
 					if (event.type === 'response.function_call_arguments.done') {
 						const args = JSON.parse(event.arguments)
 
-						if (args.includeLatestImage && latestImageUrl) {
-							const db = await DatabaseService.get()
-							db.addFinalDesign({
-								url: latestImageUrl,
-								customerName: args.customerName,
-								specifications: args.specifications,
-							})
+						if (latestImageUrl) {
 							sendAlert({ ...args, imageUrls: [latestImageUrl] })
+								.then(() => {
+									return updateGallery({
+										chatId,
+										imageUrl: latestImageUrl,
+										...args,
+									})
+								})
+								.then(() => {
+									const textEvent: ResponseTextDoneEvent = {
+										item_id: '',
+										type: 'response.output_text.done',
+										output_index: messages.length - 1,
+										content_index: 0,
+										sequence_number: 0,
+										text: 'Thank you',
+									}
+									controller.enqueue(encoder.encode(`data: ${JSON.stringify(textEvent)}\n\n`))
+								})
+								.catch(console.error)
 						}
-
-						continue
 					}
 					controller.enqueue(
 						encoder.encode(`data: ${JSON.stringify(event)}\n\n`),

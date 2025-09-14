@@ -330,7 +330,7 @@ export const AssistantWidget = ({ locale }: AssistantWidgetProps) => {
 				)
 				: (
 					<div className='flex flex-wrap items-stretch gap-2'>
-						<label className='p-2rounded-full cursor-pointer flex items-center justify-center'>
+						<label className='p-2 rounded-full cursor-pointer flex items-center justify-center'>
 							<input
 								ref={imageRef}
 								type='file'
@@ -355,7 +355,7 @@ export const AssistantWidget = ({ locale }: AssistantWidgetProps) => {
 								}
 							}}
 							placeholder={ui['assistant.input.placeholder']}
-							className='flex-1 min-w-0 px-3 py-2 border rounded-2xl focus:outline-none'
+							className='flex-1 min-w-0 px-3 py-2 border border-gray-300 rounded-2xl focus:outline-none'
 							disabled={loading}
 						/>
 						<button

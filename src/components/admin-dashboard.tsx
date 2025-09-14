@@ -1,238 +1,216 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
+import { Button } from '~/components/ui/button'
 import { queryClient } from '~/lib/query-client'
 
-// Type definitions
-export type Design = {
-	id: number
-	url: string
-	customerName: string
-	specifications: string
+interface GalleryItem {
+	id: string
+	chatId: string | null
+	prompt: string
+	imageUrl: string
+	firstName: string
+	lastName: string
+	email: string
+	phone: string
+	city: string
+	country: string
+	createdAt: string
+	updatedAt: string
 }
 
-export type GalleryItem = {
-	galleryId: number
-	designId: number
-	rank: number
-	url: string
-	customerName: string
+interface PaginationInfo {
+	page: number
+	limit: number
+	total: number
+	totalPages: number
+	hasNextPage: boolean
+	hasPreviousPage: boolean
 }
 
-type AdminDashboardProps = {
+interface GalleryResponse {
+	items: GalleryItem[]
+	pagination: PaginationInfo
+}
+
+async function fetchGalleryItems(page: number, limit: number, authString: string): Promise<GalleryResponse> {
+	const response = await fetch(`/api/admin/gallery?page=${page}&limit=${limit}`, {
+		headers: {
+			'Authorization': `Basic ${btoa(authString)}`,
+		},
+	})
+
+	if (!response.ok) {
+		throw new Error('Failed to fetch gallery items')
+	}
+
+	return response.json()
+}
+
+function GalleryGrid({ authString }: { authString: string }) {
+	const [currentPage, setCurrentPage] = useState(1)
+	const itemsPerPage = 12
+
+	const { data, isLoading, error } = useQuery({
+		queryKey: ['gallery', currentPage, itemsPerPage],
+		queryFn: () => fetchGalleryItems(currentPage, itemsPerPage, authString),
+		staleTime: 5 * 60 * 1000, // 5 minutes
+	}, queryClient)
+
+	if (isLoading) {
+		return (
+			<div className='flex items-center justify-center min-h-96'>
+				<div className='animate-pulse text-lg'>Loading gallery items...</div>
+			</div>
+		)
+	}
+
+	if (error) {
+		return (
+			<div className='flex items-center justify-center min-h-96'>
+				<div className='text-red-600 text-lg'>
+					Error loading gallery items: {error instanceof Error ? error.message : 'Unknown error'}
+				</div>
+			</div>
+		)
+	}
+
+	if (!data || data.items.length === 0) {
+		return (
+			<div className='flex items-center justify-center min-h-96'>
+				<div className='text-gray-500 text-lg'>No gallery items found</div>
+			</div>
+		)
+	}
+
+	const { items, pagination } = data
+
+	return (
+		<div className='space-y-6'>
+			{/* Gallery Grid */}
+			<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
+				{items.map((item) => (
+					<Card key={item.id} className='overflow-hidden'>
+						<CardHeader className='p-0'>
+							<div className='aspect-square relative'>
+								<img
+									src={item.imageUrl}
+									alt={item.prompt}
+									className='w-full h-full object-cover'
+									loading='lazy'
+								/>
+							</div>
+						</CardHeader>
+						<CardContent className='p-4'>
+							<CardTitle className='text-sm font-medium mb-2 line-clamp-2'>
+								{item.prompt}
+							</CardTitle>
+							<div className='space-y-1 text-xs text-gray-600'>
+								<p>
+									<span className='font-medium'>Name:</span> {item.firstName} {item.lastName}
+								</p>
+								<p>
+									<span className='font-medium'>Email:</span> {item.email}
+								</p>
+								<p>
+									<span className='font-medium'>Phone:</span> {item.phone}
+								</p>
+								<p>
+									<span className='font-medium'>Location:</span> {item.city}, {item.country}
+								</p>
+								<p>
+									<span className='font-medium'>Created:</span>{' '}
+									{new Date(item.createdAt).toLocaleDateString()}
+								</p>
+							</div>
+						</CardContent>
+					</Card>
+				))}
+			</div>
+
+			{/* Pagination */}
+			<div className='flex items-center justify-between'>
+				<div className='text-sm text-gray-600'>
+					Showing {((pagination.page - 1) * pagination.limit) + 1} to{' '}
+					{Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} results
+				</div>
+
+				<div className='flex items-center space-x-2'>
+					<Button
+						variant='outline'
+						size='sm'
+						onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+						disabled={!pagination.hasPreviousPage}
+					>
+						Previous
+					</Button>
+
+					<div className='flex items-center space-x-1'>
+						{Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
+							const page = i + 1
+							const isCurrentPage = page === pagination.page
+
+							return (
+								<Button
+									key={page}
+									variant={isCurrentPage ? 'default' : 'outline'}
+									size='sm'
+									onClick={() => setCurrentPage(page)}
+									className='w-8 h-8 p-0'
+								>
+									{page}
+								</Button>
+							)
+						})}
+
+						{pagination.totalPages > 5 && (
+							<>
+								<span className='text-gray-400'>...</span>
+								<Button
+									variant='outline'
+									size='sm'
+									onClick={() => setCurrentPage(pagination.totalPages)}
+									className='w-8 h-8 p-0'
+								>
+									{pagination.totalPages}
+								</Button>
+							</>
+						)}
+					</div>
+
+					<Button
+						variant='outline'
+						size='sm'
+						onClick={() => setCurrentPage(prev => Math.min(pagination.totalPages, prev + 1))}
+						disabled={!pagination.hasNextPage}
+					>
+						Next
+					</Button>
+				</div>
+			</div>
+		</div>
+	)
+}
+
+interface AdminDashboardProps {
 	basicAuthString: string
 }
 
-// Helper function to create headers
-const createAuthHeaders = (basicAuthString: string) => ({
-	'Authorization': `Basic ${btoa(basicAuthString)}`,
-	'Content-Type': 'application/json',
-})
-
 export function AdminDashboard({ basicAuthString }: AdminDashboardProps) {
-	const authHeaders = createAuthHeaders(basicAuthString)
-
-	// Query: Fetch all designs
-	const {
-		data: designs = [],
-		isLoading: designsLoading,
-		error: designsError,
-	} = useQuery({
-		queryKey: ['designs'],
-		queryFn: async (): Promise<Design[]> => {
-			const response = await fetch('/api/admin/designs', {
-				headers: authHeaders,
-			})
-			if (!response.ok) {
-				throw new Error('Failed to fetch designs')
-			}
-			return response.json()
-		},
-	}, queryClient)
-
-	// Query: Fetch gallery items
-	const {
-		data: gallery = [],
-		isLoading: galleryLoading,
-		error: galleryError,
-	} = useQuery({
-		queryKey: ['gallery'],
-		queryFn: async (): Promise<GalleryItem[]> => {
-			const response = await fetch('/api/admin/gallery', {
-				headers: authHeaders,
-			})
-			if (!response.ok) {
-				throw new Error('Failed to fetch gallery')
-			}
-			return response.json()
-		},
-	}, queryClient)
-
-	// Mutation: Add to gallery
-	const addToGalleryMutation = useMutation({
-		mutationFn: async (designId: number) => {
-			// Get current gallery data to calculate next rank
-			const currentGallery = queryClient.getQueryData<GalleryItem[]>(['gallery']) || []
-			const nextRank = Math.max(0, ...currentGallery.map(item => item.rank)) + 1
-
-			const response = await fetch('/api/admin/gallery', {
-				method: 'POST',
-				headers: authHeaders,
-				body: JSON.stringify({ designId, rank: nextRank }),
-			})
-
-			if (!response.ok) {
-				throw new Error('Failed to add design to gallery')
-			}
-
-			return response.json()
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['gallery'] })
-		},
-	}, queryClient)
-
-	// Mutation: Remove from gallery
-	const removeFromGalleryMutation = useMutation({
-		mutationFn: async (galleryId: number) => {
-			const response = await fetch(`/api/admin/gallery?id=${galleryId}`, {
-				method: 'DELETE',
-				headers: authHeaders,
-			})
-
-			if (!response.ok) {
-				throw new Error('Failed to remove design from gallery')
-			}
-
-			return response.json()
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['gallery'] })
-		},
-	}, queryClient)
-
-	// Helper function to check if design is in gallery
-	const isDesignInGallery = (designId: number) => {
-		return gallery.some(item => item.designId === designId)
-	}
-
-	// Show loading state while either query is loading
-	if (designsLoading || galleryLoading) {
-		return (
-			<div className='flex items-center justify-center min-h-screen'>
-				<div className='text-center'>
-					<div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4'></div>
-					<p className='text-lg text-gray-600'>Loading...</p>
-				</div>
-			</div>
-		)
-	}
-
-	// Show error state if either query failed
-	if (designsError || galleryError) {
-		return (
-			<div className='flex items-center justify-center min-h-screen'>
-				<div className='text-center text-red-600'>
-					<p className='text-lg'>Error loading data</p>
-					<p className='text-sm mt-2'>
-						{designsError?.message || galleryError?.message}
+	return (
+		<div className='min-h-screen bg-gray-50'>
+			<div className='container mx-auto px-4 py-8'>
+				<div className='mb-8'>
+					<h1 className='text-3xl font-bold text-gray-900 mb-2'>
+						CYO Design Admin Dashboard
+					</h1>
+					<p className='text-gray-600'>
+						Manage and view all gallery submissions
 					</p>
 				</div>
+
+				<GalleryGrid authString={basicAuthString} />
 			</div>
-		)
-	}
-
-	return (
-		<div className='p-8 max-w-7xl mx-auto'>
-			<h1 className='text-3xl font-bold text-gray-900 mb-8'>Admin Dashboard</h1>
-
-			{/* All Designs Section */}
-			<section className='mb-12'>
-				<h2 className='text-2xl font-semibold text-gray-800 mb-6'>All Designs</h2>
-				<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
-					{designs.map((design) => {
-						const inGallery = isDesignInGallery(design.id)
-						const isAddingToGallery = addToGalleryMutation.isPending
-
-						return (
-							<div
-								key={design.id}
-								className='bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow'
-							>
-								<div className='aspect-square relative overflow-hidden w-24 h-24'>
-									<img
-										src={design.url}
-										alt={`Design for ${design.customerName}`}
-										className='w-24 h-24'
-									/>
-								</div>
-								<div className='p-4'>
-									<h3 className='font-semibold text-gray-900 mb-2'>
-										{design.customerName}
-									</h3>
-									<p className='text-sm text-gray-600 mb-4 line-clamp-3'>
-										{design.specifications}
-									</p>
-									<button
-										onClick={() => addToGalleryMutation.mutate(design.id)}
-										disabled={inGallery || isAddingToGallery}
-										className={`w-full py-2 px-4 rounded-md font-medium transition-colors ${
-											inGallery
-												? 'bg-green-100 text-green-800 cursor-not-allowed'
-												: isAddingToGallery
-												? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-												: 'bg-blue-600 text-white hover:bg-blue-700'
-										}`}
-									>
-										{inGallery ? 'In Gallery' : 'Add to Gallery'}
-									</button>
-								</div>
-							</div>
-						)
-					})}
-				</div>
-				{designs.length === 0 && <p className='text-gray-500 text-center py-8'>No designs available</p>}
-			</section>
-
-			{/* Gallery Images Section */}
-			<section>
-				<h2 className='text-2xl font-semibold text-gray-800 mb-6'>Gallery Images</h2>
-				<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
-					{gallery.map((item) => {
-						const isRemoving = removeFromGalleryMutation.isPending
-
-						return (
-							<div
-								key={item.galleryId}
-								className='bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow'
-							>
-								<div className='aspect-square relative overflow-hidden'>
-									<img
-										src={item.url}
-										alt={`Gallery item for ${item.customerName}`}
-										className='w-full h-full object-cover'
-									/>
-								</div>
-								<div className='p-4'>
-									<h3 className='font-semibold text-gray-900 mb-4'>
-										{item.customerName}
-									</h3>
-									<button
-										onClick={() => removeFromGalleryMutation.mutate(item.galleryId)}
-										disabled={isRemoving}
-										className={`w-full py-2 px-4 rounded-md font-medium transition-colors ${
-											isRemoving
-												? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-												: 'bg-red-600 text-white hover:bg-red-700'
-										}`}
-									>
-										{isRemoving ? 'Removing...' : 'Remove'}
-									</button>
-								</div>
-							</div>
-						)
-					})}
-				</div>
-				{gallery.length === 0 && <p className='text-gray-500 text-center py-8'>No items in gallery</p>}
-			</section>
 		</div>
 	)
 }
