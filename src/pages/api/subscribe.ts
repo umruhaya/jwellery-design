@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro'
-import { sendAlert } from '~/services/email'
+import { sendEmailLead } from '~/services/email'
 
 export const POST: APIRoute = async ({ request }) => {
 	try {
@@ -9,10 +9,7 @@ export const POST: APIRoute = async ({ request }) => {
 		}
 		// TODO: Store email in database or send to email marketing service
 		console.log('New subscriber:', email)
-		await sendAlert({
-			subject: `${email} Subscribed to CYO Design`,
-			body: `<h1>${email} Subscribed to CYO Design via form submission</h1>`,
-		})
+		await sendEmailLead(email)
 		return new Response(JSON.stringify({ success: true }), { status: 200 })
 	} catch (err) {
 		console.error('FROM /api/subscribe', { err })

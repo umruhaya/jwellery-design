@@ -74,3 +74,16 @@ export const sendAlert = async (
 		console.log('Alert sent: %s to %s', info.messageId, email)
 	})
 }
+
+export const sendEmailLead = async (leadEmail: string) => {
+	RECIPIENT_EMAIL.split(',').forEach(async recipientEmail => {
+		const info = await transporter.sendMail({
+			from: '"CYO Design" <alerts@cyodesign.com>',
+			to: recipientEmail,
+			subject: 'Lead Submitted',
+			text: `Lead Submitted: ${leadEmail}`,
+			html: `<p>Lead Submitted: ${leadEmail}</p>`,
+		})
+		console.log('Lead sent: %s to %s', info.messageId, recipientEmail)
+	})
+}
