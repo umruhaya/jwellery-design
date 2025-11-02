@@ -1,5 +1,6 @@
-import { Storage } from '@google-cloud/storage'
-import { SERVICE_ACCOUNT_KEY } from 'astro:env/server'
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import { AWS_ACCESS_KEY_ID, AWS_REGION, AWS_S3_ENDPOINT, AWS_SECRET_ACCESS_KEY } from 'astro:env/server'
 
 export interface PresignedPutUrlResult {
 	signedUrl: string
@@ -21,22 +22,35 @@ export abstract class StorageService {
 	): Promise<PresignedPutUrlResult>
 }
 
-// Google Cloud Storage implementation (singleton)
-export class GCSStorageService extends StorageService {
-	private static instance: GCSStorageService
-	private storage: Storage
+// AWS S3-compatible implementation (singleton)
+export class S3StorageService extends StorageService {
+	private static instance: S3StorageService
+	private s3: S3Client
+	private baseUrl: string
 
 	private constructor() {
 		super()
-		const credentials = JSON.parse(SERVICE_ACCOUNT_KEY)
-		this.storage = new Storage({ credentials })
+		const endpointInput = AWS_S3_ENDPOINT
+		const normalizedEndpoint = endpointInput.startsWith('http')
+			? endpointInput
+			: `https://${endpointInput}`
+		this.s3 = new S3Client({
+			region: AWS_REGION,
+			credentials: {
+				accessKeyId: AWS_ACCESS_KEY_ID,
+				secretAccessKey: AWS_SECRET_ACCESS_KEY,
+			},
+			endpoint: normalizedEndpoint,
+			forcePathStyle: true,
+		})
+		this.baseUrl = normalizedEndpoint.replace(/\/+$/, '')
 	}
 
-	static getInstance(): GCSStorageService {
-		if (!GCSStorageService.instance) {
-			GCSStorageService.instance = new GCSStorageService()
+	static getInstance(): S3StorageService {
+		if (!S3StorageService.instance) {
+			S3StorageService.instance = new S3StorageService()
 		}
-		return GCSStorageService.instance
+		return S3StorageService.instance
 	}
 
 	async createPresignedPutUrl(
@@ -44,14 +58,16 @@ export class GCSStorageService extends StorageService {
 		key: string,
 		expiresIn: number,
 	): Promise<PresignedPutUrlResult> {
-		const file = this.storage.bucket(bucket).file(key)
-		const [signedUrl] = await file.getSignedUrl({
-			action: 'write',
-			expires: Date.now() + (expiresIn * 1000),
-			version: 'v4',
-			contentType: 'application/octet-stream',
+		const command = new PutObjectCommand({
+			Bucket: bucket,
+			Key: key,
+			ContentType: 'application/octet-stream',
 		})
-		const publicUrl = `https://storage.googleapis.com/${bucket}/${encodeURIComponent(key)}`
+		const signedUrl = await getSignedUrl(this.s3, command, { expiresIn })
+
+		const base = this.baseUrl
+		const path = `${bucket}/${encodeURIComponent(key)}`
+		const publicUrl = base ? `${base}/${path}` : `/${path}`
 		return { signedUrl, publicUrl }
 	}
 }
