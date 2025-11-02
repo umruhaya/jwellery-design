@@ -1,17 +1,32 @@
 # Infra Related Files
 
-## Add Cors policy To Bucket
+## Add Cors Policy 
 
 ```bash
-gcloud storage buckets update gs://bucketname \
-  --cors-file="cors-config.json" \
-  --project="projectname"
+aws s3api put-bucket-cors \
+  --bucket cyodesign \
+  --endpoint-url https://fsn1.your-objectstorage.com \
+  --cors-configuration '{
+    "CORSRules": [{
+      "AllowedOrigins": [
+			"http://localhost",
+			"http://localhost:3000",
+			"http://localhost:4321",
+			"http://localhost:5173",
+			"http://localhost:8080",
+			"https://cyodesign.com",
+			"https://*.cyodesign.com"
+		],
+      "AllowedMethods": ["GET", "PUT", "POST", "DELETE", "HEAD"],
+      "AllowedHeaders": ["*"]
+    }]
+  }'
 ```
 
 ## SSH Access
 
 ```bash
-ssh -i ~/.ssh/my-gcp-key umer@cyodesign.com "sudo su - umernaeem135acc"
+ssh -i ~/.ssh/cyodesign root@cyodesign.com "sudo su - cyo"
 ```
 
 ## deploy
@@ -30,7 +45,7 @@ pm2 restart ecosystem.config.cjs
 ### Connect 
 
 ```bash
-ssh -t -L 8900:localhost:8900 -i ~/.ssh/my-gcp-key umer@cyodesign.com "sudo su - umernaeem135acc"
+ssh -t -L 8900:localhost:8900 -i ~/.ssh/cyodesign root@cyodesign.com "sudo su - cyo"
 ```
 
 ### Install Turso

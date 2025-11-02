@@ -7,9 +7,10 @@ export const InputMessageUI = ({ content }: InputMessage) => {
 			<div className='flex flex-col gap-1'>
 				<div className='flex justify-end'>
 					<div className='flex flex-col gap-2'>
-						{content.map(part =>
+						{content.map((part, idx) =>
 							part.type === 'input_image' && (
 								<img
+									key={idx}
 									src={part.image_url === ''
 										? 'https://www.svgrepo.com/show/508699/landscape-placeholder.svg'
 										: part.image_url}
@@ -20,10 +21,10 @@ export const InputMessageUI = ({ content }: InputMessage) => {
 						)}
 					</div>
 				</div>
-				{content.map(part =>
+				{content.map((part, idx) =>
 					part.type === 'input_text' &&
 					(
-						<div className='flex justify-end'>
+						<div key={idx} className='flex justify-end'>
 							<div className='p-2 rounded-2xl bg-primary text-white flex'>{part.text}</div>
 						</div>
 					)

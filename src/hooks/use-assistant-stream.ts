@@ -147,10 +147,11 @@ export function useAssistantStream() {
 						case 'response.image_generation_call.partial_image': {
 							setChatStore(draft => {
 								const outputIdx = event.output_index + OUTPUT_IDX_OFFSET
+								const isCompleted = event.partial_image_index >= 2
 								draft.messages[outputIdx] = {
 									type: 'image_generation_call',
 									id: event.item_id,
-									status: 'in_progress',
+									status: isCompleted ? 'completed' : 'in_progress',
 									result: `data:image/jpeg;base64,${event.partial_image_b64}`,
 								}
 							})

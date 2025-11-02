@@ -1,4 +1,3 @@
-import type { ResponseStreamEvent } from 'openai/resources/responses/responses.mjs'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { setChatStore, useChatStore } from '~/store'
 import { getTranslationForLocale } from '~/i18n/ui'
@@ -271,6 +270,8 @@ export const AssistantWidget = ({ locale }: AssistantWidgetProps) => {
 			}
 		})
 	}, [messages.length, imageUploadMutation, loading])
+
+	console.log({ messages })
 
 	return (
 		<div className='w-full max-w-[800px] h-full bg-white/90 rounded-xl shadow-lg p-4 flex flex-col'>

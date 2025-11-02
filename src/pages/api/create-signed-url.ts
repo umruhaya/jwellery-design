@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro'
 import { z } from 'astro/zod'
-import { GCSStorageService } from '~/services/storage'
+import { S3StorageService } from '~/services/storage'
 import { BUCKET_NAME } from 'astro:env/server'
 import { IMG_FORMAT } from 'astro:env/client'
 
@@ -10,9 +10,10 @@ export const POST: APIRoute = async ({ request }) => {
 	const key = crypto.randomUUID()
 	const objectKey = `anonymous/${key}.${IMG_FORMAT}`
 
-	const storage = GCSStorageService.getInstance()
+	const storage = S3StorageService.getInstance()
+	const bucket = BUCKET_NAME
 	const { signedUrl, publicUrl } = await storage.createPresignedPutUrl(
-		BUCKET_NAME,
+		bucket,
 		objectKey,
 		URL_EXPIRES_IN,
 	)
