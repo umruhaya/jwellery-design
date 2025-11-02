@@ -50,8 +50,11 @@ export default defineConfig({
 			EMAIL_USER: envField.string({ access: 'secret', context: 'server' }),
 			EMAIL_PASSWORD: envField.string({ access: 'secret', context: 'server' }),
 			RECIPIENT_EMAIL: envField.string({ access: 'secret', context: 'server' }),
-			SERVICE_ACCOUNT_KEY: envField.string({ access: 'secret', context: 'server' }),
 			BUCKET_NAME: envField.string({ access: 'secret', context: 'server' }),
+			AWS_ACCESS_KEY_ID: envField.string({ access: 'secret', context: 'server' }),
+			AWS_SECRET_ACCESS_KEY: envField.string({ access: 'secret', context: 'server' }),
+			AWS_S3_ENDPOINT: envField.string({ access: 'secret', context: 'server' }),
+			AWS_REGION: envField.string({ access: 'secret', context: 'server' }),
 			IMG_FORMAT: envField.enum({
 				access: 'public',
 				context: 'client',
