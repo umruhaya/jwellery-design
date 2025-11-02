@@ -5,7 +5,7 @@ module.exports = {
 			script: 'dist/server/entry.mjs',
 			interpreter: 'node',
 			node_args: '--env-file=.env',
-			cwd: '/home/umernaeem135acc/cyodesign',
+			cwd: '/home/cyo/cyodesign',
 			env: {
 				NODE_ENV: 'production',
 				PORT: '8000',
