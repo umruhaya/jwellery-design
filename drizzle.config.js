@@ -6,6 +6,7 @@ export default defineConfig({
 	out: './drizzle',
 	dialect: 'turso', // sqlite for local file
 	dbCredentials: {
-		url: 'http://127.0.0.1:8900', // make sure to run the tunnel to the remote server
+		url: 'file:.db/main.db',
+		// url: 'http://127.0.0.1:8900', // make sure to run the tunnel to the remote server
 	},
 })

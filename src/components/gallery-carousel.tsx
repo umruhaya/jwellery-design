@@ -1,4 +1,4 @@
-import React from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { gallerySpecs } from '~/lib/gallery-specs'
 import Autoplay from 'embla-carousel-autoplay'
 import type { CarouselApi } from '~/components/ui/carousel'
@@ -12,16 +12,16 @@ interface Props {
 }
 
 const GalleryCarousel: React.FC<Props> = ({ locale = 'en' }) => {
-	const plugin = React.useRef(
+	const plugin = useRef(
 		Autoplay({ delay: 2000, stopOnInteraction: true }),
 	)
-	const [api, setApi] = React.useState<CarouselApi | null>(null)
-	const [currentIndex, setCurrentIndex] = React.useState(0)
-	const [snapCount, setSnapCount] = React.useState(0)
+	const [api, setApi] = useState<CarouselApi | null>(null)
+	const [currentIndex, setCurrentIndex] = useState(0)
+	const [snapCount, setSnapCount] = useState(0)
 	const ui = getTranslationForLocale(locale)
 	const localePath = getLocalePath(locale)
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (!api) return
 		const onSelect = () => {
 			setCurrentIndex(api.selectedScrollSnap())
