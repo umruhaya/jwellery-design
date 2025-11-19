@@ -14,6 +14,7 @@ type TranslationKey =
 	| 'nav.about'
 	| 'nav.twitter'
 	| 'nav.gallery'
+	| 'nav.shop'
 	| 'hero.title'
 	| 'hero.subtitle'
 	| 'hero.callToAction'
@@ -31,6 +32,13 @@ type TranslationKey =
 	| 'gallery.itemMaterial'
 	| 'gallery.more'
 	| 'gallery.modelAlt'
+	| 'collection.title'
+	| 'collection.rings'
+	| 'collection.necklaces'
+	| 'collection.gifts'
+	| 'collection.bracelets'
+	| 'collection.pendants'
+	| 'collection.earrings'
 	| 'beadsDance.title'
 	| 'beadsDance.description'
 	| 'beadsDance.cta'
@@ -70,6 +78,7 @@ const ui: Translations = {
 		'nav.about': 'About',
 		'nav.twitter': 'Twitter',
 		'nav.gallery': 'Gallery',
+		'nav.shop': 'Shop',
 		'hero.title': 'Bespoke jewelry, crafted for your story',
 		'hero.subtitle':
 			'Experience the CYO Live Atelier: luxury, artistry, and personal guidance - digitally and personally.',
@@ -89,6 +98,13 @@ const ui: Translations = {
 		'gallery.itemMaterial': 'Yellow Gold',
 		'gallery.more': 'More creations',
 		'gallery.modelAlt': 'Model with Perlée',
+		'collection.title': 'Collection',
+		"collection.rings": "Rings",
+      "collection.necklaces": "Necklaces",
+      "collection.gifts": "Gifts",
+      "collection.bracelets": "Bracelets",
+      "collection.pendants": "Pendants",
+      "collection.earrings": "Earrings",
 		'beadsDance.title': 'The golden beads come together in a graceful dance',
 		'beadsDance.description':
 			'CYO Design showcases the Perlée collection’s joyful spirit through vibrant movement and refined style.',
@@ -106,6 +122,7 @@ const ui: Translations = {
   You can talk to me with text or voice. I will help you, step by step.`,
 		'assistant.input.placeholder': 'Describe your dream jwellery...',
 		'aboutus.aboutus': 'About Us',
+	
 		'aboutus.title': 'Inspired by you, crafted by us.',
 		'aboutus.subtitle':
 			'We combine decades of time-tested craftsmanship with the possibilities of artificial intelligence. Our promise: Personal consultation, constant availability, and visualizations until every detail is perfect. Until, together, we create the piece that perfectly reflects your vision.',
@@ -126,7 +143,8 @@ const ui: Translations = {
 		'nav.home': 'Startseite',
 		'nav.about': 'Über uns',
 		'nav.twitter': 'Twitter',
-		'nav.gallery': 'Galerie',
+		'nav.gallery': 'Geschäft',
+		'nav.shop': 'Shop',
 		'hero.title': 'Individuelle Schmuckstücke, gefertigt für Ihre Geschichte',
 		'hero.subtitle':
 			'Erleben Sie das CYO Live Atelier: Luxus, Kunstfertigkeit und persönliche Beratung – digital und persönlich.',
@@ -146,6 +164,14 @@ const ui: Translations = {
 		'gallery.itemMaterial': 'Gelbgold',
 		'gallery.more': 'Weitere Kreationen',
 		'gallery.modelAlt': 'Modell mit Perlée',
+		'collection.title': 'Kollektion',
+		 "collection.rings": "Ringe",
+		  "collection.necklaces": "Halsketten",
+      "collection.gifts": "Geschenke",
+      "collection.bracelets": "Armbänder",
+      "collection.pendants": "Anhänger",
+      "collection.earrings": "Ohrringe",
+	
 		'beadsDance.title': 'Die goldenen Perlen tanzen in anmutiger Harmonie',
 		'beadsDance.description':
 			'CYO Design präsentiert die lebensfrohe Perlée-Kollektion durch lebendige Bewegung und raffinierte Eleganz.',
@@ -185,6 +211,7 @@ const ui: Translations = {
 		'nav.about': 'Chi siamo',
 		'nav.twitter': 'Twitter',
 		'nav.gallery': 'Galleria',
+		'nav.shop':'Negozio',
 		'hero.title': 'Gioielli su misura, creati per la tua storia',
 		'hero.subtitle': "Vivi l'Atelier Live di CYO: lusso, maestria e guida personale, in digitale e di persona.",
 		'hero.callToAction': 'Crea il tuo gioiello',
@@ -203,6 +230,13 @@ const ui: Translations = {
 		'gallery.itemMaterial': 'Oro giallo',
 		'gallery.more': 'Altre creazioni',
 		'gallery.modelAlt': 'Modella con Perlée',
+		'collection.title': 'Collezione',
+			 "collection.rings": "Anelli",
+		  "collection.necklaces": "Collane",
+      "collection.gifts": "Regali",
+      "collection.bracelets": "Braccialetti",
+      "collection.pendants": "Ciondoli",
+      "collection.earrings": "Orecchini",
 		'beadsDance.title': 'Le perle dorate si uniscono in una danza aggraziata',
 		'beadsDance.description':
 			'CYO Design mette in mostra lo spirito gioioso della collezione Perlée attraverso movimenti vibranti e uno stile raffinato.',
@@ -242,6 +276,7 @@ const ui: Translations = {
 		'nav.about': 'Sobre nosotros',
 		'nav.twitter': 'Twitter',
 		'nav.gallery': 'Galería',
+		'nav.shop':'Tienda',
 		'hero.title': 'Joyas a medida, creadas para tu historia',
 		'hero.subtitle': 'Experimenta el Atelier en Vivo de CYO: lujo, arte y guía personal, digital y personalmente.',
 		'hero.callToAction': 'Diseña tu joya',
@@ -260,6 +295,13 @@ const ui: Translations = {
 		'gallery.itemMaterial': 'Oro amarillo',
 		'gallery.more': 'Más creaciones',
 		'gallery.modelAlt': 'Modelo con Perlée',
+		'collection.title': 'Colección',
+			 "collection.rings": "Anillos",
+		  "collection.necklaces": "Collares",
+      "collection.gifts": "Regalos",
+      "collection.bracelets": "Pulseras",
+      "collection.pendants": "Colgantes",
+      "collection.earrings": "Pendientes",
 		'beadsDance.title': 'Las cuentas doradas se unen en una danza elegante',
 		'beadsDance.description':
 			'CYO Design muestra el espíritu alegre de la colección Perlée a través de un movimiento vibrante y un estilo refinado.',
@@ -299,6 +341,7 @@ const ui: Translations = {
 		'nav.about': 'À propos',
 		'nav.twitter': 'Twitter',
 		'nav.gallery': 'Galerie',
+		'nav.shop': 'Boutique',
 		'hero.title': 'Bijoux sur mesure, créés pour votre histoire',
 		'hero.subtitle':
 			"Découvrez l'Atelier Live CYO : luxe, art et accompagnement personnel - en numérique et en personne.",
@@ -318,6 +361,13 @@ const ui: Translations = {
 		'gallery.itemMaterial': 'Or jaune',
 		'gallery.more': 'Plus de créations',
 		'gallery.modelAlt': 'Modèle avec Perlée',
+			'collection.title': 'Collection',
+				 "collection.rings": "Bagues",
+		  "collection.necklaces": "Colliers",
+      "collection.gifts": "Cadeaux",
+      "collection.bracelets": "Bracelets",
+      "collection.pendants": "Pendentifs",
+      "collection.earrings": "Boucles d’oreilles",
 		'beadsDance.title': 'Les perles dorées s’unissent dans une danse gracieuse',
 		'beadsDance.description':
 			'CYO Design met en valeur l’esprit joyeux de la collection Perlée à travers un mouvement vibrant et un style raffiné.',

@@ -4,6 +4,7 @@ import { getLocalePath, getTranslationForLocale } from '~/i18n/ui'
 import GalleryCarousel from '~/components/gallery-carousel'
 import { Header } from '~/components/header'
 import { StepsTimeline } from '~/components/steps-timeline'
+import Collections from './collections'
 
 interface Props {
 	locale: string
@@ -72,10 +73,17 @@ const ui = getTranslationForLocale(locale ?? 'en')
 	</section>
 
 	{/* GALLERY / INSPIRATIONS */}
-	<section id="gallery" class="w-full mb-24">
+	<section id="gallery" class="w-full mb-8">
 		<div class="max-w-7xl mx-auto">
 			<h2 class="text-4xl font-didot text-center mb-8 pt-12">{ui['gallery.title']}</h2>
 			<GalleryCarousel locale={locale ?? 'en'} client:only />
+		</div>
+	</section>
+		{/* Collection */}
+			<section  class="w-full mb-24">
+		<div class="max-w-7xl mx-auto">
+			<h2 class="text-4xl font-didot text-center mb-8 pt-12">{ui['collection.title']}</h2>
+			<Collections locale={locale ?? 'en'} client:only />
 		</div>
 	</section>
 
