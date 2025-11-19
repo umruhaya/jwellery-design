@@ -28,11 +28,12 @@ export const MenuSheet = ({ locale }: MenuSheetProps) => {
 				<SheetHeader>
 				</SheetHeader>
 				<div className='flex flex-col gap-4 p-8 font-didot'>
-					<a href='https://cyo-design.myshopify.com/collections' onClick={() => setIsMenuSheetOpen(false)}>
-						<h1 className='text-2xl font-semibold'>{ui['nav.shop']}</h1>
-					</a>
+				
 					<a href='#about' onClick={() => setIsMenuSheetOpen(false)}>
 						<h1 className='text-2xl font-semibold'>{ui['aboutus.aboutus']}</h1>
+					</a>
+					<a href='https://cyo-design.myshopify.com/collections' onClick={() => setIsMenuSheetOpen(false)}>
+						<h1 className='text-2xl font-semibold'>{ui['nav.shop']}</h1>
 					</a>
 					<a href='#gallery' onClick={() => setIsMenuSheetOpen(false)}>
 						<h1 className='text-2xl font-semibold'>{ui['nav.gallery']}</h1>
