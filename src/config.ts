@@ -1,0 +1,1 @@
+export const websiteUrl = 'https://store.cyodesign.com'

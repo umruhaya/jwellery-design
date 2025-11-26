@@ -1,5 +1,5 @@
+import { websiteUrl } from "~/config";
 import { getTranslationForLocale } from "~/i18n/ui";
-
 interface Props {
 	locale?: string
 }
@@ -9,37 +9,37 @@ const Collections : React.FC<Props>  = ({ locale = 'en' }) => {
   const data = [
   {
     image: "/collection/image.webp",
-    link: "https://cyo-design.myshopify.com/collections/rings",
+    link: `${websiteUrl}/collections/rings`,
     title: ui["collection.rings"],
   },
   {
     image: "/collection/KETTINGEN.webp",
-    link: "https://cyo-design.myshopify.com/collections/necklaces",
+    link: `${websiteUrl}/collections/necklaces`,
     title: ui["collection.necklaces"],
   },
   {
     image: "/collection/CADEAUS.webp",
-    link: "https://cyo-design.myshopify.com/collections/gifts",
+    link: `${websiteUrl}/collections/gifts`,
     title: ui["collection.gifts"],
   },
   {
     image: "/collection/ARMBANDEN.webp",
-    link: "https://cyo-design.myshopify.com/collections/bracelets",
+    link: `${websiteUrl}/collections/bracelets`,
     title: ui["collection.bracelets"],
   },
   {
     image: "/collection/KETTINGEN.webp",
-    link: "https://cyo-design.myshopify.com/collections/pendants",
+    link: `${websiteUrl}/collections/pendants`,
     title: ui["collection.pendants"],
   },
   {
     image: "/collection/Hangers.webp",
-    link: "https://cyo-design.myshopify.com/collections/pendants",
+    link: `${websiteUrl}/collections/pendants`,
     title: ui["collection.pendants"],
   },
   {
     image: "/collection/OORBELLEN.webp",
-    link: "https://cyo-design.myshopify.com/collections/earrings",
+    link: `${websiteUrl}/collections/earrings`,
     title: ui["collection.earrings"],
   },
 ];

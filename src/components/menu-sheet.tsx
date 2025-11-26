@@ -2,6 +2,7 @@ import { MenuIcon } from 'lucide-react'
 import { useCallback, useMemo } from 'react'
 import { Button } from '~/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from '~/components/ui/sheet'
+import { websiteUrl } from '~/config'
 import { getTranslationForLocale } from '~/i18n/ui'
 import { setChatStore, useChatStore } from '~/store'
 
@@ -32,7 +33,7 @@ export const MenuSheet = ({ locale }: MenuSheetProps) => {
 					<a href='#about' onClick={() => setIsMenuSheetOpen(false)}>
 						<h1 className='text-2xl font-semibold'>{ui['aboutus.aboutus']}</h1>
 					</a>
-					<a href='https://cyo-design.myshopify.com/collections' onClick={() => setIsMenuSheetOpen(false)}>
+					<a href={`${websiteUrl}/collections`} onClick={() => setIsMenuSheetOpen(false)}>
 						<h1 className='text-2xl font-semibold'>{ui['nav.shop']}</h1>
 					</a>
 					<a href='#gallery' onClick={() => setIsMenuSheetOpen(false)}>
