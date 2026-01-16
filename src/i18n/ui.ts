@@ -47,8 +47,6 @@ type TranslationKey =
   | "gifts.imgAlt"
   | "gifts.description"
   | "gifts.cta"
-  | "footer.impressum"
-  | "footer.privacy"
   | "assistant.assistant"
   | "assistant.sendButton"
   | "assistant.description"
@@ -66,18 +64,30 @@ type TranslationKey =
   | "steps.4.title"
   | "steps.4.description"
   | "menu.languageSwitcher"
-  | "footer.customerService"
-  | "footer.shippingInformation"
-  | "footer.returnsExchanges"
-  | "footer.information"
-  | "footer.atelierAssistant"
-  | "footer.service"
-  | "footer.ourStory"
+  // footer About
+  | "footer.about.title"
   | "footer.aboutUs"
+
+  // footer Service
+  | "footer.service"
+  | "footer.faq"
+  | "footer.atelierAssistant"
+  | "footer.exchange&Returns"
+  | "footer.paymentInformation"
+  | "footer.shippingInformation"
+  | "footer.sizeGuide"
+  // Footer Legal
+  | "footer.legalMatters"
+  | "footer.imprint"
+  | "footer.termsOfService"
+  | "footer.cancellationPolicy"
+  | "footer.dataPrivacy"
+  | "footer.cookieSettings"
+  | "footer.copyright"
+  // email
   | "footer.getInTouch"
   | "footer.newsletterText"
-  | "footer.emailPlaceholder"
-  | "footer.copyright";
+  | "footer.emailPlaceholder";
 
 // Utility type: ensures each language has all translation keys
 type Translations = {
@@ -155,17 +165,26 @@ const ui: Translations = {
     "steps.4.description":
       "Our master craftsmen transform your vision into a unique piece of jewelry – crafted with the highest precision and delivered directly to you.",
     "menu.languageSwitcher": "Language Switcher",
-    "footer.impressum": "Impressum",
-    "footer.privacy": "Privacy",
-    "footer.customerService": "Customer service",
-    "footer.shippingInformation": "Shipping information",
-    "footer.returnsExchanges": "Returns & Exchanges",
-    "footer.information": "Information",
-    "footer.atelierAssistant": "CYO Atelier Assistant",
-    "footer.service": "Service",
-    "footer.ourStory": "Our story",
-    "footer.aboutUs": "About us",
     "footer.getInTouch": "Let's get in touch",
+    // Footer About
+    "footer.about.title": "About CYO Design",
+    "footer.aboutUs": "About Us",
+    // Footer Service
+    "footer.service": "Service",
+    "footer.faq": "FAQ",
+    "footer.atelierAssistant": "CYO Atelier Assistant",
+    "footer.exchange&Returns": "Exchange & Returns",
+    "footer.paymentInformation": "Payment Information",
+    "footer.shippingInformation": "Shipping Information",
+    "footer.sizeGuide": "Size Guide",
+    // Footer Legal Matters
+    "footer.legalMatters": "Legal Matters",
+    "footer.imprint": "Imprint",
+    "footer.termsOfService": "Terms of Service",
+    "footer.cancellationPolicy": "Cancellation Policy",
+    "footer.dataPrivacy": "Data Privacy",
+    "footer.cookieSettings": "Cookie Settings",
+    // NewsLetter
     "footer.newsletterText":
       "Sign up for our newsletter and receive 10% off your",
     "footer.emailPlaceholder": "Enter your email",
@@ -239,17 +258,27 @@ const ui: Translations = {
     "steps.4.description":
       "Unsere Meister verwandeln deine Vision in ein einzigartiges Schmuckstück – gefertigt mit höchster Präzision und direkt zu dir geliefert.",
     "menu.languageSwitcher": "Sprache ändern",
-    "footer.impressum": "Impressum",
-    "footer.privacy": "Datenschutz",
-    "footer.customerService": "Kundenservice",
-    "footer.shippingInformation": "Versandinformationen",
-    "footer.returnsExchanges": "Rückgabe & Umtausch",
-    "footer.information": "Informationen",
-    "footer.atelierAssistant": "CYO Atelier Assistent",
-    "footer.service": "Service",
-    "footer.ourStory": "Unsere Geschichte",
-    "footer.aboutUs": "Über uns",
     "footer.getInTouch": "Kontaktieren Sie uns",
+    // Footer About
+    "footer.about.title": "Über CYO-Design",
+    "footer.aboutUs": "Über uns",
+    // Footer Service
+    "footer.service": "Service",
+    "footer.faq": "FAQ",
+
+    "footer.atelierAssistant": "Atelier-Assistent",
+    "footer.exchange&Returns": "Umtausch & Rückgabe",
+    "footer.paymentInformation": "Zahlungsinformationen",
+    "footer.shippingInformation": "Versandinformationen",
+    "footer.sizeGuide": "Größentabelle",
+    // Footer Legal Matters
+    "footer.legalMatters": "Rechtliches",
+    "footer.imprint": "Impressum",
+    "footer.termsOfService": "Nutzungsbedingungen",
+    "footer.cancellationPolicy": "Widerrufsbelehrung",
+    "footer.dataPrivacy": "Datenschutz",
+    "footer.cookieSettings": "Cookie-Einstellungen",
+    // NewsLetter
     "footer.newsletterText":
       "Melden Sie sich für unseren Newsletter an und erhalten Sie 10% Rabatt auf Ihre",
     "footer.emailPlaceholder": "E-Mail eingeben",
@@ -321,17 +350,27 @@ const ui: Translations = {
     "steps.4.description":
       "I nostri maestri artigiani trasformano la tua visione in un gioiello unico, realizzato con la massima precisione e consegnato direttamente a te.",
     "menu.languageSwitcher": "Cambia lingua",
-    "footer.impressum": "Note Legali",
-    "footer.privacy": "Privacy",
-    "footer.customerService": "Servizio clienti",
-    "footer.shippingInformation": "Informazioni sulla spedizione",
-    "footer.returnsExchanges": "Resi e cambi",
-    "footer.information": "Informazioni",
-    "footer.atelierAssistant": "CYO Assistente Atelier",
-    "footer.service": "Servizio",
-    "footer.ourStory": "La nostra storia",
-    "footer.aboutUs": "Chi siamo",
     "footer.getInTouch": "Mettiamoci in contatto",
+    //  Footer About
+    "footer.about.title": "Informazioni sul design CYO",
+    "footer.aboutUs": "Chi siamo",
+    // Footer Service
+    "footer.service": "Servizio",
+    "footer.faq": "FAQ",
+
+    "footer.atelierAssistant": "Assistente Atelier",
+    "footer.exchange&Returns": "Cambi e resi",
+    "footer.paymentInformation": "Informazioni sui pagamenti",
+    "footer.shippingInformation": "Informazioni sulla spedizione",
+    "footer.sizeGuide": "Guida alle taglie",
+    // Footer Legal Matters
+    "footer.legalMatters": "Note legali",
+    "footer.imprint": "Colophon",
+    "footer.termsOfService": "Termini di servizio",
+    "footer.cancellationPolicy": "Politica di recesso",
+    "footer.dataPrivacy": "Informativa sulla privacy",
+    "footer.cookieSettings": "Impostazioni dei cookie",
+    // NewsLetter
     "footer.newsletterText":
       "Iscriviti alla nostra newsletter e ricevi il 10% di sconto sul tuo",
     "footer.emailPlaceholder": "Inserisci la tua email",
@@ -404,17 +443,28 @@ const ui: Translations = {
     "steps.4.description":
       "Nuestros maestros artesanos transforman tu visión en una joya única, elaborada con la máxima precisión y entregada directamente a ti.",
     "menu.languageSwitcher": "Cambiar idioma",
-    "footer.impressum": "Aviso Legal",
-    "footer.privacy": "Privacidad",
-    "footer.customerService": "Atención al cliente",
-    "footer.shippingInformation": "Información de envío",
-    "footer.returnsExchanges": "Devoluciones y cambios",
-    "footer.information": "Información",
-    "footer.atelierAssistant": "Asistente de Atelier CYO",
-    "footer.service": "Servicio",
-    "footer.ourStory": "Nuestra historia",
-    "footer.aboutUs": "Sobre nosotros",
     "footer.getInTouch": "Pongámonos en contacto",
+
+    //  Footer About
+    "footer.about.title": "Acerca del diseño CYO",
+    "footer.aboutUs": "Sobre nosotros",
+    // Footer Service
+    "footer.service": "Servicio",
+    "footer.faq": "Preguntas frecuentes",
+
+    "footer.atelierAssistant": "Asistente de Atelier",
+    "footer.exchange&Returns": "Cambios y devoluciones",
+    "footer.paymentInformation": "Información de pago",
+    "footer.shippingInformation": "Información de envío",
+    "footer.sizeGuide": "Guía de tallas",
+    // Footer Legal Matters
+    "footer.legalMatters": "Asuntos legales",
+    "footer.imprint": "Aviso legal",
+    "footer.termsOfService": "Términos del servicio",
+    "footer.cancellationPolicy": "Política de cancelación",
+    "footer.dataPrivacy": "Protección de datos",
+    "footer.cookieSettings": "Configuración de cookies",
+    // Footer NewsLetter
     "footer.newsletterText":
       "Suscríbete a nuestro boletín y recibe un 10% de descuento en tu",
     "footer.emailPlaceholder": "Introduce tu correo",
@@ -487,17 +537,27 @@ const ui: Translations = {
     "steps.4.description":
       "Nos maîtres artisans transforment votre vision en un bijou unique – fabriqué avec la plus haute précision et livré directement chez vous.",
     "menu.languageSwitcher": "Changer de langue",
-    "footer.impressum": "Mentions Légales",
-    "footer.privacy": "Confidentialité",
-    "footer.customerService": "Service client",
-    "footer.shippingInformation": "Informations de livraison",
-    "footer.returnsExchanges": "Retours & échanges",
-    "footer.information": "Information",
-    "footer.atelierAssistant": "Assistant Atelier CYO",
-    "footer.service": "Service",
-    "footer.ourStory": "Notre histoire",
-    "footer.aboutUs": "À propos de nous",
     "footer.getInTouch": "Contactons-nous",
+
+    // Footer About
+    "footer.about.title": "À propos du design CYO",
+    "footer.aboutUs": "À propos de nous",
+    // Footer Service
+    "footer.service": "Service",
+    "footer.faq": "FAQ",
+    "footer.atelierAssistant": "Assistant d’Atelier",
+    "footer.exchange&Returns": "Échanges et retours",
+    "footer.paymentInformation": "Informations de paiement",
+    "footer.shippingInformation": "Informations de livraison",
+    "footer.sizeGuide": "Guide des tailles",
+    // Footer Legal Matters
+    "footer.legalMatters": "Mentions légales",
+    "footer.imprint": "Mentions légales",
+    "footer.termsOfService": "Conditions d’utilisation",
+    "footer.cancellationPolicy": "Politique de rétractation",
+    "footer.dataPrivacy": "Protection des données",
+    "footer.cookieSettings": "Paramètres des cookies",
+    // Footer NewsLetter
     "footer.newsletterText":
       "Inscrivez-vous à notre newsletter et recevez 10 % de réduction sur votre",
     "footer.emailPlaceholder": "Entrez votre e-mail",
