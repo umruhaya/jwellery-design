@@ -10,9 +10,28 @@ const { locale } = Astro.props
 const ui = getTranslationForLocale(locale ?? 'en')
 ---
 
-
 <body class="bg-white text-gray-900">
 
+	{/* Header */}
+	<header class="absolute top-6 left-6 z-50">
+
+  <a href="https://store.cyodesign.com/" 
+     class="text-white hover:opacity-70 transition duration-300">
+
+    {*Home icon*}
+    <!-- Home Icon (SVG) -->
+    <svg xmlns="http://www.w3.org/2000/svg" 
+         class="w-6 h-6" 
+         fill="none" 
+         viewBox="0 0 24 24" 
+         stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" 
+            d="M3 10.5L12 3l9 7.5M4.5 9.75V21h15V9.75" />
+    </svg>
+
+  </a>
+
+</header>
 
 	{/* AI Assistant Section */}
 	<section id="assistant" class="w-full py-16 bg-primary-dark">
@@ -20,6 +39,8 @@ const ui = getTranslationForLocale(locale ?? 'en')
 			<AssistantWidget client:load locale={locale ?? 'en'} />
 		</div>
 	</section>
-<section class="w-full h-screen flex items-center justify-center bg-black">
+
+	<section class="w-full h-screen flex items-center justify-center bg-black">
+	</section>
 
 </body>
