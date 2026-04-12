@@ -145,7 +145,7 @@ const ui: Translations = {
     "assistant.description": `I will help you design your dream jewelry.
   Just upload an inspiration photo, or tell me about the jewelry you want.
   You can talk to me with text or voice. I will help you, step by step.`,
-    "assistant.input.placeholder": "Describe your dream jewellery...",
+    "assistant.input.placeholder": "Describe your dream jewelery",
     "aboutus.aboutus": "About Us",
 
     "aboutus.title": "Inspired by you, crafted by us.",
