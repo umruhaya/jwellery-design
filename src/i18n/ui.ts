@@ -142,10 +142,10 @@ const ui: Translations = {
 
     "assistant.assistant": "AI Designer",
     "assistant.sendButton": "Send",
-    "assistant.description": `I will help you design your dream jewelry.
-  Just upload an inspiration photo, or tell me about the jewelry you want.
-  You can talk to me with text or voice. I will help you, step by step.`,
-    "assistant.input.placeholder": "Describe your dream jewelry",
+    "assistant.description": `Hi there. Design your custom gold jewelry with certified diamonds, including engagement rings and bespoke designs. 
+    Just upload an inspiration photo, or tell me about the jewelry you want. 
+    You can talk to me with text or voice. I will help you, step by step.`,
+    "assistant.input.placeholder": "Describe your dream jewelry design",
     "aboutus.aboutus": "About Us",
 
     "aboutus.title": "Inspired by you, crafted by us.",
@@ -237,10 +237,9 @@ const ui: Translations = {
 
     "assistant.assistant": "KI-Designer",
     "assistant.sendButton": "Senden",
-    "assistant.description": `Ich helfe Ihnen, Ihr Traum-Schmuckstück zu entwerfen.
-  Laden Sie ein Inspirationsfoto hoch oder erzählen Sie mir, welches Schmuckstück Sie möchten.
-  Sie können mit Text oder Stimme mit mir sprechen. Ich führe Sie Schritt für Schritt.`,
-    "assistant.input.placeholder": "Beschreiben Sie Ihr Traumschmuckstück...",
+    "assistant.description": `Hallo und herzlich willkommen! Gestalte deinen individuellen Goldschmuck mit zertifizierten Diamanten, inklusive Verlobungsringen und maßgefertigten Designs nach deinen Vorstellungen.`,
+    "assistant.input.placeholder": "Beschreibe dein Traum Schmuckdesign.",
+    
     "aboutus.aboutus": "Über uns",
     "aboutus.title": "Von dir inspiriert, von uns gestaltet.",
     "aboutus.subtitle": `Wir verbinden jahrzehntelang erprobte Handwerkskunst mit den Möglichkeiten künstlicher Intelligenz. Unser Versprechen: Persönliche Beratung, ständige Erreichbarkeit und Visualisierungen, bis jedes Detail stimmt. So lange, bis wir gemeinsam das Stück erschaffen, das deine Vision perfekt widerspiegelt.`,
@@ -329,10 +328,12 @@ const ui: Translations = {
 
     "assistant.assistant": "Designer di IA",
     "assistant.sendButton": "Invia",
-    "assistant.description": `Ti aiuterò a disegnare il gioiello dei tuoi sogni.
-  Carica una foto di ispirazione o parlami del gioiello che desideri.
-  Puoi parlarmi con testo o voce. Ti aiuterò, passo dopo passo.`,
-    "assistant.input.placeholder": "Descrivi il gioiello dei tuoi sogni...",
+    "assistant.description": `Ciao e benvenuto.
+     Progetta il tuo gioiello in oro personalizzato con diamanti certificati, inclusi anelli di fidanzamento e creazioni su misura esclusive. 
+     Basta caricare una foto di ispirazione oppure descriverci il gioiello che desideri. 
+     Puoi anche comunicare con noi tramite testo o voce. Ti guideremo passo dopo passo nella realizzazione della tua creazione.`,
+    "assistant.input.placeholder": "Descrivi il gioiello dei tuoi sogni.",
+    
     "aboutus.aboutus": "Chi Siamo",
     "aboutus.title": "Ispirato da te, creato da noi.",
     "aboutus.subtitle":
@@ -421,10 +422,12 @@ const ui: Translations = {
 
     "assistant.assistant": "Diseñador de IA",
     "assistant.sendButton": "Enviar",
-    "assistant.description": `Te ayudaré a diseñar la joya de tus sueños.
-  Simplemente sube una foto de inspiración o cuéntame sobre la joya que deseas.
-  Puedes hablarme por texto o por voz. Te ayudaré, paso a paso.`,
-    "assistant.input.placeholder": "Describe la joya de tus sueños...",
+    "assistant.description": `Hola y bienvenido.
+Diseña tu joya de oro personalizada con diamantes certificados, incluyendo anillos de compromiso y creaciones a medida exclusivas. 
+Solo tienes que subir una foto de inspiración o describir la joya que deseas. 
+También puedes comunicarte con nosotros por texto o voz. Te acompañaremos paso a paso en todo el proceso.`,
+    "assistant.input.placeholder": "Describe la joya de tus sueños.",
+    
     "aboutus.aboutus": "Sobre Nosotros",
     "aboutus.title": "Inspirado en ti, creado por nosotros.",
     "aboutus.subtitle":
@@ -515,10 +518,11 @@ const ui: Translations = {
 
     "assistant.assistant": "Designer IA",
     "assistant.sendButton": "Envoyer",
-    "assistant.description": `Je vous aiderai à concevoir le bijou de vos rêves.
-              Téléchargez simplement une photo d'inspiration ou parlez-moi du bijou que vous souhaitez.
-              Vous pouvez me parler par texte ou par voix. Je vous aiderai, étape par étape.`,
-    "assistant.input.placeholder": "Décrivez le bijou de vos rêves...",
+    "assistant.description": `Bonjour et bienvenue. Créez votre bijou en or personnalisé avec diamants certifiés, incluant des bagues de fiançailles et des créations sur mesure uniques. 
+    Téléchargez simplement une photo d’inspiration ou décrivez le bijou que vous souhaitez. 
+    Vous pouvez également nous parler par texte ou par voix. Nous vous accompagnons étape par étape pour donner vie à votre création.`,
+   "assistant.input.placeholder": "Décrivez le bijou de vos rêves.",
+    
     "aboutus.aboutus": "À Propos de Nous",
     "aboutus.title": "Inspiré par vous, créé par nous.",
     "aboutus.subtitle":
