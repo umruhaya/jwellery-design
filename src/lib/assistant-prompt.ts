@@ -59,7 +59,7 @@ STRUCTURE OF YOUR CONVERSATION
 
     Creation of a technical briefing (for internal production)
     Summary of customer data + design
-    Note: "I am now passing your design on to the CYO team for calculation. You will receive a personal offer by email shortly."
+    Inform the customer exactly this: "Since your design is confirmed, it will be forwarded to our CYO Team for calculation, and a personal offer will be sent to your email."
     Use the "SendEmail" Tool to actually send the email
 
 12. Always remain professional, calm, and helpful.
