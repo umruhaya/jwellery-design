@@ -127,22 +127,24 @@ const ui = getTranslationForLocale(locale ?? 'en')
 
     </section>
      {/* AI SECTION */}
-<section class="w-full min-h-screen flex flex-col items-center justify-center bg-primary-dark pt-[120px] pb-16 gap-[40px]">
+<section class="w-full bg-primary-dark flex flex-col items-center pt-10 pb-12">
 
-      {/* AI Widget */}
-      <div class="w-[95%] h-[600px] flex justify-center items-center mx-auto">
-        <AssistantWidget client:load locale={locale ?? 'en'} />
-      </div>
+  {/* AI Widget */}
+  <div class="w-full flex justify-center px-4">
+    <div class="w-full max-w-[900px] mx-auto">
+      <AssistantWidget client:load locale={locale ?? 'en'} />
+    </div>
+  </div>
 
-      {/* BOTTOM BUTTON */}
-   <a 
-  href="https://store.cyodesign.com/"
-  class="text-white text-[15px] font-light underline underline-offset-4 tracking-wide hover:opacity-70 transition"
->
-  Back to Home
-</a>
+  {/* Back Button */}
+  <a
+    href="https://store.cyodesign.com/"
+    class="mt-8 text-white text-[14px] md:text-[15px] font-light underline underline-offset-4 tracking-wide hover:opacity-70 transition"
+  >
+    Back to Home
+  </a>
 
-    </section>
+</section>
 
   </body>
 </html>
