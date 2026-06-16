@@ -273,7 +273,7 @@ export const AssistantWidget = ({ locale }: AssistantWidgetProps) => {
 	console.log({ messages })
 
 	return (
-		<div className='w-full max-w-[800px] h-full bg-white/90 rounded-xl shadow-lg p-4 flex flex-col'>
+		<div className='w-full max-w-[800px] mx-auto bg-white/90 rounded-xl shadow-lg p-4 flex flex-col'>
 			<div className='overflow-y-auto mb-4 h-full space-y-2'>
 				{messages.length === 0
 					? (
